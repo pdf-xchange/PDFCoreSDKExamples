@@ -67,7 +67,7 @@
       <Filter>Samples</Filter>
     </ClInclude>
     <ClInclude Include="Sample_Fill.h">
-      <Filter>Header Files</Filter>
+      <Filter>Samples</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +111,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sample_Fill.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
