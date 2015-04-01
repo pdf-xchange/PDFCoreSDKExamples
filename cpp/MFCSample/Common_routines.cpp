@@ -30,6 +30,7 @@ HRESULT CreateNewDocWithPage(CComPtr<PXC::IPXC_Document>& pDoc, CComPtr<PXC::IPX
 		// new document creation
 		hr = g_Inst->NewDocument(&pDoc);
 		BreakOnFailure(hr, L"Error creating new document");
+		pDoc->put_SpecVersion(0x10007);
 		hr = AddNewPage(pDoc, pPage, pageRect);
 	} while (false);
 	return hr;

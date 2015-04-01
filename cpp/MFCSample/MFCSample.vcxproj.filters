@@ -69,6 +69,9 @@
     <ClInclude Include="Sample_Fill.h">
       <Filter>Samples</Filter>
     </ClInclude>
+    <ClInclude Include="Sample_Primitives.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSample.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sample_Fill.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_Primitives.cpp">
       <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>

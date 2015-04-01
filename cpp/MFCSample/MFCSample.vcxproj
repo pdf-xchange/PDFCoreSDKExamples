@@ -204,6 +204,7 @@
     <ClInclude Include="Sample.h" />
     <ClInclude Include="SamplesListWnd.h" />
     <ClInclude Include="Sample_Fill.h" />
+    <ClInclude Include="Sample_Primitives.h" />
     <ClInclude Include="Sample_Stroke.h" />
     <ClInclude Include="SearchEdit.h" />
     <ClInclude Include="stdafx.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="SamplesListWnd.cpp" />
     <ClCompile Include="Sample_Fill.cpp" />
+    <ClCompile Include="Sample_Primitives.cpp" />
     <ClCompile Include="Sample_Stroke.cpp" />
     <ClCompile Include="SearchEdit.cpp" />
     <ClCompile Include="stdafx.cpp">
