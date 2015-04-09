@@ -268,7 +268,7 @@ HRESULT CSDKSample_Stroke::Perform()
 		CStringW sFilename;
 		hr = SaveDocument(pDoc, sFilename);
 	} while (false);
-	//if (pDoc)
-	//	pDoc->Close();
+	if (pDoc)
+		pDoc->Close(0);
 	return hr;
 }

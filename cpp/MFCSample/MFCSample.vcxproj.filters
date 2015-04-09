@@ -72,6 +72,9 @@
     <ClInclude Include="Sample_Primitives.h">
       <Filter>Samples</Filter>
     </ClInclude>
+    <ClInclude Include="Sample_Text.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSample.cpp">
@@ -117,6 +120,9 @@
       <Filter>Samples</Filter>
     </ClCompile>
     <ClCompile Include="Sample_Primitives.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_Text.cpp">
       <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>

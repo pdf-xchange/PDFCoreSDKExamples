@@ -22,6 +22,7 @@
 #include "Sample_Stroke.h"
 #include "Sample_Fill.h"
 #include "Sample_Primitives.h"
+#include "Sample_Text.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -158,6 +159,7 @@ void CMFCSampleApp::InitializeSamples()
 	AddSample(new CSDKSample_Stroke);
 	AddSample(new CSDKSample_Fill);
 	AddSample(new CSDKSample_Primitives);
+	AddSample(new CSDKSample_Text);
 }
 
 void CMFCSampleApp::FinalizeSamples()

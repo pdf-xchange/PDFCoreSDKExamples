@@ -295,7 +295,6 @@ HRESULT Ex3(PXC::IPXC_Document* pDoc, PXC::IPXC_ContentCreator* pCC, const PXC::
 	return hr;
 }
 
-
 HRESULT CSDKSample_Primitives::Perform()
 {
 	HRESULT hr = S_OK;
@@ -345,7 +344,7 @@ HRESULT CSDKSample_Primitives::Perform()
 		CStringW sFilename;
 		hr = SaveDocument(pDoc, sFilename);
 	} while (false);
-	//if (pDoc)
-	//	pDoc->Close();
+	if (pDoc)
+		pDoc->Close(0);
 	return hr;
 }
