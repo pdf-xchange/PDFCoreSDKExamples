@@ -21,6 +21,8 @@ CPDFPreviewView::CPDFPreviewView()
 	m_szPageSize.cy	= 0;
 	m_ptOffset.x	=
 	m_ptOffset.y	= 0;
+	m_ptCacheOffset.x =
+	m_ptCacheOffset.y = 0;
 	//
 	m_bgColor		= GetSysColor(COLOR_APPWORKSPACE);
 }
@@ -78,8 +80,8 @@ bool CPDFPreviewView::FixupScrolls(CPoint& offs) const
 	CRect cr;
 	CSize ts = GetTotalSize();
 	GetClientRect(cr);
-	LONG mx = max(0, cr.Width() - ts.cx);
-	LONG my = max(0, cr.Height() - ts.cy);
+	LONG mx = max(0, ts.cx - cr.Width());
+	LONG my = max(0, ts.cy - cr.Height());
 	if ((offs.x <= mx) && (offs.y <= my))
 		return false;
 	if (offs.x > mx)
@@ -145,8 +147,9 @@ void CPDFPreviewView::SetDocument(PXC::IPXC_Document* pDoc)
 	ReleaseCache();
 	m_pDoc = pDoc;
 	m_nCurPage = 0;
+	m_ptOffset.x = m_ptOffset.y = 0;
 	m_szPageSize = CalcPageSize();
-//	SetScrollSizes(MM_TEXT, sz);
+	UpdateScrolls();
 	Invalidate();
 }
 
@@ -185,6 +188,7 @@ void CPDFPreviewView::SetZoom(double nZoomLevel)
 	m_ptOffset.x = nx;
 	m_ptOffset.y = ny;
 	FixupScrolls(m_ptOffset);
+	UpdateScrolls();
 	Invalidate();
 }
 
@@ -394,8 +398,93 @@ afx_msg void CPDFPreviewView::OnPaint()
 		free(data);
 }
 
+void CPDFPreviewView::DoScroll(LONG posX, LONG posY)
+{
+	CPoint newOffset(posX, posY);
+	FixupScrolls(newOffset);
+	if (newOffset == m_ptOffset)
+		return;
+	LONG dx = m_ptOffset.x - newOffset.x;
+	LONG dy = m_ptOffset.y - newOffset.y;
+	m_ptOffset = newOffset;
+
+	if (dx != 0 || dy != 0)
+	{
+		UpdateScrolls();
+		ScrollWindow(dx, dy);
+	}
+}
+
+afx_msg void CPDFPreviewView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	LONG nNewPos = m_ptOffset.x;
+	CRect cr;
+	GetClientRect(cr);
+	switch (nSBCode)
+	{
+	case SB_LEFT:
+		nNewPos = 0;
+		break;
+	case SB_LINELEFT:
+		nNewPos--;
+		break;
+	case SB_LINERIGHT:
+		nNewPos++;
+		break;
+	case SB_PAGELEFT:
+		nNewPos -= cr.Width();
+		break;
+	case SB_PAGERIGHT:
+		nNewPos += cr.Width();
+		break;
+	case SB_RIGHT:
+		nNewPos = GetTotalSize().cx;
+		break;
+	case SB_THUMBPOSITION:
+	case SB_THUMBTRACK:
+		nNewPos = (LONG)nPos;
+		break;
+	}
+	DoScroll(nNewPos, m_ptOffset.y);
+}
+
+afx_msg void CPDFPreviewView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	LONG nNewPos = m_ptOffset.y;
+	CRect cr;
+	GetClientRect(cr);
+	switch (nSBCode)
+	{
+	case SB_TOP:
+		nNewPos = 0;
+		break;
+	case SB_LINEUP:
+		nNewPos--;
+		break;
+	case SB_LINEDOWN:
+		nNewPos++;
+		break;
+	case SB_PAGEUP:
+		nNewPos -= cr.Height();
+		break;
+	case SB_PAGEDOWN:
+		nNewPos += cr.Height();
+		break;
+	case SB_BOTTOM:
+		nNewPos = GetTotalSize().cy;
+		break;
+	case SB_THUMBPOSITION:
+	case SB_THUMBTRACK:
+		nNewPos = (LONG)nPos;
+		break;
+	}
+	DoScroll(m_ptOffset.x, nNewPos);
+}
+
 BEGIN_MESSAGE_MAP(CPDFPreviewView, CWnd)
 	ON_WM_ERASEBKGND()
 	ON_WM_SIZE()
 	ON_WM_PAINT()
+	ON_WM_VSCROLL()
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()

@@ -37,6 +37,7 @@ protected:
 	// returns size of view area: page + gaps. in pixels
 	CSize GetTotalSize() const;
 	void PaintRect(CDC* pDC, const CRect& pr);
+	void DoScroll(LONG posX, LONG posY);
 protected:
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnInitialUpdate();
@@ -45,6 +46,8 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnPaint();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	DECLARE_MESSAGE_MAP()
 protected:
 	CComPtr<PXC::IPXC_Document>		m_pDoc;

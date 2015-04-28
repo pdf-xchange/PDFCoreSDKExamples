@@ -21,7 +21,10 @@ public:
 	void SetDocument(PXC::IPXC_Document* pDoc)
 	{
 		if (m_wndView)
+		{
 			m_wndView->SetDocument(pDoc);
+			m_wndView->SetZoom(200.0);
+		}
 	}
 
 protected:
