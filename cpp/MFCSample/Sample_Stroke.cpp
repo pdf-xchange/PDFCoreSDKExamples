@@ -2,6 +2,8 @@
 #include "Sample_Stroke.h"
 #include "InitializeSDK.h"
 #include "resource.h"
+#include "MainFrm.h"
+#include "MFCSample.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -235,7 +237,8 @@ HRESULT CSDKSample_Stroke::Perform()
 {
 	HRESULT hr = S_OK;
 	CComPtr<PXC::IPXC_Document> pDoc;
-	do 
+	bool bPreview = true;
+	do
 	{
 		// creating document with one page
 		CComPtr<PXC::IPXC_Page> pPage;
@@ -265,10 +268,17 @@ HRESULT CSDKSample_Stroke::Perform()
 		pCC = nullptr;
 		BreakOnFailure(hr, L"Error replacing page content");
 		pPage = nullptr;
-		CStringW sFilename;
-		hr = SaveDocument(pDoc, sFilename);
+		if (bPreview)
+		{
+			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
+		}
+		else
+		{
+			CStringW sFilename;
+			hr = SaveDocument(pDoc, sFilename);
+		}
 	} while (false);
-	if (pDoc)
+	if (pDoc && !bPreview)
 		pDoc->Close(0);
 	return hr;
 }

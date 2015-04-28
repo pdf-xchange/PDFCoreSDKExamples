@@ -199,6 +199,8 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MFCSample.h" />
     <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="PDFPreviewView.h" />
+    <ClInclude Include="PDFPreviewWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RTFLoger.h" />
     <ClInclude Include="Sample.h" />
@@ -219,6 +221,8 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MFCSample.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="PDFPreviewView.cpp" />
+    <ClCompile Include="PDFPreviewWnd.cpp" />
     <ClCompile Include="RTFLoger.cpp" />
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="SamplesListWnd.cpp" />

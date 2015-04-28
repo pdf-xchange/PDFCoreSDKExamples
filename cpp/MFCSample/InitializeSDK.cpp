@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #include "InitializeSDK.h"
 
+// comment this define if you do not want to use registered CoClass
+// #define REGISTERED_COM_SDK
+
 // comment this define if you do not use dynamic load of the PDF-XChange Core SDK DLL
 #define DYNAMIC_LOAD_SDK_DLL
+
+#ifdef REGISTERED_COM_SDK
+#undef DYNAMIC_LOAD_SDK_DLL
+#endif
 
 #ifdef DYNAMIC_LOAD_SDK_DLL
 // uncomment this link if you use delay load of the SDK DLL; otherwise InitializeSDK
@@ -49,7 +56,9 @@ HRESULT InitializeSDK()
 	HRESULT hr = S_OK;
 	do 
 	{
-#ifdef DYNAMIC_LOAD_SDK_DLL
+#if defined (REGISTERED_COM_SDK)
+		hr = CoCreateInstance(__uuidof(PXC::PXC_Inst), nullptr, CLSCTX_INPROC_SERVER, __uuidof(PXC::IPXC_Inst), (void**)&g_Inst);
+#elif defined (DYNAMIC_LOAD_SDK_DLL)
 		if (g_Inst != nullptr)
 			break;
 		hSDKInst = LoadLibrary(SDK_DLL);
@@ -61,7 +70,7 @@ HRESULT InitializeSDK()
 			lstrcat(path, SDK_DLL);
 			hSDKInst = LoadLibrary(path);
 		}
-		BreakOnNullWithLastError(hSDKInst, hr, L"Error loading SDK DLL by path '%ws': %.8lx", GetLastError());
+		BreakOnNullWithLastError(hSDKInst, hr, L"Error loading SDK DLL '%ws': %.8lx", SDK_DLL, GetLastError());
 #ifdef USE_DELAY_LOAD
 		hr = PXC_GetInstance(&g_Inst);
 #else

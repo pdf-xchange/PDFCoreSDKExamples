@@ -48,7 +48,7 @@ public:
 #endif
 public:
 	void SetCurrentSample(CSDKSample* pSample);
-
+	void ShowPreview(PXC::IPXC_Document* pDoc);
 protected:  // control bar embedded members
 	CMFCRibbonBar				m_wndRibbonBar;
 	CMFCRibbonApplicationButton	m_MainButton;

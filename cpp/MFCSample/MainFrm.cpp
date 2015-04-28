@@ -15,8 +15,9 @@
 #include "stdafx.h"
 #include "MFCSample.h"
 #include "MainFrm.h"
-
 #include "InitializeSDK.h"
+
+#include "PDFPreviewWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,6 +191,14 @@ void CMainFrame::SetCurrentSample(CSDKSample* pSample)
 	m_wndView.SetSampleDlg(pWnd);
 }
 
+void CMainFrame::ShowPreview(PXC::IPXC_Document* pDoc)
+{
+	CPDFPreviewWnd* pPreview = new CPDFPreviewWnd;
+	CRect r;
+	r.SetRect(100, 100, 1200, 900);
+	pPreview->Create(r, this);
+	pPreview->SetDocument(pDoc);
+}
 
 // CMainFrame diagnostics
 
