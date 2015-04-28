@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MFCSample.h"
 #include "PDFPreviewView.h"
+#include "InitializeSDK.h"
 
 static const LONG g_XGap = 5;
 static const LONG g_YGap = 5;
@@ -21,9 +22,8 @@ CPDFPreviewView::CPDFPreviewView()
 	m_szPageSize.cy	= 0;
 	m_ptOffset.x	=
 	m_ptOffset.y	= 0;
-	m_ptCacheOffset.x =
-	m_ptCacheOffset.y = 0;
 	//
+	m_rCachedRect.SetRectEmpty();
 	m_bgColor		= GetSysColor(COLOR_APPWORKSPACE);
 }
 
@@ -68,11 +68,46 @@ BOOL CPDFPreviewView::Create(CWnd* pParentWnd, RECT& rc)
 void CPDFPreviewView::ReleaseCache()
 {
 	m_pCache = nullptr;
+	m_rCachedRect.SetRectEmpty();
 }
+
+const int CacheStep	=	64;
 
 bool CPDFPreviewView::EnsureCache(const CRect& pr)
 {
-	return false;
+	if (m_pCache != nullptr)
+	{
+		CRect ir;
+		if (ir.IntersectRect(m_rCachedRect, pr) && ir.EqualRect(pr))
+			return true;// m_rCachedRect contain pr
+	}
+	// todo: make more advanced cache
+	// for now - rerender all
+	m_pCache = nullptr;
+	m_rCachedRect.SetRectEmpty();
+	if (m_pDoc == nullptr)
+		return false;
+	CRect r = pr;
+	r.InflateRect(CacheStep, CacheStep);
+	r.IntersectRect(r, CRect(0, 0, m_szPageSize.cx, m_szPageSize.cy));
+	CComPtr<PXC::IIXC_Page> temp;
+	HRESULT hr = g_ImgCore->Page_CreateEmpty(r.Width(), r.Height(), PXC::PageFormat_8RGB, RGB(255, 255, 255), &temp);
+	if (FAILED(hr))
+		return false;
+	CComPtr<PXC::IPXC_Pages> pages;
+	CComPtr<PXC::IPXC_Page> page;
+	hr = m_pDoc->get_Pages(&pages);
+	if (FAILED(hr))
+		return false;
+	hr = pages->get_Item(m_nCurPage, &page);
+	if (FAILED(hr))
+		return false;
+	hr = page->DrawToIXCPage(temp, r, &m_Matrix, nullptr, nullptr, nullptr);
+	if (FAILED(hr))
+		return false;
+	m_pCache = temp;
+	m_rCachedRect = r;
+	return true;
 }
 
 bool CPDFPreviewView::FixupScrolls(CPoint& offs) const
@@ -176,7 +211,7 @@ void CPDFPreviewView::SetZoom(double nZoomLevel)
 {
 	CDC* pDC = GetWindowDC();
 	LONG nDPI = pDC->GetDeviceCaps(LOGPIXELSY);
-	double coef = (double)nDPI * m_ZoomLevel / 7200.0;
+	double coef = (double)nDPI * nZoomLevel / 7200.0;
 	ReleaseDC(pDC);
 	if (coef == m_nCoef)
 		return;
@@ -184,6 +219,7 @@ void CPDFPreviewView::SetZoom(double nZoomLevel)
 	LONG nx = (LONG)(((double)m_ptOffset.x / m_nCoef) * coef + 0.5);
 	LONG ny = (LONG)(((double)m_ptOffset.y / m_nCoef) * coef + 0.5);
 	m_nCoef = coef;
+	m_ZoomLevel = nZoomLevel;
 	m_szPageSize = CalcPageSize();
 	m_ptOffset.x = nx;
 	m_ptOffset.y = ny;
@@ -207,6 +243,13 @@ CSize CPDFPreviewView::CalcPageSize()
 
 	sz.cx = (LONG)(pw * m_nCoef + 0.5);
 	sz.cy = (LONG)(ph * m_nCoef + 0.5);
+	page->GetMatrix(PXC::PBox_PageBox, &m_Matrix);
+	m_Matrix.a *= m_nCoef;
+	m_Matrix.b *= -m_nCoef;
+	m_Matrix.c *= m_nCoef;
+	m_Matrix.d *= -m_nCoef;
+	m_Matrix.e *= m_nCoef;
+	m_Matrix.f = (double)sz.cy - m_Matrix.f * m_nCoef;
 
 	return sz;
 }
@@ -336,17 +379,20 @@ void CPDFPreviewView::PaintRect(CDC* pDC, const CRect& paintRect)
 	if (dr.IsRectEmpty())
 		return;
 	// now lets calculate how dr maps to entire page in pixels
+	CRect client;
+	GetClientRect(client);
+	client.OffsetRect(-pageRect.left, -pageRect.top);
 	CRect cacheRect = dr;
-	cacheRect.OffsetRect(-pageRect.left, pageRect.top);
-	if (EnsureCache(cacheRect))
+	cacheRect.OffsetRect(-pageRect.left, -pageRect.top);
+	if (EnsureCache(client))
 	{
 		// draw cached image
 		m_pCache->DrawToDC((PXC::HANDLE_T)pDC->m_hDC, dr.left, dr.top, dr.Width(), dr.Height(),
-						   cacheRect.left - m_ptCacheOffset.x, cacheRect.top - m_ptCacheOffset.y, 0);
+						   cacheRect.left - m_rCachedRect.left, cacheRect.top - m_rCachedRect.top, 0);
 	}
 	else
 	{
-		pDC->FillSolidRect(&dr, RGB(255, 255, 255));
+		pDC->FillSolidRect(&dr, RGB(255, 0, 0));
 	}
 }
 

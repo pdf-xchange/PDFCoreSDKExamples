@@ -53,11 +53,12 @@ protected:
 	CComPtr<PXC::IPXC_Document>		m_pDoc;
 	DWORD							m_nCurPage;
 	CComPtr<PXC::IIXC_Page>			m_pCache;
-	CPoint							m_ptCacheOffset;	// offset of cache from page
+	CRect							m_rCachedRect;		// cached part of page, subrect from [0, 0, m_szPageSize.cx, m_szPageSize.cy]
 	CSize							m_szPageSize;		// page size in pixels with current zoom
 	CPoint							m_ptOffset;			// scroll offset
 	double							m_nCoef;
 	double							m_ZoomLevel;
+	PXC::PXC_Matrix					m_Matrix;
 	//
 	COLORREF						m_bgColor;
 };

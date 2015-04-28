@@ -23,7 +23,7 @@ public:
 		if (m_wndView)
 		{
 			m_wndView->SetDocument(pDoc);
-			m_wndView->SetZoom(200.0);
+			m_wndView->SetZoom(400.0);
 		}
 	}
 
