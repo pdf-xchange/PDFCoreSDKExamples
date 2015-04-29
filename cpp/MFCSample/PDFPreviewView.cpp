@@ -102,7 +102,11 @@ bool CPDFPreviewView::EnsureCache(const CRect& pr)
 	hr = pages->get_Item(m_nCurPage, &page);
 	if (FAILED(hr))
 		return false;
-	hr = page->DrawToIXCPage(temp, r, &m_Matrix, nullptr, nullptr, nullptr);
+	PXC::PXC_Matrix partMatrix = m_Matrix;
+	partMatrix.e -= r.left;
+	partMatrix.f -= r.top;
+	CRect DrawRect(0, 0, r.Width(), r.Height());
+	hr = page->DrawToIXCPage(temp, DrawRect, &partMatrix, nullptr, nullptr, nullptr);
 	if (FAILED(hr))
 		return false;
 	m_pCache = temp;
@@ -381,6 +385,7 @@ void CPDFPreviewView::PaintRect(CDC* pDC, const CRect& paintRect)
 	// now lets calculate how dr maps to entire page in pixels
 	CRect client;
 	GetClientRect(client);
+	client.IntersectRect(client, pageRect);
 	client.OffsetRect(-pageRect.left, -pageRect.top);
 	CRect cacheRect = dr;
 	cacheRect.OffsetRect(-pageRect.left, -pageRect.top);
@@ -392,7 +397,7 @@ void CPDFPreviewView::PaintRect(CDC* pDC, const CRect& paintRect)
 	}
 	else
 	{
-		pDC->FillSolidRect(&dr, RGB(255, 0, 0));
+		pDC->FillSolidRect(&dr, RGB(255, 255, 255));
 	}
 }
 
