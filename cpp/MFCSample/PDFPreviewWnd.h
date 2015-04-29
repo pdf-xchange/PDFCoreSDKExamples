@@ -20,23 +20,27 @@ public:
 public:
 	void SetDocument(PXC::IPXC_Document* pDoc)
 	{
-		if (m_wndView)
-		{
-			m_wndView->SetDocument(pDoc);
-			m_wndView->SetZoom(400.0);
-		}
+		m_wndView.SetDocument(pDoc);
+		m_wndView.SetZoom(400.0);
 	}
 
 protected:
 	void AdjustLayout();
 public:
 	CPDFPreviewToolbar		m_wndToolbar;
-	CPDFPreviewView*		m_wndView;
+	CPDFPreviewView			m_wndView;
 protected:
 	afx_msg void OnNcDestroy();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnViewZoomin();
+	afx_msg void OnViewZoomout();
+	afx_msg void OnViewTransparency();
+	afx_msg void OnUpdateViewTransparency(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateViewZoomin(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateViewZoomout(CCmdUI *pCmdUI);
 };
 
 

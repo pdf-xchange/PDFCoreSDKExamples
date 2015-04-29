@@ -271,82 +271,19 @@ void CPDFPreviewView::OnInitialUpdate()
 //	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
-void CPDFPreviewView::OnDraw(CDC* pDC)
-{
-	if (m_pDoc == nullptr)
-	{
-		return;
-	}
-	//
-	CComPtr<PXC::IPXC_Pages> pages;
-	CComPtr<PXC::IPXC_Page> page;
-	m_pDoc->get_Pages(&pages);
-	pages->get_Item(m_nCurPage, &page);
-
-	CSize psz = GetPageSize();
-	CPoint sp = {0, 0};// GetScrollPosition();
-	CRect cr;
-	GetClientRect(cr);
-
-	CRect dr;
-	PXC::PXC_Matrix m;
-	m.a = 1.0;
-	m.b = 0.0;
-	m.c = 0.0;
-	m.d = 1.0;
-	m.e = 0.0;
-	m.f = 0.0;
-
-	// scale
-	m.a = m_nCoef;
-	m.d = -m_nCoef;
-
-	LONG cw = cr.Width();
-	LONG ch = cr.Height();
-
-	if (psz.cx < cw)
-	{
-		dr.left = (cw - psz.cx) / 2;
-		dr.right = dr.left + psz.cx;
-		m.e = dr.left;
-	}
-	else
-	{
-		dr.left = 0;
-		dr.right = cw;
-		m.e = -sp.x;
-	}
-
-	if (psz.cy < ch)
-	{
-		dr.top = (ch - psz.cy) / 2;
-		dr.bottom = dr.top + psz.cy;
-		m.f = dr.bottom;
-	}
-	else
-	{
-		dr.top = 0;
-		dr.bottom = cr.Height();
-		m.f = dr.bottom;
-	}
-
-	page->DrawToDevice((PXC::HANDLE_T)pDC->m_hDC, &dr, &m, nullptr, nullptr, nullptr);
-}
-
 // CPDFPreviewView message handlers
 afx_msg BOOL CPDFPreviewView::OnEraseBkgnd(CDC* pDC)
 {
 	if (pDC == nullptr)
 		return TRUE;
-	CRect cr, r;
+	CRect cr, pr;
 	GetClientRect(cr);
-	r = cr;
 	CRgn rgn;
-	rgn.CreateRectRgn(r.left, r.top, r.right, r.bottom);
+	rgn.CreateRectRgn(cr.left, cr.top, cr.right, cr.bottom);
 	int res = SIMPLEREGION;
 	if (m_pDoc != nullptr)
 	{
-		CRect pr = GetPageRect();
+		pr = GetPageRect();
 		CRgn rgn2;
 		rgn2.CreateRectRgn(pr.left, pr.top, pr.right, pr.bottom);
 		res = rgn.CombineRgn(&rgn, &rgn2, RGN_DIFF);
@@ -356,7 +293,15 @@ afx_msg BOOL CPDFPreviewView::OnEraseBkgnd(CDC* pDC)
 	{
 		CBrush br(m_bgColor);
 		pDC->FillRgn(&rgn, &br);
+		//
+		if (m_pDoc != nullptr)
+		{
+			CBrush br(RGB(0, 0, 0));
+			pr.InflateRect(1, 1);
+			pDC->FrameRect(&pr, &br);
+		}
 	}
+	rgn.DeleteObject();
 	return TRUE;
 }
 
@@ -373,6 +318,7 @@ afx_msg void CPDFPreviewView::OnSize(UINT nType, int cx, int cy)
 {
 	__super::OnSize(nType, cx, cy);
 	UpdateScrolls();
+	DoScroll(m_ptOffset.x, m_ptOffset.y);
 }
 
 void CPDFPreviewView::PaintRect(CDC* pDC, const CRect& paintRect)

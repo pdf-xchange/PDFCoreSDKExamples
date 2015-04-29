@@ -23,6 +23,10 @@ public:
 	void SetDocument(PXC::IPXC_Document* pDoc);
 	void SetZoom(double nZoomLevel);
 	void SetCurPage(ULONG nPage);
+	double GetZoom() const
+	{
+		return m_ZoomLevel;
+	}
 public:
 	CSize GetPageSize();
 protected:
@@ -39,7 +43,6 @@ protected:
 	void PaintRect(CDC* pDC, const CRect& pr);
 	void DoScroll(LONG posX, LONG posY);
 protected:
-	virtual void OnDraw(CDC* pDC);
 	virtual void OnInitialUpdate();
 protected:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);

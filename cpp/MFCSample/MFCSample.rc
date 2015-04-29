@@ -469,6 +469,21 @@ END
 
 IDB_EDIT_ICONS16        BITMAP                  "res\\editIcons16.bmp"
 IDB_EDIT_ICONS20        BITMAP                  "res\\editIcons20.bmp"
+IDR_PREVIEW_TOOLBAR     BITMAP                  "res\\preview.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_PREVIEW_TOOLBAR TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_VIEW_ZOOMIN
+    BUTTON      ID_VIEW_ZOOMOUT
+    SEPARATOR
+    BUTTON      ID_VIEW_TRANSP
+END
+
 #endif    // English (Canada) resources
 /////////////////////////////////////////////////////////////////////////////
 
