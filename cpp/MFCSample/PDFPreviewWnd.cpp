@@ -74,6 +74,7 @@ int CPDFPreviewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// All commands will be routed via this control , not via the parent frame:
 	m_wndToolbar.SetRouteCommandsViaFrame(FALSE);
 
+	m_wndView.SetFocus();
 	//
 	AdjustLayout();
 
@@ -100,26 +101,12 @@ void CPDFPreviewWnd::AdjustLayout()
 
 void CPDFPreviewWnd::OnViewZoomin()
 {
-	double curZoom = m_wndView.GetZoom();
-	if (curZoom < 100.0)
-		curZoom += 10.0;
-	else
-		curZoom += 100.0;
-	if (curZoom > 800.0)
-		curZoom = 800.0;
-	m_wndView.SetZoom(curZoom);
+	m_wndView.ZoomIn();
 }
 
 void CPDFPreviewWnd::OnViewZoomout()
 {
-	double curZoom = m_wndView.GetZoom();
-	if (curZoom <= 100.0)
-		curZoom -= 10.0;
-	else
-		curZoom -= 100.0;
-	if (curZoom < 10.0)
-		curZoom = 10.0;
-	m_wndView.SetZoom(curZoom);
+	m_wndView.ZoomOut();
 }
 
 void CPDFPreviewWnd::OnViewTransparency()
@@ -129,12 +116,12 @@ void CPDFPreviewWnd::OnViewTransparency()
 
 void CPDFPreviewWnd::OnUpdateViewZoomin(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_wndView.GetZoom() < 800.0);
+	pCmdUI->Enable(m_wndView.GetZoom() < Preview_Max_Zoom);
 }
 
 void CPDFPreviewWnd::OnUpdateViewZoomout(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_wndView.GetZoom() > 10.0);
+	pCmdUI->Enable(m_wndView.GetZoom() > Preview_Min_Zoom);
 }
 
 void CPDFPreviewWnd::OnUpdateViewTransparency(CCmdUI *pCmdUI)

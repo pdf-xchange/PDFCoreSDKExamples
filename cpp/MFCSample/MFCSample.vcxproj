@@ -264,6 +264,8 @@
     <Image Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\hand_down.cur" />
+    <None Include="res\hand_up.cur" />
     <None Include="res\MFCSample.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
   </ItemGroup>

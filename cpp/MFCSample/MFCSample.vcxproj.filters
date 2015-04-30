@@ -212,5 +212,11 @@
     <None Include="res\MFCSample.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\hand_down.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\hand_up.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

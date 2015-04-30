@@ -484,6 +484,14 @@ BEGIN
     BUTTON      ID_VIEW_TRANSP
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR_HAND_DOWN    CURSOR                  "res\\hand_down.cur"
+IDC_CURSOR_HAND_UP      CURSOR                  "res\\hand_up.cur"
 #endif    // English (Canada) resources
 /////////////////////////////////////////////////////////////////////////////
 

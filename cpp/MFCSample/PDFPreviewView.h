@@ -4,6 +4,10 @@
 
 // CScrollView
 
+// constants for minimum and maximum zoom level
+#define Preview_Min_Zoom		10.0
+#define Preview_Max_Zoom		800.0
+
 class CPDFPreviewView : public CWnd
 {
 	DECLARE_DYNAMIC(CPDFPreviewView)
@@ -22,6 +26,8 @@ public:
 public:
 	void SetDocument(PXC::IPXC_Document* pDoc);
 	void SetZoom(double nZoomLevel);
+	void ZoomIn();
+	void ZoomOut();
 	void SetCurPage(ULONG nPage);
 	double GetZoom() const
 	{
@@ -41,7 +47,7 @@ protected:
 	// returns size of view area: page + gaps. in pixels
 	CSize GetTotalSize() const;
 	void PaintRect(CDC* pDC, const CRect& pr);
-	void DoScroll(LONG posX, LONG posY);
+	void SetPos(LONG posX, LONG posY);
 protected:
 	virtual void OnInitialUpdate();
 protected:
@@ -62,8 +68,20 @@ protected:
 	double							m_nCoef;
 	double							m_ZoomLevel;
 	PXC::PXC_Matrix					m_Matrix;
+	// navigation
+	BOOL							m_bInTrack;
+	CPoint							m_ptStartPos;
+	CPoint							m_ptStartOffset;
+	HCURSOR							m_cursors[2];
 	//
 	COLORREF						m_bgColor;
+public:
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };
 
 

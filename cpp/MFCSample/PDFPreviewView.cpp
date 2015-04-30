@@ -6,13 +6,30 @@
 #include "PDFPreviewView.h"
 #include "InitializeSDK.h"
 
-static const LONG g_XGap = 5;
-static const LONG g_YGap = 5;
+static const LONG g_XGap = 10;
+static const LONG g_YGap = 10;
+static const int CacheStep	= 64;
 
 // CPDFPreviewView
 
 IMPLEMENT_DYNAMIC(CPDFPreviewView, CWnd)
 
+
+BEGIN_MESSAGE_MAP(CPDFPreviewView, CWnd)
+	ON_WM_ERASEBKGND()
+	ON_WM_SIZE()
+	ON_WM_PAINT()
+	ON_WM_VSCROLL()
+	ON_WM_HSCROLL()
+	ON_WM_MOUSEWHEEL()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_KEYDOWN()
+	ON_WM_SETCURSOR()
+END_MESSAGE_MAP()
+
+//////////////////////////////////////////////////////////////////////////
 CPDFPreviewView::CPDFPreviewView()
 {
 	m_nCurPage		= 0;
@@ -22,9 +39,13 @@ CPDFPreviewView::CPDFPreviewView()
 	m_szPageSize.cy	= 0;
 	m_ptOffset.x	=
 	m_ptOffset.y	= 0;
+	m_bInTrack		= FALSE;
 	//
 	m_rCachedRect.SetRectEmpty();
 	m_bgColor		= GetSysColor(COLOR_APPWORKSPACE);
+	//
+	m_cursors[0]	= ::LoadCursor(theApp.m_hInstance, MAKEINTRESOURCE(IDC_CURSOR_HAND_UP));
+	m_cursors[1]	= ::LoadCursor(theApp.m_hInstance, MAKEINTRESOURCE(IDC_CURSOR_HAND_DOWN));
 }
 
 CPDFPreviewView::~CPDFPreviewView()
@@ -71,29 +92,36 @@ void CPDFPreviewView::ReleaseCache()
 	m_rCachedRect.SetRectEmpty();
 }
 
-const int CacheStep	=	64;
-
 bool CPDFPreviewView::EnsureCache(const CRect& pr)
 {
 	if (m_pCache != nullptr)
 	{
 		CRect ir;
 		if (ir.IntersectRect(m_rCachedRect, pr) && ir.EqualRect(pr))
-			return true;// m_rCachedRect contain pr
+			return true;// m_rCachedRect contains pr
 	}
+	if (m_pDoc == nullptr)
+	{
+		m_pCache = nullptr;
+		m_rCachedRect.SetRectEmpty();
+		return false;
+	}
+
 	// todo: make more advanced cache
 	// for now - rerender all
-	m_pCache = nullptr;
-	m_rCachedRect.SetRectEmpty();
-	if (m_pDoc == nullptr)
-		return false;
 	CRect r = pr;
 	r.InflateRect(CacheStep, CacheStep);
 	r.IntersectRect(r, CRect(0, 0, m_szPageSize.cx, m_szPageSize.cy));
-	CComPtr<PXC::IIXC_Page> temp;
-	HRESULT hr = g_ImgCore->Page_CreateEmpty(r.Width(), r.Height(), PXC::PageFormat_8RGB, RGB(255, 255, 255), &temp);
-	if (FAILED(hr))
-		return false;
+	HRESULT hr = S_OK;
+	if ((r.Width() != m_rCachedRect.Width()) || (r.Height() != m_rCachedRect.Height()))
+	{
+		CComPtr<PXC::IIXC_Page> temp;
+		hr = g_ImgCore->Page_CreateEmpty(r.Width(), r.Height(), PXC::PageFormat_8RGB, RGB(255, 255, 255), &temp);
+		if (FAILED(hr))
+			return false;
+		m_pCache = temp;
+	}
+
 	CComPtr<PXC::IPXC_Pages> pages;
 	CComPtr<PXC::IPXC_Page> page;
 	hr = m_pDoc->get_Pages(&pages);
@@ -106,10 +134,9 @@ bool CPDFPreviewView::EnsureCache(const CRect& pr)
 	partMatrix.e -= r.left;
 	partMatrix.f -= r.top;
 	CRect DrawRect(0, 0, r.Width(), r.Height());
-	hr = page->DrawToIXCPage(temp, DrawRect, &partMatrix, nullptr, nullptr, nullptr);
+	hr = page->DrawToIXCPage(m_pCache, DrawRect, &partMatrix, nullptr, nullptr, nullptr);
 	if (FAILED(hr))
 		return false;
-	m_pCache = temp;
 	m_rCachedRect = r;
 	return true;
 }
@@ -121,12 +148,10 @@ bool CPDFPreviewView::FixupScrolls(CPoint& offs) const
 	GetClientRect(cr);
 	LONG mx = max(0, ts.cx - cr.Width());
 	LONG my = max(0, ts.cy - cr.Height());
-	if ((offs.x <= mx) && (offs.y <= my))
+	if ((offs.x >= 0) && (offs.x <= mx) && (offs.y >= 0) && (offs.y <= my))
 		return false;
-	if (offs.x > mx)
-		offs.x = mx;
-	if (offs.y > my)
-		offs.y = my;
+	offs.x = min(mx, max(0, offs.x));
+	offs.y = min(my, max(0, offs.y));
 	return true;
 }
 
@@ -211,14 +236,39 @@ void CPDFPreviewView::SetCurPage(ULONG nPage)
 	Invalidate();
 }
 
+void CPDFPreviewView::ZoomIn()
+{
+	double zoom = GetZoom();
+	if (zoom < 100.0)
+		zoom += 10.0;
+	else
+		zoom += 100.0;
+	SetZoom(zoom);
+}
+
+void CPDFPreviewView::ZoomOut()
+{
+	double zoom = GetZoom();
+	if (zoom <= 100.0)
+		zoom -= 10.0;
+	else
+		zoom -= 100.0;
+	SetZoom(zoom);
+}
+
 void CPDFPreviewView::SetZoom(double nZoomLevel)
 {
+	nZoomLevel = max(Preview_Min_Zoom, min(Preview_Max_Zoom, nZoomLevel));
+	if (nZoomLevel == m_ZoomLevel)
+		return;
+
 	CDC* pDC = GetWindowDC();
 	LONG nDPI = pDC->GetDeviceCaps(LOGPIXELSY);
 	double coef = (double)nDPI * nZoomLevel / 7200.0;
 	ReleaseDC(pDC);
 	if (coef == m_nCoef)
 		return;
+
 	ReleaseCache();
 	LONG nx = (LONG)(((double)m_ptOffset.x / m_nCoef) * coef + 0.5);
 	LONG ny = (LONG)(((double)m_ptOffset.y / m_nCoef) * coef + 0.5);
@@ -318,7 +368,7 @@ afx_msg void CPDFPreviewView::OnSize(UINT nType, int cx, int cy)
 {
 	__super::OnSize(nType, cx, cy);
 	UpdateScrolls();
-	DoScroll(m_ptOffset.x, m_ptOffset.y);
+	SetPos(m_ptOffset.x, m_ptOffset.y);
 }
 
 void CPDFPreviewView::PaintRect(CDC* pDC, const CRect& paintRect)
@@ -395,7 +445,7 @@ afx_msg void CPDFPreviewView::OnPaint()
 		free(data);
 }
 
-void CPDFPreviewView::DoScroll(LONG posX, LONG posY)
+void CPDFPreviewView::SetPos(LONG posX, LONG posY)
 {
 	CPoint newOffset(posX, posY);
 	FixupScrolls(newOffset);
@@ -442,7 +492,7 @@ afx_msg void CPDFPreviewView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pSc
 		nNewPos = (LONG)nPos;
 		break;
 	}
-	DoScroll(nNewPos, m_ptOffset.y);
+	SetPos(nNewPos, m_ptOffset.y);
 }
 
 afx_msg void CPDFPreviewView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -475,13 +525,85 @@ afx_msg void CPDFPreviewView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pSc
 		nNewPos = (LONG)nPos;
 		break;
 	}
-	DoScroll(m_ptOffset.x, nNewPos);
+	SetPos(m_ptOffset.x, nNewPos);
 }
 
-BEGIN_MESSAGE_MAP(CPDFPreviewView, CWnd)
-	ON_WM_ERASEBKGND()
-	ON_WM_SIZE()
-	ON_WM_PAINT()
-	ON_WM_VSCROLL()
-	ON_WM_HSCROLL()
-END_MESSAGE_MAP()
+BOOL CPDFPreviewView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	if (nFlags & MK_CONTROL)
+	{
+		if (zDelta > 0)
+			ZoomIn();
+		else
+			ZoomOut();
+	}
+	else
+	{
+		int dx = 0;
+		int dy = 0;
+		if (nFlags & MK_SHIFT)	// horz;
+			dx = zDelta;
+		else
+			dy = zDelta;
+		CPoint pt = m_ptOffset;
+		pt.Offset(-dx, -dy);
+		SetPos(pt.x, pt.y);
+	}
+	return TRUE;
+}
+
+
+void CPDFPreviewView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	CPoint pnt(-1, -1);
+	if (m_bInTrack)
+	{
+		CPoint pos = m_ptStartOffset + (m_ptStartPos - point);
+		SetPos(pos.x, pos.y);
+	}
+}
+
+
+void CPDFPreviewView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (GetFocus() != this)
+		SetFocus();
+	m_bInTrack = TRUE;
+	SetCapture();
+	SetCursor(m_cursors[1]);
+	m_ptStartPos = point;
+	m_ptStartOffset = m_ptOffset;
+}
+
+
+void CPDFPreviewView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (m_bInTrack)
+	{
+		m_bInTrack = FALSE;
+		ReleaseCapture();
+	}
+	__super::OnLButtonUp(nFlags, point);
+}
+
+
+void CPDFPreviewView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+BOOL CPDFPreviewView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	if (nHitTest == HTCLIENT)
+	{
+		SetCursor(m_cursors[0]);
+		return TRUE;
+	}
+	else
+	{
+		return __super::OnSetCursor(pWnd, nHitTest, message);
+	}
+}
