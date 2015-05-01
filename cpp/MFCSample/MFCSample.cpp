@@ -24,6 +24,8 @@
 #include "Sample_Primitives.h"
 #include "Sample_Text.h"
 
+#include "Sample_ViewDoc.h"
+
 //////////////////////////////////////////////////////////////////////////
 
 #ifdef _DEBUG
@@ -160,6 +162,7 @@ void CMFCSampleApp::InitializeSamples()
 	AddSample(new CSDKSample_Fill);
 	AddSample(new CSDKSample_Primitives);
 	AddSample(new CSDKSample_Text);
+	AddSample(new CSDKSample_ViewDoc);
 }
 
 void CMFCSampleApp::FinalizeSamples()

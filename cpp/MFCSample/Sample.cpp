@@ -17,20 +17,31 @@ public:
 	afx_msg void OnCmdRun();
 public:
 	CSDKSample*		m_pSample;
+public:
+	BOOL m_bSavePDF;
+	BOOL m_bOpenSavedPDF;
+	BOOL m_bOpenPreview;
 };
 
 CBaseSampleDlg::CBaseSampleDlg(CWnd* pParent) : CDialogEx(IDD, pParent)
 {
-	m_pSample = nullptr;
+	m_pSample		= nullptr;
 }
 
 void CBaseSampleDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
+	if (m_pSample)
+	{
+		DDX_Check(pDX, IDC_B_SAVE_DOC,  m_pSample->m_bSavePDF);
+		DDX_Check(pDX, IDC_B_OPEN_FILE, m_pSample->m_bOpenPDF);
+		DDX_Check(pDX, IDC_B_RUN_PREVIEW, m_pSample->m_bPreviewPDF);
+	}
 }
 
 void CBaseSampleDlg::OnCmdRun()
 {
+	UpdateData(TRUE);
 	if (m_pSample)
 		m_pSample->Perform();
 }
@@ -43,6 +54,10 @@ END_MESSAGE_MAP()
 CSDKSample::CSDKSample()
 {
 	m_pWindow	= nullptr;
+	//
+	m_bSavePDF		= FALSE;
+	m_bOpenPDF		= FALSE;
+	m_bPreviewPDF	= TRUE;
 }
 
 CSDKSample::~CSDKSample()
@@ -59,8 +74,8 @@ CWnd* CSDKSample::GetDialog(CWnd* pParent)
 	if (m_pWindow == nullptr)
 	{
 		CBaseSampleDlg* pDlg = new CBaseSampleDlg(pParent);
-		pDlg->Create(CBaseSampleDlg::IDD, pParent);
 		pDlg->m_pSample = this;
+		pDlg->Create(CBaseSampleDlg::IDD, pParent);
 		m_pWindow = pDlg;
 	}
 	return m_pWindow;

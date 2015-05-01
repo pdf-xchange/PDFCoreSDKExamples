@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sample_Text.h"
 #include "InitializeSDK.h"
+#include "MainFrm.h"
+#include "MFCSample.h"
 #include "resource.h"
 
 #define _USE_MATH_DEFINES
@@ -148,6 +150,57 @@ HRESULT Text_Ex1(PXC::IPXC_Document* pDoc, PXC::IPXC_ContentCreator* pCC, const 
 	return hr;
 }
 
+static
+HRESULT Text_Ex2(PXC::IPXC_Document* pDoc, PXC::IPXC_ContentCreator* pCC, const PXC::PXC_Rect& pr)
+{
+	HRESULT hr = S_OK;
+	//
+	double x	= (pr.right + pr.left) / 2;
+	double y	= (pr.top + pr.bottom) / 2;
+	double fntsize = 30.0;
+
+	CComPtr<PXC::IPXC_Font> pFont;
+	hr = pDoc->CreateNewFont(L"Arial", PXC::CreateFont_Italic, FW_BOLD, &pFont);
+	if (pFont == nullptr)
+		return hr;
+
+	pCC->SaveState();
+
+	pCC->SetFont(pFont);
+	pCC->SetFontSize(fntsize);
+	pCC->SetTextRenderMode(PXC::TRM_Stroke);
+	pCC->SetLineWidth(1.0);
+
+	for (int i = 15; i < 360; i += 15)
+	{
+		pCC->SaveState();
+		PXC::PXC_Matrix m;
+		double a = -i;
+		m.a = cos(a * M_PI / 180.0);
+		m.b = sin(a * M_PI / 180.0);
+		m.c = -m.b;
+		m.d = m.a;
+		m.e = x;
+		m.f = y;
+
+		int cv = i * 255 / 360;
+		pCC->SetStrokeColorRGB(RGB(cv, cv, cv));
+
+		pCC->SetTextMatrix(&m);
+
+		pCC->ShowTextLine(x, y, L"Tracker", -1, PXC::STLF_Baseline);
+
+		pCC->RestoreState();
+	}
+	pCC->SetStrokeColorRGB(clrBlack);
+	pCC->SetFillColorRGB(clrWhite);
+	pCC->SetTextRenderMode(PXC::TRM_FillStroke);
+	pCC->ShowTextLine(x, y, L"Tracker Software", -1, PXC::STLF_Baseline);
+
+	pCC->RestoreState();
+
+	return hr;
+}
 //
 HRESULT CSDKSample_Text::Perform()
 {
@@ -173,13 +226,30 @@ HRESULT CSDKSample_Text::Perform()
 		hr = pPage->PlaceContent(pContent, PXC::PlaceContent_Replace);
 		BreakOnFailure(hr, L"Error replacing page content");
 		pContent = nullptr;
+		// page 2
+		hr = AddNewPage(pDoc, pPage, pr);
+		if (FAILED(hr))
+			break;
+		Text_Ex2(pDoc, pCC, pr);
+		pCC->Detach(&pContent);
+		hr = pPage->PlaceContent(pContent, PXC::PlaceContent_Replace);
+		BreakOnFailure(hr, L"Error replacing page content");
+		pContent = nullptr;
 		//
 		pCC = nullptr;
 		pPage = nullptr;
-		CStringW sFilename;
-		hr = SaveDocument(pDoc, sFilename);
+		//
+		if (m_bSavePDF)
+		{
+			CStringW sFilename;
+			hr = SaveDocument(pDoc, sFilename, m_bOpenPDF);
+		}
+		if (m_bPreviewPDF)
+		{
+			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
+		}
 	} while (false);
-	if (pDoc)
+	if (pDoc && !m_bPreviewPDF)
 		pDoc->Close(0);
 	return hr;
 }

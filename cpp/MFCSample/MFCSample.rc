@@ -200,12 +200,19 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_DLG_BASE DIALOGEX 0, 0, 152, 67
+IDD_DLG_BASE DIALOGEX 0, 0, 223, 112
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
 EXSTYLE WS_EX_OVERLAPPEDWINDOW | WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,7,90,25
+    CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,80,90,25
+    CONTROL         "Save generated document to a file",IDC_B_SAVE_DOC,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,19,197,10
+    CONTROL         "Open file by default application",IDC_B_OPEN_FILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,33,176,10
+    CONTROL         "Open generated document in internal preview",IDC_B_RUN_PREVIEW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,47,197,10
+    GROUPBOX        "Save && view",IDC_STATIC,7,7,209,56
 END
 
 
@@ -267,9 +274,9 @@ BEGIN
     IDD_DLG_BASE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 145
+        RIGHTMARGIN, 216
         TOPMARGIN, 7
-        BOTTOMMARGIN, 60
+        BOTTOMMARGIN, 105
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -420,6 +427,66 @@ END
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 #pragma code_page(1252)
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_EDIT_ICONS16        BITMAP                  "res\\editIcons16.bmp"
+IDB_EDIT_ICONS20        BITMAP                  "res\\editIcons20.bmp"
+IDR_PREVIEW_TOOLBAR     BITMAP                  "res\\preview.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_PREVIEW_TOOLBAR TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_VIEW_ZOOMIN
+    BUTTON      ID_VIEW_ZOOMOUT
+    SEPARATOR
+    BUTTON      ID_VIEW_PREV_PAGE
+    BUTTON      ID_VIEW_NEXT_PAGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLG_OPEN_DOC DIALOGEX 0, 0, 282, 72
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_OVERLAPPEDWINDOW | WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Select document for preview:",IDC_STATIC,7,7,93,8
+    EDITTEXT        IDC_FILE_NAME,7,17,209,14,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "&Browse...",IDC_BROWSE,225,17,50,14
+    CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,40,90,25
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DLG_OPEN_DOC, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 65
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -460,29 +527,6 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_EDIT_ICONS16        BITMAP                  "res\\editIcons16.bmp"
-IDB_EDIT_ICONS20        BITMAP                  "res\\editIcons20.bmp"
-IDR_PREVIEW_TOOLBAR     BITMAP                  "res\\preview.bmp"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
-
-IDR_PREVIEW_TOOLBAR TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_VIEW_ZOOMIN
-    BUTTON      ID_VIEW_ZOOMOUT
-    SEPARATOR
-    BUTTON      ID_VIEW_TRANSP
-END
 
 
 /////////////////////////////////////////////////////////////////////////////

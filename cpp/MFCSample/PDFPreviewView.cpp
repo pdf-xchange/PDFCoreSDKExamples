@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 CPDFPreviewView::CPDFPreviewView()
 {
 	m_nCurPage		= 0;
-	m_ZoomLevel		= 100.0;
+	m_ZoomLevel		= 0.0;
 	m_nCoef			= 1.0;
 	m_szPageSize.cx	=
 	m_szPageSize.cy	= 0;
@@ -71,18 +71,18 @@ void CPDFPreviewView::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 //////////////////////////////////////////////////////////////////////////
-BOOL CPDFPreviewView::Create(CWnd* pParentWnd, RECT& rc)
+BOOL CPDFPreviewView::Create(DWORD dwWndStyle, RECT& rc, CWnd* pParentWnd, ULONG nID)
 {
-	const DWORD dwWndStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL;
-	const DWORD dwExtStyle = 0;
+	//const DWORD dwWndStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL;
+	const DWORD dwExtStyle = WS_EX_CLIENTEDGE;
 
 	CString strMyClass;
 	strMyClass = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW,
-									 ::LoadCursor(NULL, IDC_HAND),
+									 m_cursors[0],
 									 (HBRUSH)::GetStockObject(WHITE_BRUSH),
 									 0);
 
-	BOOL bOK = __super::CreateEx(dwExtStyle, strMyClass, _T(""), dwWndStyle, rc, pParentWnd, 0, nullptr);
+	BOOL bOK = __super::CreateEx(dwExtStyle, strMyClass, _T(""), dwWndStyle, rc, pParentWnd, nID, nullptr);
 	return bOK;
 }
 
@@ -217,6 +217,18 @@ void CPDFPreviewView::SetDocument(PXC::IPXC_Document* pDoc)
 	Invalidate();
 }
 
+ULONG CPDFPreviewView::GetNumPages() const
+{
+	ULONG nCount = 0;
+	if (m_pDoc)
+	{
+		CComPtr<PXC::IPXC_Pages> pages;
+		m_pDoc->get_Pages(&pages);
+		pages->get_Count(&nCount);
+	}
+	return nCount;
+}
+
 void CPDFPreviewView::SetCurPage(ULONG nPage)
 {
 	if (m_pDoc == nullptr)
@@ -230,6 +242,7 @@ void CPDFPreviewView::SetCurPage(ULONG nPage)
 	if (nPage == m_nCurPage)
 		return;
 	ReleaseCache();
+	m_nCurPage = nPage;
 	m_ptOffset.x = m_ptOffset.y = 0;
 	m_szPageSize = CalcPageSize();
 	UpdateScrolls();

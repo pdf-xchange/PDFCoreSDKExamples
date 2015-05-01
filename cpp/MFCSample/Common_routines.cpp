@@ -1,8 +1,33 @@
 #include "stdafx.h"
 #include "Common_routines.h"
 #include "InitializeSDK.h"
+#include "AuthCallback.h"
 
 const PXC::PXC_Rect	letterSize = {0.0, 0.0, 8.5 * 72.0, 11.0 * 72.0};
+
+LPCWSTR GetErrorDesc(HRESULT hres, CString& str)
+{
+	str.Empty();
+	if (g_AUX)
+	{
+		CComBSTR bstr;
+		g_AUX->FormatHRESULT(hres, 0, &bstr);
+		str = (LPCWSTR)bstr;
+	}
+	else
+	{
+		DWORD dwFlags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER;
+		LPWSTR pBuffer = nullptr;
+		DWORD nRes = FormatMessageW(dwFlags, nullptr, hres, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+									pBuffer, 0, nullptr);
+		if (pBuffer != nullptr)
+		{
+			str = pBuffer;
+			LocalFree(pBuffer);
+		}
+	}
+	return (LPCWSTR)str;
+}
 
 HRESULT AddNewPage(PXC::IPXC_Document* pDoc, CComPtr<PXC::IPXC_Page>& pPage, const PXC::PXC_Rect& pageRect)
 {
@@ -60,7 +85,7 @@ HRESULT DrawTitle(PXC::IPXC_Document* pDoc, PXC::IPXC_ContentCreator* pCC, doubl
 	return hr;
 }
 
-HRESULT SaveDocument(PXC::IPXC_Document* pDoc, CStringW& sFilename, bool bOpen)
+HRESULT SaveDocument(PXC::IPXC_Document* pDoc, CStringW& sFilename, BOOL bOpen)
 {
 	HRESULT hr = S_OK;
 	do 
@@ -128,5 +153,28 @@ HRESULT CreateImagePattern(PXC::IPXC_Document* pDoc, CBitmap& bmp, CComPtr<PXC::
 	} while (false);
 	if (FAILED(hr))
 		pPattern = nullptr;
+	return hr;
+}
+
+HRESULT OpenDocFromFile(LPCWSTR sFileName, CComPtr<PXC::IPXC_Document>& pDoc)
+{
+	HRESULT hr = S_OK;
+	pDoc = nullptr;
+	do 
+	{
+		BreakOnNull(g_Inst, hr, E_FAIL, L"SDK not initialized");
+		CDocAuthCallback authCallback;
+		PXC::IPXC_DocAuthCallback* pAuthCallback = (PXC::IPXC_DocAuthCallback*)authCallback.GetInterface(&__uuidof(PXC::IPXC_DocAuthCallback));
+		hr = g_Inst->OpenDocumentFromFile((LPWSTR)sFileName, pAuthCallback, nullptr, 0, 0, &pDoc);
+		if (FAILED(hr))
+		{
+			CString str;
+			LOG(hr, L"Error opening document '<i>%s</i>': <r><b>0x%.8lx</b> - %s</r>", sFileName, hr, GetErrorDesc(hr, str));
+		}
+		else
+		{
+			LOG(hr, L"Document '<i>%s</i>' opened successfully.", sFileName);
+		}
+	} while (false);
 	return hr;
 }

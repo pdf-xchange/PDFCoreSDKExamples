@@ -192,6 +192,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AuthCallback.h" />
     <ClInclude Include="ChildView.h" />
     <ClInclude Include="Common_routines.h" />
     <ClInclude Include="InitializeSDK.h" />
@@ -209,11 +210,13 @@
     <ClInclude Include="Sample_Primitives.h" />
     <ClInclude Include="Sample_Stroke.h" />
     <ClInclude Include="Sample_Text.h" />
+    <ClInclude Include="Sample_ViewDoc.h" />
     <ClInclude Include="SearchEdit.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AuthCallback.cpp" />
     <ClCompile Include="ChildView.cpp" />
     <ClCompile Include="Common_routines.cpp" />
     <ClCompile Include="InitializeSDK.cpp" />
@@ -230,6 +233,7 @@
     <ClCompile Include="Sample_Primitives.cpp" />
     <ClCompile Include="Sample_Stroke.cpp" />
     <ClCompile Include="Sample_Text.cpp" />
+    <ClCompile Include="Sample_ViewDoc.cpp" />
     <ClCompile Include="SearchEdit.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -17,4 +17,8 @@ public:
 	virtual HRESULT Perform() = 0;
 protected:
 	CWnd*	m_pWindow;
+public:
+	BOOL	m_bSavePDF;
+	BOOL	m_bOpenPDF;
+	BOOL	m_bPreviewPDF;
 };

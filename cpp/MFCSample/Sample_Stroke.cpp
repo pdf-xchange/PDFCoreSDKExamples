@@ -237,7 +237,6 @@ HRESULT CSDKSample_Stroke::Perform()
 {
 	HRESULT hr = S_OK;
 	CComPtr<PXC::IPXC_Document> pDoc;
-	bool bPreview = true;
 	do
 	{
 		// creating document with one page
@@ -268,17 +267,17 @@ HRESULT CSDKSample_Stroke::Perform()
 		pCC = nullptr;
 		BreakOnFailure(hr, L"Error replacing page content");
 		pPage = nullptr;
-		if (bPreview)
+		if (m_bSavePDF)
+		{
+			CStringW sFilename;
+			hr = SaveDocument(pDoc, sFilename, m_bOpenPDF);
+		}
+		if (m_bPreviewPDF)
 		{
 			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
 		}
-		else
-		{
-			CStringW sFilename;
-			hr = SaveDocument(pDoc, sFilename);
-		}
 	} while (false);
-	if (pDoc && !bPreview)
+	if (pDoc && !m_bPreviewPDF)
 		pDoc->Close(0);
 	return hr;
 }

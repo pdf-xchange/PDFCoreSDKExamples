@@ -81,6 +81,12 @@
     <ClInclude Include="PDFPreviewWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sample_ViewDoc.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSample.cpp">
@@ -135,6 +141,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PDFPreviewWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_ViewDoc.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthCallback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

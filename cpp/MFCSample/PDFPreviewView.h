@@ -22,13 +22,18 @@ public:
 #endif
 #endif
 public:
-	BOOL Create(CWnd* pParentWnd, RECT& rc);
+	BOOL Create(DWORD dwStyle, RECT& rc, CWnd* pParentWnd, ULONG nID);
 public:
 	void SetDocument(PXC::IPXC_Document* pDoc);
 	void SetZoom(double nZoomLevel);
 	void ZoomIn();
 	void ZoomOut();
+	ULONG GetNumPages() const;
 	void SetCurPage(ULONG nPage);
+	ULONG GetCurPage() const
+	{
+		return m_nCurPage;
+	}
 	double GetZoom() const
 	{
 		return m_ZoomLevel;

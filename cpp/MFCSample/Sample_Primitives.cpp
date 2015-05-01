@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sample_Primitives.h"
 #include "InitializeSDK.h"
+#include "MainFrm.h"
+#include "MFCSample.h"
 #include "resource.h"
 
 #define _USE_MATH_DEFINES
@@ -341,10 +343,18 @@ HRESULT CSDKSample_Primitives::Perform()
 		pCC = nullptr;
 		BreakOnFailure(hr, L"Error replacing page content");
 		pPage = nullptr;
-		CStringW sFilename;
-		hr = SaveDocument(pDoc, sFilename);
+		//
+		if (m_bSavePDF)
+		{
+			CStringW sFilename;
+			hr = SaveDocument(pDoc, sFilename, m_bOpenPDF);
+		}
+		if (m_bPreviewPDF)
+		{
+			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
+		}
 	} while (false);
-	if (pDoc)
+	if (pDoc && !m_bPreviewPDF)
 		pDoc->Close(0);
 	return hr;
 }
