@@ -72,15 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(PXCE_BIN32D_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PXCC_BIN32D_PATH)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +122,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(PXCE_BIN64D_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PXCC_BIN64D_PATH)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(PXCE_BIN32R_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PXCC_BIN32R_PATH)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,7 +177,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(PXCE_BIN64R_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PXCC_BIN64R_PATH)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,6 +214,8 @@
     <ClInclude Include="RTFLoger.h" />
     <ClInclude Include="Sample.h" />
     <ClInclude Include="SamplesListWnd.h" />
+    <ClInclude Include="Sample_DigiSig.h" />
+    <ClInclude Include="Sample_ExportToImage.h" />
     <ClInclude Include="Sample_Fill.h" />
     <ClInclude Include="Sample_Primitives.h" />
     <ClInclude Include="Sample_Stroke.h" />
@@ -229,6 +239,8 @@
     <ClCompile Include="RTFLoger.cpp" />
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="SamplesListWnd.cpp" />
+    <ClCompile Include="Sample_DigiSig.cpp" />
+    <ClCompile Include="Sample_ExportToImage.cpp" />
     <ClCompile Include="Sample_Fill.cpp" />
     <ClCompile Include="Sample_Primitives.cpp" />
     <ClCompile Include="Sample_Stroke.cpp" />

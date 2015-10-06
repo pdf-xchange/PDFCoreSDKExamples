@@ -87,6 +87,12 @@
     <ClInclude Include="AuthCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sample_DigiSig.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="Sample_ExportToImage.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSample.cpp">
@@ -148,6 +154,12 @@
     </ClCompile>
     <ClCompile Include="AuthCallback.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_DigiSig.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_ExportToImage.cpp">
+      <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

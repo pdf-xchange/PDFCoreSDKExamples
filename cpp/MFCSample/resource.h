@@ -66,13 +66,31 @@
 #define IDC_CURSOR_HAND_UP              316
 #define IDC_CURSOR_HAND_DOWN            317
 #define IDD_DLG_OPEN_DOC                318
+#define IDD_DLG_DIGISIG                 319
+#define IDD_DLG_EXPORT2IMAGE            320
 #define IDC_CMD_RUN                     1000
 #define IDC_B_SAVE_DOC                  1001
 #define IDC_B_OPEN_FILE                 1002
 #define IDC_B_RUN_PREVIEW               1003
-#define IDC_EDIT1                       1004
 #define IDC_FILE_NAME                   1004
 #define IDC_BROWSE                      1005
+#define IDC_PFX_FILE_NAME               1006
+#define IDC_BROWSE_PFX                  1007
+#define IDC_PASSWORD                    1008
+#define IDC_NUMBER                      1009
+#define IDC_NUMBER_SPIN                 1010
+#define IDC_NUM_PAGES_LABEL             1011
+#define IDC_COMBO1                      1012
+#define IDC_FORMATS                     1012
+#define IDC_IMAGE_FILE_NAME             1013
+#define IDC_DPI                         1014
+#define IDC_COMBO2                      1015
+#define IDC_COMBO3                      1016
+#define IDC_DPI_SPIN                    1017
+#define IDC_MFCCOLORBUTTON1             1018
+#define IDC_FILL_BG                     1019
+#define IDC_COMBO4                      1020
+#define IDC_CHECK3                      1021
 #define ID_WRITE_PASTEASHYPERLINK       32770
 #define ID_VIEW_SAMPLES                 32771
 #define ID_VIEW_OUTPUT                  32772
@@ -86,9 +104,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        319
+#define _APS_NEXT_RESOURCE_VALUE        322
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

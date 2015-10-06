@@ -30,9 +30,9 @@ PXC::IAUX_Inst*		g_AUX		= nullptr;
 	#define SDK_DLL L"PDFXCoreAPI.x64.dll"
 
 	#ifdef _DEBUG
-		#define SDK_PATH L"%PXCE_BIN64D_PATH%"
+		#define SDK_PATH L"%PXCC_BIN64D_PATH%"
 	#else	// _DEBUG
-		#define SDK_PATH L"%PXCE_BIN64R_PATH%"
+		#define SDK_PATH L"%PXCC_BIN64R_PATH%"
 	#endif	// _DEBUG
 
 #else	// _M_X64
@@ -40,9 +40,9 @@ PXC::IAUX_Inst*		g_AUX		= nullptr;
 	#define SDK_DLL L"PDFXCoreAPI.x86.dll"
 
 	#ifdef _DEBUG
-		#define SDK_PATH L"%PXCE_BIN32D_PATH%"
+		#define SDK_PATH L"%PXCC_BIN32D_PATH%"
 	#else	// _DEBUG
-		#define SDK_PATH L"%PXCE_BIN32R_PATH%"
+		#define SDK_PATH L"%PXCC_BIN32R_PATH%"
 	#endif	// _DEBUG
 
 #endif

@@ -467,6 +467,57 @@ BEGIN
     CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,40,90,25
 END
 
+IDD_DLG_EXPORT2IMAGE DIALOGEX 0, 0, 340, 220
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Source",IDC_STATIC,7,7,325,46
+    LTEXT           "&Document:",IDC_STATIC,14,21,48,8
+    EDITTEXT        IDC_FILE_NAME,63,18,209,14,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "&Browse...",IDC_BROWSE,275,18,50,14
+    LTEXT           "&Page:",IDC_STATIC,14,37,48,8
+    EDITTEXT        IDC_NUMBER,63,34,48,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_NUMBER_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,288,37,12,14
+    LTEXT           "of 0 page(s)",IDC_NUM_PAGES_LABEL,114,37,128,8
+    GROUPBOX        "Destination",IDC_STATIC,7,56,325,61
+    LTEXT           "Im&age file:",IDC_STATIC,14,71,48,8
+    EDITTEXT        IDC_IMAGE_FILE_NAME,63,68,209,14,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "Bro&wse...",IDC_BROWSE_PFX,275,68,50,14
+    LTEXT           "&Format:",IDC_STATIC,14,87,48,8
+    COMBOBOX        IDC_FORMATS,63,85,111,116,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "B&pp:",IDC_STATIC,14,101,48,8
+    COMBOBOX        IDC_COMBO2,63,99,111,116,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Rendering:",IDC_STATIC,7,123,325,60
+    LTEXT           "R&ender format:",IDC_STATIC,14,137,49,8
+    COMBOBOX        IDC_COMBO3,63,135,86,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Text Sm&ooth Mode:",IDC_STATIC,161,137,63,8
+    COMBOBOX        IDC_COMBO4,224,135,86,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&DPI:",IDC_STATIC,14,152,48,8
+    EDITTEXT        IDC_DPI,63,149,48,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_DPI_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,116,149,12,14
+    CONTROL         "Smooth &Line Arts",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,162,150,148,10
+    CONTROL         "Fill Back&ground",IDC_FILL_BG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,167,64,10
+    CONTROL         "",IDC_MFCCOLORBUTTON1,"MfcColorButton",WS_TABSTOP,81,165,50,14
+    CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,188,90,25
+END
+
+IDD_DLG_DIGISIG DIALOGEX 0, 0, 282, 141
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Select document for signing:",IDC_STATIC,7,7,91,8
+    EDITTEXT        IDC_FILE_NAME,7,17,209,14,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "&Browse...",IDC_BROWSE,225,17,50,14
+    LTEXT           "Select PFX file:",IDC_STATIC,7,42,47,8
+    EDITTEXT        IDC_PFX_FILE_NAME,7,52,209,14,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "&Browse...",IDC_BROWSE_PFX,225,52,50,14
+    EDITTEXT        IDC_PASSWORD,7,82,105,14,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "PFX password:",IDC_STATIC,7,72,47,8
+    CONTROL         "&Run Sample...",IDC_CMD_RUN,"Button",BS_COMMANDLINK | WS_TABSTOP,7,109,90,25
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -482,6 +533,23 @@ BEGIN
         RIGHTMARGIN, 275
         TOPMARGIN, 7
         BOTTOMMARGIN, 65
+    END
+
+    IDD_DLG_EXPORT2IMAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 332
+        VERTGUIDE, 14
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 213
+    END
+
+    IDD_DLG_DIGISIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 134
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -536,6 +604,69 @@ END
 
 IDC_CURSOR_HAND_DOWN    CURSOR                  "res\\hand_down.cur"
 IDC_CURSOR_HAND_UP      CURSOR                  "res\\hand_up.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DLG_EXPORT2IMAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_DLG_EXPORT2IMAGE DLGINIT
+BEGIN
+    IDC_MFCCOLORBUTTON1, 0x37c, 215, 0
+0x4d3c, 0x4346, 0x6f43, 0x6f6c, 0x4272, 0x7475, 0x6f74, 0x5f6e, 0x6e45, 
+0x6261, 0x656c, 0x744f, 0x6568, 0x4272, 0x7475, 0x6f74, 0x3e6e, 0x5254, 
+0x4555, 0x2f3c, 0x464d, 0x4343, 0x6c6f, 0x726f, 0x7542, 0x7474, 0x6e6f, 
+0x455f, 0x616e, 0x6c62, 0x4f65, 0x6874, 0x7265, 0x7542, 0x7474, 0x6e6f, 
+0x3c3e, 0x464d, 0x4343, 0x6c6f, 0x726f, 0x7542, 0x7474, 0x6e6f, 0x455f, 
+0x616e, 0x6c62, 0x4165, 0x7475, 0x6d6f, 0x7461, 0x6369, 0x7542, 0x7474, 
+0x6e6f, 0x463e, 0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4343, 0x6c6f, 0x726f, 
+0x7542, 0x7474, 0x6e6f, 0x455f, 0x616e, 0x6c62, 0x4165, 0x7475, 0x6d6f, 
+0x7461, 0x6369, 0x7542, 0x7474, 0x6e6f, 0x3c3e, 0x464d, 0x4343, 0x6c6f, 
+0x726f, 0x7542, 0x7474, 0x6e6f, 0x435f, 0x6c6f, 0x6d75, 0x736e, 0x6f43, 
+0x6e75, 0x3e74, 0x3c38, 0x4d2f, 0x4346, 0x6f43, 0x6f6c, 0x4272, 0x7475, 
+0x6f74, 0x5f6e, 0x6f43, 0x756c, 0x6e6d, 0x4373, 0x756f, 0x746e, "\076" 
+    0
+END
+
 #endif    // English (Canada) resources
 /////////////////////////////////////////////////////////////////////////////
 

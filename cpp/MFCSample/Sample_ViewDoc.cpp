@@ -105,9 +105,7 @@ HRESULT CSDKSample_ViewDoc::Perform()
 	{
 		hr = OpenDocFromFile(m_sFileName, pDoc);
 		if (pDoc != nullptr)
-		{
 			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
-		}
 	} while (false);
 	return hr;
 }

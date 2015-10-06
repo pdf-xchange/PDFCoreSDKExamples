@@ -23,8 +23,9 @@
 #include "Sample_Fill.h"
 #include "Sample_Primitives.h"
 #include "Sample_Text.h"
-
 #include "Sample_ViewDoc.h"
+#include "Sample_DigiSig.h"
+#include "Sample_ExportToImage.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -163,6 +164,8 @@ void CMFCSampleApp::InitializeSamples()
 	AddSample(new CSDKSample_Primitives);
 	AddSample(new CSDKSample_Text);
 	AddSample(new CSDKSample_ViewDoc);
+	AddSample(new CSDKSample_DigiSig);
+	AddSample(new CSDKSample_ExportToImage);
 }
 
 void CMFCSampleApp::FinalizeSamples()
