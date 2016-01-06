@@ -3,6 +3,7 @@
 #include "MainFrm.h"
 #include "MFCSample.h"
 #include "resource.h"
+#include "InitializeSDK.h"
 
 //////////////////////////////////////////////////////////////////////////
 class CDlg_OpenDoc : public CDialogEx
@@ -104,6 +105,32 @@ HRESULT CSDKSample_ViewDoc::Perform()
 	do
 	{
 		hr = OpenDocFromFile(m_sFileName, pDoc);
+		if (pDoc)
+		{
+			//do 
+			//{
+			//	CComPtr<PXC::IPXC_XMPMetadata> pMeta;
+			//	pDoc->GetXMPMetadata(VARIANT_TRUE, &pMeta);
+
+			//	HANDLE hF = CreateFile(LR"(e:\temp\47\ZUGFeRD_extension_schema.xmp)", GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+			//	if (hF == INVALID_HANDLE_VALUE)
+			//		break;
+			//	DWORD nSize = GetFileSize(hF, nullptr);
+			//	BYTE* pBuf = (BYTE*)malloc(nSize);
+			//	DWORD nRead = 0;
+			//	ReadFile(hF, pBuf, nSize, &nRead, nullptr);
+			//	CloseHandle(hF);
+
+			//	CComPtr<PXC::IMemBlock> mb;
+			//	g_AUX->CreateMemBlock(nSize, &mb);
+			//	mb->SetData(pBuf, nSize);
+			//	free(pBuf);
+			//	pMeta->SetXMP(mb);
+			//	//
+			//	CStringW fn;
+			//	SaveDocument(pDoc, fn);
+			//} while (false);
+		}
 		if (pDoc != nullptr)
 			static_cast<CMainFrame*>(theApp.GetMainWnd())->ShowPreview(pDoc);
 	} while (false);

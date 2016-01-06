@@ -167,7 +167,7 @@ HRESULT Fill_Ex3(PXC::IPXC_Document* pDoc, PXC::IPXC_ContentCreator* pCC, const 
 
 	pStops->AddStopRGB(0.0, RGB(75, 181, 253));
 	pStops->AddStopRGB(0.5, RGB(102, 185, 255));
-	pStops->AddStopRGB(0.5 + 0.0000001, RGB(255, 217, 0));
+	pStops->AddStopRGB(0.5, RGB(255, 217, 0));
 	pStops->AddStopRGB(1.0, RGB(255, 245, 0));
 
 	CComPtr<PXC::IPXC_Shading> pShade;
