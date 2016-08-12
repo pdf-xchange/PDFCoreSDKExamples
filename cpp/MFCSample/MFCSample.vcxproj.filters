@@ -93,6 +93,9 @@
     <ClInclude Include="Sample_ExportToImage.h">
       <Filter>Samples</Filter>
     </ClInclude>
+    <ClInclude Include="Sample_PrintDoc.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSample.cpp">
@@ -159,6 +162,9 @@
       <Filter>Samples</Filter>
     </ClCompile>
     <ClCompile Include="Sample_ExportToImage.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample_PrintDoc.cpp">
       <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>

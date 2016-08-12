@@ -218,6 +218,7 @@
     <ClInclude Include="Sample_ExportToImage.h" />
     <ClInclude Include="Sample_Fill.h" />
     <ClInclude Include="Sample_Primitives.h" />
+    <ClInclude Include="Sample_PrintDoc.h" />
     <ClInclude Include="Sample_Stroke.h" />
     <ClInclude Include="Sample_Text.h" />
     <ClInclude Include="Sample_ViewDoc.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="Sample_ExportToImage.cpp" />
     <ClCompile Include="Sample_Fill.cpp" />
     <ClCompile Include="Sample_Primitives.cpp" />
+    <ClCompile Include="Sample_PrintDoc.cpp" />
     <ClCompile Include="Sample_Stroke.cpp" />
     <ClCompile Include="Sample_Text.cpp" />
     <ClCompile Include="Sample_ViewDoc.cpp" />

@@ -26,6 +26,7 @@
 #include "Sample_ViewDoc.h"
 #include "Sample_DigiSig.h"
 #include "Sample_ExportToImage.h"
+#include "Sample_PrintDoc.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -166,6 +167,7 @@ void CMFCSampleApp::InitializeSamples()
 	AddSample(new CSDKSample_ViewDoc);
 	AddSample(new CSDKSample_DigiSig);
 	AddSample(new CSDKSample_ExportToImage);
+	AddSample(new CSDKSample_PrintDoc);
 }
 
 void CMFCSampleApp::FinalizeSamples()
