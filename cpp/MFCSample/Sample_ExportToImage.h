@@ -22,6 +22,7 @@ public:
 	DWORD					m_nImageFormat;
 	DWORD					m_nDPI;
 	PXC::PXC_TextSmoothMode	m_nTextSmoothMode;
+	PXC::IXC_PageFormat		m_nPageFormat;
 	bool					m_bSmoothLineArts;
 };
 

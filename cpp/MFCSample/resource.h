@@ -85,12 +85,16 @@
 #define IDC_IMAGE_FILE_NAME             1013
 #define IDC_DPI                         1014
 #define IDC_COMBO2                      1015
+#define IDC_BPP                         1015
 #define IDC_COMBO3                      1016
+#define IDC_RFORMAT                     1016
 #define IDC_DPI_SPIN                    1017
 #define IDC_MFCCOLORBUTTON1             1018
 #define IDC_FILL_BG                     1019
 #define IDC_COMBO4                      1020
+#define IDC_TEXTMODE                    1020
 #define IDC_CHECK3                      1021
+#define IDC_SYSLINK1                    1022
 #define ID_WRITE_PASTEASHYPERLINK       32770
 #define ID_VIEW_SAMPLES                 32771
 #define ID_VIEW_OUTPUT                  32772
@@ -104,9 +108,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
+#define _APS_NEXT_RESOURCE_VALUE        323
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

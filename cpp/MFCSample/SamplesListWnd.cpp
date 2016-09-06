@@ -14,6 +14,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define TREE_LIST_ID		2
+#define EDIT_SEARCH_ID		3
 
 /////////////////////////////////////////////////////////////////////////////
 // CSamplesListWnd
@@ -45,7 +46,7 @@ int CSamplesListWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	rectDummy.SetRectEmpty();
 
 	// Create filter edit
-	if (!m_FilterEdit.Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL, rectDummy, this, 1))
+	if (!m_FilterEdit.Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL, rectDummy, this, EDIT_SEARCH_ID))
 	{
 		TRACE0("Failed to filter edit\n");
 		return -1;      // fail to create
@@ -58,14 +59,15 @@ int CSamplesListWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 
 	// Create tree
-	const DWORD dwStyle = WS_CHILD | WS_VISIBLE | TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | TVS_INFOTIP;
+	const DWORD dwStyle = WS_CHILD | WS_VISIBLE | TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | TVS_INFOTIP | TVS_TRACKSELECT | TVS_FULLROWSELECT;
 	if (!m_SamplesTree.Create(dwStyle, rectDummy, this, TREE_LIST_ID))
 	{
 		TRACE0("Failed to create samples tree window\n");
 		return -1;      // fail to create
 	}
-	m_SamplesTree.ModifyStyleEx(0, WS_EX_CLIENTEDGE | WS_EX_NOPARENTNOTIFY);
+	m_SamplesTree.ModifyStyleEx(0, WS_EX_CLIENTEDGE |  WS_EX_NOPARENTNOTIFY | TVS_EX_DOUBLEBUFFER | TVS_EX_AUTOHSCROLL);
 
+	SetWindowTheme(m_SamplesTree, L"Explorer", NULL);
 	FillSamplesTree();
 
 	UpdateFonts();
@@ -171,10 +173,17 @@ void CSamplesListWnd::OnSampleSelected(NMHDR* pNotifyStruct, LRESULT* pResult)
 	static_cast<CMainFrame*>(theApp.GetMainWnd())->SetCurrentSample(pSample);
 }
 
+void CSamplesListWnd::OnSearchChange()
+{
+	FillSamplesTree();
+}
+
 //////////////////////////////////////////////////////////////////////////
 BEGIN_MESSAGE_MAP(CSamplesListWnd, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
 	ON_NOTIFY(TVN_SELCHANGED, TREE_LIST_ID, OnSampleSelected)
+	//ON_WM_PARENTNOTIFY
+	ON_EN_CHANGE(EDIT_SEARCH_ID, OnSearchChange)
 END_MESSAGE_MAP()
