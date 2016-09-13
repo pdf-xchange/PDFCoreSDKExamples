@@ -25,4 +25,3 @@ public:
 	bool					m_bSmoothLineArts;
 };
 
-

@@ -20,10 +20,11 @@
 
 HMODULE hSDKInst = NULL;
 
-PXC::IPXC_Inst*		g_Inst		= nullptr;
-PXC::IPXS_Inst*		g_COS		= nullptr;
-PXC::IIXC_Inst*		g_ImgCore	= nullptr;
-PXC::IAUX_Inst*		g_AUX		= nullptr;
+PXC::IPXC_Inst*				g_Inst			= nullptr;
+PXC::IPXS_Inst*				g_COS			= nullptr;
+PXC::IIXC_Inst*				g_ImgCore		= nullptr;
+PXC::IAUX_Inst*				g_AUX			= nullptr;
+CComPtr<PXC::IMathHelper>	g_MathHelper	= nullptr;
 
 #if defined _M_X64
 
@@ -102,6 +103,8 @@ HRESULT InitializeSDK()
 		BreakOnNull(g_ImgCore, hr, E_FAIL, L"Cannot get IXC instance object");
 		BreakOnNull(g_AUX, hr, E_FAIL, L"Cannot get AUX instance object");
 
+		g_AUX->get_MathHelper(&g_MathHelper);
+
 		ULONG nVer = 0;
 		g_Inst->get_APIVersion(&nVer);
 		LOG(S_OK, L"SDK DLL successfully loaded.");
@@ -112,6 +115,7 @@ HRESULT InitializeSDK()
 
 HRESULT FinalizeSDK()
 {
+	g_MathHelper = nullptr;
 	if (g_Inst != nullptr)
 	{
 		g_Inst->Finalize();

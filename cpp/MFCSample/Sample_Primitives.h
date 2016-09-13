@@ -14,3 +14,4 @@ public:
 	//
 	HRESULT Perform() override;
 };
+

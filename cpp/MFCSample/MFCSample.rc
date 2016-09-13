@@ -31,8 +31,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\MFCSample.ico"
+
 IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
+
 IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -40,19 +43,33 @@ IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 IDR_MAINFRAME_256       BITMAP                  "res\\Toolbar256.bmp"
+
 IDB_MAIN                BITMAP                  "res\\main.bmp"
+
 IDB_FILELARGE           BITMAP                  "res\\filelarge.bmp"
+
 IDB_FILESMALL           BITMAP                  "res\\filesmall.bmp"
+
 IDB_WRITELARGE          BITMAP                  "res\\writelarge.bmp"
+
 IDB_WRITESMALL          BITMAP                  "res\\writesmall.bmp"
+
 IDB_BUTTONS             BITMAP                  "res\\buttons.bmp"
+
 IDB_NAVIGATION_LARGE    BITMAP                  "res\\nav_large.bmp"
+
 IDB_NAVIGATION_LARGE_HC BITMAP                  "res\\nav_large_hc.bmp"
+
 IDB_PAGES               BITMAP                  "res\\pages.bmp"
+
 IDB_PAGES_HC            BITMAP                  "res\\pages_hc.bmp"
+
 IDB_PAGES_SMALL         BITMAP                  "res\\pages_small.bmp"
+
 IDB_PAGES_SMALL_HC      BITMAP                  "res\\pages_small_hc.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -433,8 +450,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 //
 
 IDB_EDIT_ICONS16        BITMAP                  "res\\editIcons16.bmp"
+
 IDB_EDIT_ICONS20        BITMAP                  "res\\editIcons20.bmp"
+
 IDR_PREVIEW_TOOLBAR     BITMAP                  "res\\preview.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -492,7 +512,7 @@ BEGIN
     LTEXT           "R&ender format:",IDC_STATIC,14,137,49,8
     COMBOBOX        IDC_COMBO3,63,135,86,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Text Sm&ooth Mode:",IDC_STATIC,161,137,63,8
-    COMBOBOX        IDC_COMBO4,224,135,86,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_TEXT_MODE,224,135,86,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "&DPI:",IDC_STATIC,14,152,48,8
     EDITTEXT        IDC_DPI,63,149,48,14,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_DPI_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,116,149,12,14
@@ -603,7 +623,9 @@ END
 //
 
 IDC_CURSOR_HAND_DOWN    CURSOR                  "res\\hand_down.cur"
+
 IDC_CURSOR_HAND_UP      CURSOR                  "res\\hand_up.cur"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -97,6 +97,7 @@ void CDlg_ExportToImage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FORMATS, m_cbFormats);
+	DDX_Control(pDX, IDC_TEXT_MODE, m_cbTextMode);
 	if (m_pSample)
 	{
 		DDX_Text(pDX, IDC_FILE_NAME, m_pSample->m_sPDFFileName);
