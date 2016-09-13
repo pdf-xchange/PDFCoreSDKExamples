@@ -90,14 +90,26 @@ void CDlg_ExportToImage::PopulateControls()
 	m_cbTextMode.AddString(L"Clear Type");
 	m_cbTextMode.SetCurSel(m_pSample->m_nTextSmoothMode);
 	// bpp
-//	m_cbBpp.AddString()
+	m_cbBpp.AddString(L"32 bit");
+	m_cbBpp.AddString(L"24 bit");
+	m_cbBpp.AddString(L"16 bit");
+	m_cbBpp.AddString(L"8 bit");
+
+	//
+// 	m_cbRender.AddString(L"1");
+// 	m_cbRender.AddString(L"2");
+// 	m_cbRender.AddString(L"3");
+// 	m_cbRender.AddString(L"4");
 }
 
 void CDlg_ExportToImage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FORMATS, m_cbFormats);
-	DDX_Control(pDX, IDC_TEXT_MODE, m_cbTextMode);
+	DDX_Control(pDX, IDC_TEXTMODE, m_cbTextMode);
+	DDX_Control(pDX, IDC_BPP, m_cbBpp);
+	DDX_Control(pDX, IDC_RFORMAT, m_cbRender);
+	
 	if (m_pSample)
 	{
 		DDX_Text(pDX, IDC_FILE_NAME, m_pSample->m_sPDFFileName);
@@ -254,6 +266,7 @@ CSDKSample_ExportToImage::CSDKSample_ExportToImage()
 	m_nPageNumber		= 0;
 	m_nImageFormat		= PXC::FMT_PNG_ID;
 	m_nDPI				= 300;
+	m_nPageFormat		= PXC::PageFormat_8ARGB;
 }
 
 CSDKSample_ExportToImage::~CSDKSample_ExportToImage()
@@ -296,24 +309,63 @@ HRESULT CSDKSample_ExportToImage::Perform()
 		hr = OpenDocFromFile(m_sPDFFileName, pDoc);
 		if (pDoc == nullptr)
 			break;
-		//CString sNewFileName;
-		//int nPos = m_sPDFFileName.ReverseFind(L'.');
-		//if (nPos < 0)
-		//	sNewFileName = m_sPDFFileName;
-		//else
-		//	sNewFileName = m_sPDFFileName.Left(nPos);
-		//sNewFileName.Append(L"_signed.pdf");
-		////
-		//DWORD nFlags = PXC::Sign_GR_Name |
-		//	PXC::Sign_TX_Name | PXC::Sign_TX_Date | PXC::Sign_TX_Reason | PXC::Sign_TX_Labels | PXC::Sign_TX_Subject | PXC::Sign_TX_Logo;
-		//PXC::PXC_Rect pr;
-		//pr.left = 72.0;
-		//pr.bottom = 72.0;
-		//pr.right = pr.left + 216;
-		//pr.top = pr.bottom + 72;
-		//hr = pDoc->DeferedDigitalPFX((LPWSTR)(LPCWSTR)m_sPFXFileName, (LPWSTR)(LPCWSTR)m_sPFXPassword, nFlags, 0, &pr, L"PDF-XChange Core API demonstation", L"", L"support@tracker-software.com", L"");
-		//BreakOnFailure(hr, L"Error adding defer signature information (hr = 0x%.8lx)", hr);
-		//hr = SaveDocument(pDoc, sNewFileName, TRUE);
+
+		CComPtr<PXC::IPXC_Pages> pages;
+		pDoc->get_Pages(&pages);
+		CComPtr<PXC::IPXC_Page> page;
+		pages->get_Item(m_nPageNumber, &page);
+		
+		double fWidth = 0.0, fHeidth = 0.0;
+		page->GetDimension(&fWidth, &fHeidth);
+
+
+		const ULONG cx = (ULONG)(fWidth * m_nDPI / 72.0);
+		const ULONG cy = (ULONG)(fHeidth * m_nDPI / 72.0);
+
+		CComPtr<PXC::IIXC_Page> iPage;
+		hr = g_ImgCore->Page_CreateEmpty(cx, cy, m_nPageFormat, 0, &iPage);
+		if (FAILED(hr))
+			break;
+
+		CRect rc(0, 0, cx, cy);
+		//PXC::PXC_Matrix mt;
+		//page->DrawToIXCPage(iPage, rc, &mt, param, nullptr, nullptr); 
+
+		CComPtr<PXC::IPXC_PageRenderParams> param;
+		g_Inst->CreateRenderParams(&param);
+		if (param != nullptr)
+		{
+			param->put_RenderFlags(PXC::RF_OverrideBackgroundColor | PXC::RF_SmoothImages | PXC::RF_SmoothLineArts);
+
+			param->put_TextSmoothMode(m_nTextSmoothMode);
+		}
+
+		hr = page->DrawToIXCPage(iPage, rc, nullptr, param, nullptr, nullptr);
+		if (FAILED(hr))
+			break;
+
+		iPage->put_FmtInt(PXC::FP_ID_XDPI, m_nDPI);
+		iPage->put_FmtInt(PXC::FP_ID_YDPI, m_nDPI);
+		iPage->put_FmtInt(PXC::FP_ID_FILTER, 0);
+		iPage->put_FmtInt(PXC::FP_ID_FORMAT, m_nImageFormat);
+		iPage->put_FmtInt(PXC::FP_ID_ITYPE, 16);
+		iPage->put_FmtInt(PXC::FP_ID_COMP_LEVEL, 2 /*pCommonCmdLine->complevel*/);
+		//iPage->put_FmtInt(PXC::FP_ID_IMG_SUBTYPE, PXC::ImageFormat_Auto);
+		iPage->put_FmtInt(PXC::FP_ID_COMP_TYPE, 32773);
+
+		CComPtr<PXC::IIXC_Image> img;
+		hr = g_ImgCore->CreateEmptyImage(&img);
+		if (FAILED(hr))
+			break;
+		hr = img->InsertPage(iPage, 0);
+		if (FAILED(hr))
+			break;
+		hr = img->Save(m_sImageFileName.GetBuffer(), PXC::CreationDisposition_Overwrite);
+		if (FAILED(hr))
+			break;
+
+		// open image file
+		ShellExecute(m_pWindow->m_hWnd, L"open", m_sImageFileName, nullptr, nullptr, 0);
 	} while (false);
 	return hr;
 }

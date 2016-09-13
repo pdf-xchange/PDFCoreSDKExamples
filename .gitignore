@@ -157,4 +157,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /cpp/MFCSample/_tempbuild
+/cpp/MFCSample/Debug.x64
 /cpp/MFCSample/MFCSample.VC.db

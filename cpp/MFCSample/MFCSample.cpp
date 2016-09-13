@@ -26,6 +26,7 @@
 #include "Sample_ViewDoc.h"
 #include "Sample_DigiSig.h"
 #include "Sample_ExportToImage.h"
+#include "Sample_PrintDoc.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -166,6 +167,7 @@ void CMFCSampleApp::InitializeSamples()
 	AddSample(new CSDKSample_ViewDoc);
 	AddSample(new CSDKSample_DigiSig);
 	AddSample(new CSDKSample_ExportToImage);
+	AddSample(new CSDKSample_PrintDoc);
 }
 
 void CMFCSampleApp::FinalizeSamples()
@@ -193,6 +195,8 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -205,6 +209,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -235,5 +240,11 @@ void CMFCSampleApp::SaveCustomState()
 
 // CMFCSampleApp message handlers
 
+void CAboutDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	PNMLINK pNMLink = (PNMLINK)pNMHDR;
+	ShellExecuteW(NULL, L"open", pNMLink->item.szUrl, NULL, NULL, SW_SHOWNORMAL);
+	
 
-
+	*pResult = 0;
+}

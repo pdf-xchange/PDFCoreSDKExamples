@@ -24,5 +24,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnSampleSelected(NMHDR* pNotifyStruct, LRESULT* pResult);
+	afx_msg void OnSearchChange();
+
 	DECLARE_MESSAGE_MAP()
 };
