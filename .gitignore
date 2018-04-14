@@ -159,3 +159,5 @@ $RECYCLE.BIN/
 /cpp/MFCSample/_tempbuild
 /cpp/MFCSample/Debug.x64
 /cpp/MFCSample/MFCSample.VC.db
+/.vs
+/CSharp/CoreAPIDemo/.vs/CoreAPIDemo/v15/Server/sqlite3
