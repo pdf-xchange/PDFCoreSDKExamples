@@ -28,17 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Create New Document");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Open Document From String Path");
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Open Document From IStream");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Open Password Protected Document From IAFS_Name");
-			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Save Document To File");
-			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Document", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5});
+			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Create New Document");
+			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Open Document From String Path");
+			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Open Document From IStream");
+			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Open Password Protected Document From IAFS_Name");
+			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Save Document To File");
+			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Document", new System.Windows.Forms.TreeNode[] {
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.sampleTree = new System.Windows.Forms.TreeView();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -61,20 +61,20 @@
 			this.sampleTree.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sampleTree.Location = new System.Drawing.Point(0, 32);
 			this.sampleTree.Name = "sampleTree";
-			treeNode1.Name = "createNewDoc";
-			treeNode1.Text = "Create New Document";
-			treeNode2.Name = "openDocFromStringPath";
-			treeNode2.Text = "Open Document From String Path";
-			treeNode3.Name = "openDocumentFromStream";
-			treeNode3.Text = "Open Document From IStream";
-			treeNode4.Name = "openPasswordProtectedDocument";
-			treeNode4.Text = "Open Password Protected Document From IAFS_Name";
-			treeNode5.Name = "saveDocumentToFile";
-			treeNode5.Text = "Save Document To File";
-			treeNode6.Name = "Document";
-			treeNode6.Text = "Document";
+			treeNode7.Name = "createNewDoc";
+			treeNode7.Text = "Create New Document";
+			treeNode8.Name = "openDocFromStringPath";
+			treeNode8.Text = "Open Document From String Path";
+			treeNode9.Name = "openDocumentFromStream";
+			treeNode9.Text = "Open Document From IStream";
+			treeNode10.Name = "openPasswordProtectedDocument";
+			treeNode10.Text = "Open Password Protected Document From IAFS_Name";
+			treeNode11.Name = "saveDocumentToFile";
+			treeNode11.Text = "Save Document To File";
+			treeNode12.Name = "Document";
+			treeNode12.Text = "Document";
 			this.sampleTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6});
+            treeNode12});
 			this.sampleTree.Size = new System.Drawing.Size(802, 892);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
@@ -126,24 +126,24 @@
             this.nextPage});
 			this.toolStrip2.Location = new System.Drawing.Point(812, 32);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(740, 32);
+			this.toolStrip2.Size = new System.Drawing.Size(740, 31);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
 			// prevPage
 			// 
-			this.prevPage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.prevPage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.prevPage.Image = ((System.Drawing.Image)(resources.GetObject("prevPage.Image")));
 			this.prevPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.prevPage.Name = "prevPage";
-			this.prevPage.Size = new System.Drawing.Size(126, 29);
+			this.prevPage.Size = new System.Drawing.Size(28, 28);
 			this.prevPage.Text = "Previuos Page";
 			this.prevPage.Click += new System.EventHandler(this.prevPage_Click);
 			// 
 			// currentPage
 			// 
 			this.currentPage.Name = "currentPage";
-			this.currentPage.Size = new System.Drawing.Size(100, 32);
+			this.currentPage.Size = new System.Drawing.Size(50, 31);
 			this.currentPage.Text = "1";
 			this.currentPage.TextChanged += new System.EventHandler(this.currentPage_TextChanged);
 			// 
@@ -155,11 +155,11 @@
 			// 
 			// nextPage
 			// 
-			this.nextPage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.nextPage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.nextPage.Image = ((System.Drawing.Image)(resources.GetObject("nextPage.Image")));
 			this.nextPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.nextPage.Name = "nextPage";
-			this.nextPage.Size = new System.Drawing.Size(95, 29);
+			this.nextPage.Size = new System.Drawing.Size(28, 28);
 			this.nextPage.Text = "Next Page";
 			this.nextPage.Click += new System.EventHandler(this.nextPage_Click);
 			// 
@@ -167,9 +167,9 @@
 			// 
 			this.previewImage.BackColor = System.Drawing.SystemColors.Control;
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.previewImage.Location = new System.Drawing.Point(812, 64);
+			this.previewImage.Location = new System.Drawing.Point(812, 63);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(740, 860);
+			this.previewImage.Size = new System.Drawing.Size(740, 861);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
