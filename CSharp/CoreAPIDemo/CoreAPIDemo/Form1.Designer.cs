@@ -28,11 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Create New Document");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Open Document");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Document", new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8});
+			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Create New Document");
+			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Open Document From String Path");
+			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Open Document From IStream");
+			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Open Password Protected Document From IAFS_Name");
+			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Save Document To File");
+			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Document", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5});
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.sampleTree = new System.Windows.Forms.TreeView();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -55,16 +61,23 @@
 			this.sampleTree.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sampleTree.Location = new System.Drawing.Point(0, 32);
 			this.sampleTree.Name = "sampleTree";
-			treeNode7.Name = "createNewDoc";
-			treeNode7.Text = "Create New Document";
-			treeNode8.Name = "openDoc";
-			treeNode8.Text = "Open Document";
-			treeNode9.Name = "Document";
-			treeNode9.Text = "Document";
+			treeNode1.Name = "createNewDoc";
+			treeNode1.Text = "Create New Document";
+			treeNode2.Name = "openDocFromStringPath";
+			treeNode2.Text = "Open Document From String Path";
+			treeNode3.Name = "openDocumentFromStream";
+			treeNode3.Text = "Open Document From IStream";
+			treeNode4.Name = "openPasswordProtectedDocument";
+			treeNode4.Text = "Open Password Protected Document From IAFS_Name";
+			treeNode5.Name = "saveDocumentToFile";
+			treeNode5.Text = "Save Document To File";
+			treeNode6.Name = "Document";
+			treeNode6.Text = "Document";
 			this.sampleTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode9});
+            treeNode6});
 			this.sampleTree.Size = new System.Drawing.Size(802, 892);
 			this.sampleTree.TabIndex = 0;
+			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
 			// 
 			// panel1
 			// 

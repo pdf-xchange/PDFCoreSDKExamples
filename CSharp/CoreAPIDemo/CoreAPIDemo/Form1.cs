@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,9 +15,9 @@ namespace CoreAPIDemo
 {
 	public partial class Form1 : Form
 	{
-		IPXC_Inst				m_pxcInst = null;
-		IPXC_Document			m_CurDoc = null;
-		bool					m_bNeedToCloseDoc = false;
+		IPXC_Inst m_pxcInst = null;
+		IPXC_Document m_CurDoc = null;
+		bool m_bNeedToCloseDoc = false;
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
@@ -95,7 +96,7 @@ namespace CoreAPIDemo
 			rcTmp.top = (int)destRect.top;
 			rcTmp.bottom = (int)destRect.bottom;
 			pageToRectMatrix = auxInst.MathHelper.Matrix_Multiply(srcPageMatrix, pageToRectMatrix);
-			
+
 			Graphics g = Graphics.FromImage(image);
 			g.Clear(Color.White);
 			IntPtr hdc = g.GetHdc();
@@ -104,8 +105,7 @@ namespace CoreAPIDemo
 			previewImage.Image = image;
 			g.Dispose();
 			g = null;
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			srcPage = null;
 		}
 
 		private void UpdateControlsFromDocument()
@@ -128,32 +128,6 @@ namespace CoreAPIDemo
 				m_CurDoc.Close();
 			m_CurDoc = null;
 			m_bNeedToCloseDoc = false;
-		}
-
-		public void createNewDoc()
-		{
-			IPXC_Document coreDoc = m_pxcInst.NewDocument();
-			PXC_Rect rc;
-			rc.left = 0;
-			rc.right = 600;
-			rc.top = 800;
-			rc.bottom = 0;
-			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
-			CloseDocument();
-			m_CurDoc = coreDoc;
-			UpdateControlsFromDocument();
-			UpdatePreviewFromCurrentDocument();
-		}
-
-		public void openDoc()
-		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\FeatureChartEU.pdf";
-			CloseDocument();
-			m_CurDoc = m_pxcInst.OpenDocumentFromFile(sPath, null);
-			m_bNeedToCloseDoc = true;
-			UpdateControlsFromDocument();
-			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void runSample_Click(object sender, EventArgs e)
@@ -181,10 +155,11 @@ namespace CoreAPIDemo
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			previewImage.Image.Dispose();
+			if (previewImage.Image != null)
+				previewImage.Image.Dispose();
 			CloseDocument();
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			//GC.Collect();
+			//GC.WaitForPendingFinalizers();
 			m_pxcInst.Finalize();
 			m_pxcInst = null;
 			GC.Collect();
@@ -211,5 +186,99 @@ namespace CoreAPIDemo
 				currentPage.Text = (nPage + 2).ToString();
 			}
 		}
+		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			TreeNode node = sampleTree.SelectedNode;
+			if (node == null)
+				return;
+			Type thisType = this.GetType();
+			MethodInfo theMethod = thisType.GetMethod(node.Name);
+			if (theMethod == null)
+				return;
+			theMethod.Invoke(this, null);
+		}
+
+
+		#region Method Implementations
+		public void createNewDoc()
+		{
+			IPXC_Document coreDoc = m_pxcInst.NewDocument();
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+			IPXC_UndoRedoData urd;
+			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
+			CloseDocument();
+			m_CurDoc = coreDoc;
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		public void openDocFromStringPath()
+		{
+			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
+			CloseDocument();
+			m_CurDoc = m_pxcInst.OpenDocumentFromFile(sPath, null);
+			m_bNeedToCloseDoc = true;
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		public void openDocumentFromStream()
+		{
+			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
+			CloseDocument();
+			FileStream srcStream = new FileStream(sPath, FileMode.Open);
+			if (srcStream != null)
+			{
+				IStreamWrapper srcIStream = new IStreamWrapper(srcStream);
+				m_CurDoc = m_pxcInst.OpenDocumentFrom(srcIStream, null);
+				m_bNeedToCloseDoc = true;
+				UpdateControlsFromDocument();
+				UpdatePreviewFromCurrentDocument();
+			}
+			srcStream.Close();
+		}
+
+		public class AuthCallback : IPXC_DocAuthCallback
+		{
+			public void AuthDoc(IPXC_Document pDoc, uint nFlags)
+			{
+				//If this method is called then the document is protected
+				pDoc.AuthorizeWithPassword("111");
+			}
+		}
+
+		public void openPasswordProtectedDocument()
+		{
+			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\PasswordProtected.pdf";
+			IAFS_Inst fsInst = (IAFS_Inst)m_pxcInst.GetExtension("AFS");
+			IAFS_Name destPath = fsInst.DefaultFileSys.StringToName(sPath); //Converting string to name
+			CloseDocument();
+			AuthCallback clbk = new AuthCallback();
+			m_CurDoc = m_pxcInst.OpenDocumentFrom(destPath, clbk);
+			m_bNeedToCloseDoc = true;
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		public void saveDocumentToFile()
+		{
+			if (m_CurDoc == null)
+				return;
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "PDF Documents (*.pdf)|*.pdf|All Files (*.*)|*.*";
+			sfd.DefaultExt = "pdf";
+			sfd.FilterIndex = 1;
+			sfd.CheckPathExists = true;
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				m_CurDoc.WriteToFile(sfd.FileName);
+			}
+		}
+		#endregion
+
 	}
 }
