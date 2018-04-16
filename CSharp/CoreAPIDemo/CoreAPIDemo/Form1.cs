@@ -1,12 +1,10 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Microsoft.CSharp;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
@@ -135,6 +133,49 @@ namespace CoreAPIDemo
 			UpdatePreviewFromCurrentDocument();
 		}
 
+		private void CompileMethod()
+		{
+			string sCode = @"
+			using System.ComponentModel;
+			using System.IO;
+			using System.Windows.Forms;
+			using PDFXCoreAPI;
+
+			namespace CoreAPIDemo
+			{
+				public class TempClass
+				{
+					";
+			sCode += codeSource.Text;
+			sCode += @"}
+			}
+			";
+			if (sCode.Length == 0)
+				return;
+			
+			CSharpCodeProvider provider = new CSharpCodeProvider();
+			CompilerParameters parameters = new CompilerParameters();
+			//parameters.GenerateInMemory = true;
+			parameters.ReferencedAssemblies.Add(Assembly.GetEntryAssembly().Location);
+			parameters.ReferencedAssemblies.Add("System.dll");
+			parameters.ReferencedAssemblies.Add("System.Data.dll");
+			parameters.ReferencedAssemblies.Add("System.ComponentModel.dll");
+			parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+			parameters.ReferencedAssemblies.Add(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + @"\obj\Debug\Interop.PDFXCoreAPI.dll");
+			//string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + @"\obj\Debug\Interop.PDFXCoreAPI.dll";
+			//parameters.ReferencedAssemblies.Add(Assembly.Load(@"D:\Work\TS2012\PDF5\Trunk\_build\Debug.Win32\PDFXCoreAPI.x86.dll").Location);
+			CompilerResults res = provider.CompileAssemblyFromSource(parameters, sCode);
+
+			Type classType = res.CompiledAssembly.GetType("CoreAPIDemo.TempClass");
+			MethodInfo[] func = classType.GetMethods();
+			if (func.Length == 0)
+				return;
+			func[0].Invoke(this, new Object[] { this });
+
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
+		}
+
 		public void UpdatePreviewFromCurrentDocument()
 		{
 			if (m_CurDoc == null)
@@ -243,6 +284,7 @@ namespace CoreAPIDemo
 		private void runSample_Click(object sender, EventArgs e)
 		{
 			InvokeMethod();
+			//CompileMethod();
 		}
 		private void Form1_ResizeEnd(object sender, EventArgs e)
 		{
@@ -287,14 +329,19 @@ namespace CoreAPIDemo
 			InvokeMethod();
 		}
 
-		private void previewImage_SizeChanged(object sender, EventArgs e)
+		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			UpdateCodeSample(e.Node);
+		}
+
+		private void splitter2_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			UpdatePreviewFromCurrentDocument();
 		}
 
-		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			UpdateCodeSample(e.Node);
+			UpdatePreviewFromCurrentDocument();
 		}
 	}
 }
