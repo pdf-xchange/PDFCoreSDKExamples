@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -49,51 +47,92 @@ namespace CoreAPIDemo
 			}
 		}
 
-		private void InvokeMethod()
+		private MethodInfo GetCurrentMethod(TreeNode curNode)
 		{
-			bool bSuccess = true;
 			do
 			{
-				TreeNode node = sampleTree.SelectedNode;
-
+				TreeNode node = curNode;
 				if (node == null)
-				{
-					bSuccess = false;
+					node = sampleTree.SelectedNode;
+				if (node == null)
 					break;
-				}
 				int nIndex = node.Name.IndexOf('_');
 				if (nIndex < 0)
-				{
-					bSuccess = false;
 					break;
-				}
 				string sClass = node.Name.Substring(0, nIndex);
 				string sMethod = node.Name.Substring(nIndex + 1);
 
 				Type thisType = Type.GetType("CoreAPIDemo." + sClass + ", CoreAPIDemo");
 				if (thisType == null)
-				{
-					bSuccess = false;
 					break;
-				}
 
 				MethodInfo theMethod = thisType.GetMethod(sMethod);
 				if (theMethod == null)
+					break;
+				return theMethod;
+			} while (false);
+			return null;
+		}
+
+		private string GetMethodCode(string className, string methodName)
+		{
+			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\" + className + ".cs";
+			string sData = System.IO.File.ReadAllText(sPath);
+			int nIndex = sData.IndexOf(methodName);
+			while (nIndex >= 0)
+			{
+				if (sData[nIndex] == '\n')
 				{
-					bSuccess = false;
+					nIndex++;
 					break;
 				}
+				nIndex--;
+			}
 
-				theMethod.Invoke(this, new Object[] { this });
+			if (nIndex < 0)
+				return "";
 
-				UpdateControlsFromDocument();
-				UpdatePreviewFromCurrentDocument();
-			} while (false);
-			if (!bSuccess)
+			string sWS = "";
+			for (int i = nIndex; i < sData.Length; i++)
+			{
+				if (!Char.IsWhiteSpace(sData[i]))
+				{
+					sWS = sData.Substring(nIndex, i - nIndex);
+					break;
+				}
+			}
+			int nEnd = sData.IndexOf("\n" + sWS + "}", nIndex);
+			if (nEnd < 0)
+				return "";
+			nEnd += sWS.Length + 2;
+			string sRes = sData.Substring(nIndex, nEnd - nIndex);
+			sRes = sRes.Replace(sWS, "");
+			return sRes;
+		}
+
+		private void UpdateCodeSample(TreeNode curNode)
+		{
+			codeSource.Text = "";
+			MethodInfo theMethod = GetCurrentMethod(curNode);
+			if (theMethod == null)
+				return;
+			byte[] bytes = theMethod.GetMethodBody().GetILAsByteArray();
+			codeSource.Text = GetMethodCode(theMethod.DeclaringType.Name, theMethod.Name);
+		}
+
+		private void InvokeMethod()
+		{
+			MethodInfo theMethod = GetCurrentMethod(null);
+			if (theMethod == null)
 			{
 				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
 				return;
 			}
+
+			theMethod.Invoke(this, new Object[] { this });
+
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		public void UpdatePreviewFromCurrentDocument()
@@ -246,6 +285,16 @@ namespace CoreAPIDemo
 		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
 			InvokeMethod();
+		}
+
+		private void previewImage_SizeChanged(object sender, EventArgs e)
+		{
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			UpdateCodeSample(e.Node);
 		}
 	}
 }
