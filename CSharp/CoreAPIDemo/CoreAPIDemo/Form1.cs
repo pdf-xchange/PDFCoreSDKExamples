@@ -15,17 +15,88 @@ namespace CoreAPIDemo
 {
 	public partial class Form1 : Form
 	{
-		IPXC_Inst m_pxcInst = null;
-		IPXC_Document m_CurDoc = null;
-		bool m_bNeedToCloseDoc = false;
+		public IPXC_Inst		m_pxcInst = null;
+		public IPXC_Document	m_CurDoc = null;
+		public bool				m_bNeedToCloseDoc = false;
+
+		//public Document			m_DocTests = null;
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
 			m_pxcInst.Init("");
 			InitializeComponent();
 		}
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			Type[] typeList = Assembly.GetExecutingAssembly().GetTypes();
+			foreach (Type t in typeList)
+			{
+				AddClassToTree(t);
+			}
+			sampleTree.Sort();
+		}
+		private void AddClassToTree(Type classType)
+		{
+			DescriptionAttribute attr = classType.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+			if (attr == null)
+				return;
+			TreeNode root = sampleTree.Nodes.Insert(-1, attr.Description);
+			foreach (MethodInfo mi in classType.GetMethods())
+			{
+				attr = mi.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+				if (attr != null)
+					root.Nodes.Insert(-1, classType.Name + "_" + mi.Name, attr.Description);
+			}
+		}
 
-		private void UpdatePreviewFromCurrentDocument()
+		private void InvokeMethod()
+		{
+			bool bSuccess = true;
+			do
+			{
+				TreeNode node = sampleTree.SelectedNode;
+
+				if (node == null)
+				{
+					bSuccess = false;
+					break;
+				}
+				int nIndex = node.Name.IndexOf('_');
+				if (nIndex < 0)
+				{
+					bSuccess = false;
+					break;
+				}
+				string sClass = node.Name.Substring(0, nIndex);
+				string sMethod = node.Name.Substring(nIndex + 1);
+
+				Type thisType = Type.GetType("CoreAPIDemo." + sClass + ", CoreAPIDemo");
+				if (thisType == null)
+				{
+					bSuccess = false;
+					break;
+				}
+
+				MethodInfo theMethod = thisType.GetMethod(sMethod);
+				if (theMethod == null)
+				{
+					bSuccess = false;
+					break;
+				}
+
+				theMethod.Invoke(this, new Object[] { this });
+
+				UpdateControlsFromDocument();
+				UpdatePreviewFromCurrentDocument();
+			} while (false);
+			if (!bSuccess)
+			{
+				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
+				return;
+			}
+		}
+
+		public void UpdatePreviewFromCurrentDocument()
 		{
 			if (m_CurDoc == null)
 				return;
@@ -108,7 +179,7 @@ namespace CoreAPIDemo
 			srcPage = null;
 		}
 
-		private void UpdateControlsFromDocument()
+		public void UpdateControlsFromDocument()
 		{
 			pagesCount.Text = "/0";
 			if (m_CurDoc == null)
@@ -122,7 +193,7 @@ namespace CoreAPIDemo
 			}
 		}
 
-		private void CloseDocument()
+		public void CloseDocument()
 		{
 			if ((m_CurDoc != null) && (m_bNeedToCloseDoc))
 				m_CurDoc.Close();
@@ -132,22 +203,8 @@ namespace CoreAPIDemo
 
 		private void runSample_Click(object sender, EventArgs e)
 		{
-			TreeNode node = sampleTree.SelectedNode;
-			if (node == null)
-			{
-				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
-				return;
-			}
-			Type thisType = this.GetType();
-			MethodInfo theMethod = thisType.GetMethod(node.Name);
-			if (theMethod == null)
-			{
-				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
-				return;
-			}
-			theMethod.Invoke(this, null);
+			InvokeMethod();
 		}
-
 		private void Form1_ResizeEnd(object sender, EventArgs e)
 		{
 			UpdatePreviewFromCurrentDocument();
@@ -188,97 +245,7 @@ namespace CoreAPIDemo
 		}
 		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			TreeNode node = sampleTree.SelectedNode;
-			if (node == null)
-				return;
-			Type thisType = this.GetType();
-			MethodInfo theMethod = thisType.GetMethod(node.Name);
-			if (theMethod == null)
-				return;
-			theMethod.Invoke(this, null);
+			InvokeMethod();
 		}
-
-
-		#region Method Implementations
-		public void createNewDoc()
-		{
-			IPXC_Document coreDoc = m_pxcInst.NewDocument();
-			PXC_Rect rc;
-			rc.left = 0;
-			rc.right = 600;
-			rc.top = 800;
-			rc.bottom = 0;
-			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
-			CloseDocument();
-			m_CurDoc = coreDoc;
-			UpdateControlsFromDocument();
-			UpdatePreviewFromCurrentDocument();
-		}
-
-		public void openDocFromStringPath()
-		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
-			CloseDocument();
-			m_CurDoc = m_pxcInst.OpenDocumentFromFile(sPath, null);
-			m_bNeedToCloseDoc = true;
-			UpdateControlsFromDocument();
-			UpdatePreviewFromCurrentDocument();
-		}
-
-		public void openDocumentFromStream()
-		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
-			CloseDocument();
-			FileStream srcStream = new FileStream(sPath, FileMode.Open);
-			if (srcStream != null)
-			{
-				IStreamWrapper srcIStream = new IStreamWrapper(srcStream);
-				m_CurDoc = m_pxcInst.OpenDocumentFrom(srcIStream, null);
-				m_bNeedToCloseDoc = true;
-				UpdateControlsFromDocument();
-				UpdatePreviewFromCurrentDocument();
-			}
-			srcStream.Close();
-		}
-
-		public class AuthCallback : IPXC_DocAuthCallback
-		{
-			public void AuthDoc(IPXC_Document pDoc, uint nFlags)
-			{
-				//If this method is called then the document is protected
-				pDoc.AuthorizeWithPassword("111");
-			}
-		}
-
-		public void openPasswordProtectedDocument()
-		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\PasswordProtected.pdf";
-			IAFS_Inst fsInst = (IAFS_Inst)m_pxcInst.GetExtension("AFS");
-			IAFS_Name destPath = fsInst.DefaultFileSys.StringToName(sPath); //Converting string to name
-			CloseDocument();
-			AuthCallback clbk = new AuthCallback();
-			m_CurDoc = m_pxcInst.OpenDocumentFrom(destPath, clbk);
-			m_bNeedToCloseDoc = true;
-			UpdateControlsFromDocument();
-			UpdatePreviewFromCurrentDocument();
-		}
-
-		public void saveDocumentToFile()
-		{
-			if (m_CurDoc == null)
-				return;
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "PDF Documents (*.pdf)|*.pdf|All Files (*.*)|*.*";
-			sfd.DefaultExt = "pdf";
-			sfd.FilterIndex = 1;
-			sfd.CheckPathExists = true;
-			if (sfd.ShowDialog() == DialogResult.OK)
-			{
-				m_CurDoc.WriteToFile(sfd.FileName);
-			}
-		}
-		#endregion
-
 	}
 }

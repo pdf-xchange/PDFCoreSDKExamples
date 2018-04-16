@@ -28,17 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Create New Document");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Open Document From String Path");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Open Document From IStream");
-			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Open Password Protected Document From IAFS_Name");
-			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Save Document To File");
-			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Document", new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.sampleTree = new System.Windows.Forms.TreeView();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -61,20 +50,6 @@
 			this.sampleTree.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sampleTree.Location = new System.Drawing.Point(0, 32);
 			this.sampleTree.Name = "sampleTree";
-			treeNode7.Name = "createNewDoc";
-			treeNode7.Text = "Create New Document";
-			treeNode8.Name = "openDocFromStringPath";
-			treeNode8.Text = "Open Document From String Path";
-			treeNode9.Name = "openDocumentFromStream";
-			treeNode9.Text = "Open Document From IStream";
-			treeNode10.Name = "openPasswordProtectedDocument";
-			treeNode10.Text = "Open Password Protected Document From IAFS_Name";
-			treeNode11.Name = "saveDocumentToFile";
-			treeNode11.Text = "Save Document To File";
-			treeNode12.Name = "Document";
-			treeNode12.Text = "Document";
-			this.sampleTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode12});
 			this.sampleTree.Size = new System.Drawing.Size(802, 892);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
@@ -150,7 +125,7 @@
 			// pagesCount
 			// 
 			this.pagesCount.Name = "pagesCount";
-			this.pagesCount.Size = new System.Drawing.Size(29, 29);
+			this.pagesCount.Size = new System.Drawing.Size(29, 28);
 			this.pagesCount.Text = "/0";
 			// 
 			// nextPage
@@ -187,6 +162,7 @@
 			this.Name = "Form1";
 			this.Text = "Form1";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
