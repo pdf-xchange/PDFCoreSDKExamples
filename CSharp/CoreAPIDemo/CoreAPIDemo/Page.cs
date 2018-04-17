@@ -53,5 +53,20 @@ namespace CoreAPIDemo
 			else
 				MessageBox.Show("The last page can't be removed from the document!");
 		}
+
+		[Description("Move First Page Of The Current Document Into The Last Page Position")]
+		static public void MoveFirstPageToBack(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocFromStringPath(Parent);
+			IAUX_Inst auxInst = (IAUX_Inst)Parent.m_pxcInst.GetExtension("AUX");
+			IBitSet bs = auxInst.CreateBitSet(1);
+			bs.Set(0);
+			IPXC_UndoRedoData urd = null;
+			if (Parent.m_CurDoc.Pages.Count > 1)
+				Parent.m_CurDoc.Pages.MovePages(bs, Parent.m_CurDoc.Pages.Count, null, out urd);
+			else
+				MessageBox.Show("Current document has one page - nothing to move!");
+		}
 	}
 }

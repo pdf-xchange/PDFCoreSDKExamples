@@ -148,7 +148,8 @@ namespace CoreAPIDemo
 			MethodInfo theMethod = GetCurrentMethod(curNode);
 			if (theMethod == null)
 			{
-				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
+				if (curNode.Name.IndexOf('_') >= 0)
+					MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
 				return;
 			}
 
