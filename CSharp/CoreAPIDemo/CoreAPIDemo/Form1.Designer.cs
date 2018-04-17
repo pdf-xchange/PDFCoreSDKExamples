@@ -62,9 +62,12 @@
 			// 
 			this.sampleTree.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sampleTree.FullRowSelect = true;
+			this.sampleTree.HideSelection = false;
 			this.sampleTree.HotTracking = true;
+			this.sampleTree.ItemHeight = 26;
 			this.sampleTree.Location = new System.Drawing.Point(0, 35);
 			this.sampleTree.Name = "sampleTree";
+			this.sampleTree.ShowLines = false;
 			this.sampleTree.Size = new System.Drawing.Size(572, 864);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseClick);
