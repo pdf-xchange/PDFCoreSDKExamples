@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.sampleTree = new System.Windows.Forms.TreeView();
 			this.splitter1 = new System.Windows.Forms.Splitter();
@@ -40,10 +41,11 @@
 			this.nextPage = new System.Windows.Forms.ToolStripButton();
 			this.previewImage = new System.Windows.Forms.PictureBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
-			this.codeSource = new System.Windows.Forms.TextBox();
+			this.codeSource = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.codeSource)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// sampleTree
@@ -79,12 +81,11 @@
 			// 
 			// runSample
 			// 
-			this.runSample.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.runSample.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.runSample.Image = ((System.Drawing.Image)(resources.GetObject("runSample.Image")));
 			this.runSample.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.runSample.Name = "runSample";
-			this.runSample.Size = new System.Drawing.Size(169, 42);
+			this.runSample.Size = new System.Drawing.Size(193, 42);
 			this.runSample.Text = "Run Sample";
 			this.runSample.Click += new System.EventHandler(this.runSample_Click);
 			// 
@@ -157,13 +158,36 @@
 			// 
 			// codeSource
 			// 
+			this.codeSource.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.codeSource.AutoScrollMinSize = new System.Drawing.Size(35, 22);
+			this.codeSource.BackBrush = null;
+			this.codeSource.CharHeight = 22;
+			this.codeSource.CharWidth = 12;
+			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
+			this.codeSource.IsReplaceMode = false;
+			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.Location = new System.Drawing.Point(812, 532);
-			this.codeSource.Multiline = true;
 			this.codeSource.Name = "codeSource";
+			this.codeSource.Paddings = new System.Windows.Forms.Padding(0);
 			this.codeSource.ReadOnly = true;
+			this.codeSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.codeSource.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("codeSource.ServiceColors")));
 			this.codeSource.Size = new System.Drawing.Size(740, 392);
 			this.codeSource.TabIndex = 2;
+			this.codeSource.Zoom = 100;
 			// 
 			// Form1
 			// 
@@ -187,6 +211,7 @@
 			this.toolStrip2.ResumeLayout(false);
 			this.toolStrip2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.codeSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -205,7 +230,7 @@
 		private System.Windows.Forms.PictureBox previewImage;
 		private System.Windows.Forms.ToolStripLabel pagesCount;
 		private System.Windows.Forms.Splitter splitter2;
-		private System.Windows.Forms.TextBox codeSource;
+		private FastColoredTextBoxNS.FastColoredTextBox codeSource;
 	}
 }
 
