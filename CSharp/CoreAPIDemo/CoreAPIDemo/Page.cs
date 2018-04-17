@@ -68,5 +68,18 @@ namespace CoreAPIDemo
 			else
 				MessageBox.Show("Current document has one page - nothing to move!");
 		}
+
+		[Description("Resize Document Pages To The Size Of The Content")]
+		static public void ResizeDocumentPagesToTheContent(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocFromStringPath(Parent);
+			for (uint i = 0; i < Parent.m_CurDoc.Pages.Count; i++)
+			{
+				IPXC_Page page = Parent.m_CurDoc.Pages[i];
+				PXC_Rect contentRect = page.get_Box(PXC_BoxType.PBox_BleedBox);
+				page.set_Box(PXC_BoxType.PBox_MediaBox, ref contentRect);
+			}
+		}
 	}
 }

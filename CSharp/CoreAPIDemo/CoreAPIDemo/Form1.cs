@@ -28,11 +28,12 @@ namespace CoreAPIDemo
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
 
 			ImageList il = new ImageList();
-			Bitmap img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\folder_24.png");
+			string sImgFolder = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\";
+			Bitmap img = new Bitmap(sImgFolder + "folder_24.png");
 			il.Images.Add(img);
-			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\run_24.png");
+			img = new Bitmap(sImgFolder + "run_24.png");
 			il.Images.Add(img);
-			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\runGreyed_24.png");
+			img = new Bitmap(sImgFolder + "runGreyed_24.png");
 			il.Images.Add(img);
 			sampleTree.ImageList = il;
 			RefillTree();
@@ -179,7 +180,7 @@ namespace CoreAPIDemo
 			MethodInfo theMethod = GetCurrentMethod(curNode);
 			if (theMethod == null)
 			{
-				if (curNode.Name.IndexOf('_') >= 0)
+				if ((curNode == null) || (curNode.Name.IndexOf('_') >= 0))
 					MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
 				return;
 			}
