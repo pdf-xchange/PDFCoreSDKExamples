@@ -104,8 +104,12 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Images\" />
+    <Content Include="Images\folder_24.png" />
+    <Content Include="Images\next_24.png" />
+    <Content Include="Images\prev_24.png" />
+    <Content Include="Images\run_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

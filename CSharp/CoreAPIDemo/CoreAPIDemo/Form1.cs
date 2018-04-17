@@ -22,6 +22,12 @@ namespace CoreAPIDemo
 		}
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			ImageList il = new ImageList();
+			Bitmap img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\folder_24.png");
+			il.Images.Add(img);
+			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\run_24.png");
+			il.Images.Add(img);
+			sampleTree.ImageList = il;
 			Type[] typeList = Assembly.GetExecutingAssembly().GetTypes();
 			foreach (Type t in typeList)
 			{
@@ -34,12 +40,25 @@ namespace CoreAPIDemo
 			DescriptionAttribute attr = classType.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
 			if (attr == null)
 				return;
+			
 			TreeNode root = sampleTree.Nodes.Insert(-1, attr.Description);
+			root.ImageIndex = 0;
+			root.SelectedImageIndex = 0;
 			foreach (MethodInfo mi in classType.GetMethods())
 			{
 				attr = mi.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
 				if (attr != null)
-					root.Nodes.Insert(-1, classType.Name + "_" + mi.Name, attr.Description);
+				{
+					TreeNode child = root.Nodes.Insert(-1, classType.Name + "_" + mi.Name, attr.Description);
+					if (child != null)
+					{
+						child.ImageIndex = 1;
+						child.SelectedImageIndex = 1;
+					}
+						
+
+				}
+					
 			}
 		}
 
@@ -116,9 +135,9 @@ namespace CoreAPIDemo
 			codeSource.Text = GetMethodCode(theMethod.DeclaringType.Name, theMethod.Name);
 		}
 
-		private void InvokeMethod()
+		private void InvokeMethod(TreeNode curNode)
 		{
-			MethodInfo theMethod = GetCurrentMethod(null);
+			MethodInfo theMethod = GetCurrentMethod(curNode);
 			if (theMethod == null)
 			{
 				MessageBox.Show("Please select a sample from the needed category in sample tree and click Run Sample to execute it.");
@@ -241,7 +260,7 @@ namespace CoreAPIDemo
 
 		private void runSample_Click(object sender, EventArgs e)
 		{
-			InvokeMethod();
+			InvokeMethod(null);
 		}
 		private void Form1_ResizeEnd(object sender, EventArgs e)
 		{
@@ -283,12 +302,15 @@ namespace CoreAPIDemo
 		}
 		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			InvokeMethod();
+			InvokeMethod(e.Node);
 		}
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			UpdateCodeSample(e.Node);
+			if ((e.X < e.Node.Bounds.Left) && (e.Node.Name.IndexOf('_') >= 0))
+				InvokeMethod(e.Node);
+			else
+				UpdateCodeSample(e.Node);
 		}
 
 		private void splitter2_SplitterMoved(object sender, SplitterEventArgs e)
