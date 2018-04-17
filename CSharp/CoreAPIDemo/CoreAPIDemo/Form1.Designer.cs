@@ -161,6 +161,7 @@
 			this.codeSource.Location = new System.Drawing.Point(812, 532);
 			this.codeSource.Multiline = true;
 			this.codeSource.Name = "codeSource";
+			this.codeSource.ReadOnly = true;
 			this.codeSource.Size = new System.Drawing.Size(740, 392);
 			this.codeSource.TabIndex = 2;
 			// 

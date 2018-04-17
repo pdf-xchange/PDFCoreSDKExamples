@@ -13,9 +13,7 @@ namespace CoreAPIDemo
 	{
 		public IPXC_Inst		m_pxcInst = null;
 		public IPXC_Document	m_CurDoc = null;
-		public bool				m_bNeedToCloseDoc = false;
-
-		//public Document			m_DocTests = null;
+		
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
@@ -232,10 +230,13 @@ namespace CoreAPIDemo
 
 		public void CloseDocument()
 		{
-			if ((m_CurDoc != null) && (m_bNeedToCloseDoc))
+			if (m_CurDoc != null)
+			{
 				m_CurDoc.Close();
-			m_CurDoc = null;
-			m_bNeedToCloseDoc = false;
+				m_CurDoc = null;
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
 		}
 
 		private void runSample_Click(object sender, EventArgs e)

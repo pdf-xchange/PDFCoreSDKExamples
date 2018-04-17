@@ -29,7 +29,6 @@ namespace CoreAPIDemo
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
-			Parent.m_bNeedToCloseDoc = true;
 		}
 
 		[Description("Open Document From IStream")]
@@ -42,9 +41,7 @@ namespace CoreAPIDemo
 			{
 				IStreamWrapper srcIStream = new IStreamWrapper(srcStream);
 				Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(srcIStream, null);
-				Parent.m_bNeedToCloseDoc = true;
 			}
-			srcStream.Close();
 		}
 
 		private class AuthCallback : IPXC_DocAuthCallback
@@ -65,7 +62,6 @@ namespace CoreAPIDemo
 			Parent.CloseDocument();
 			AuthCallback clbk = new AuthCallback();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(destPath, clbk);
-			Parent.m_bNeedToCloseDoc = true;
 		}
 
 		[Description("Save Document To File")]
