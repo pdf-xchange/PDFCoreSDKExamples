@@ -76,7 +76,7 @@
             this.runSample});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(873, 35);
+			this.toolStrip1.Size = new System.Drawing.Size(841, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -100,7 +100,7 @@
             this.nextPage});
 			this.toolStrip2.Location = new System.Drawing.Point(696, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(873, 31);
+			this.toolStrip2.Size = new System.Drawing.Size(841, 31);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -143,7 +143,7 @@
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(696, 0);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(873, 528);
+			this.previewImage.Size = new System.Drawing.Size(841, 472);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
@@ -152,7 +152,7 @@
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitter2.Location = new System.Drawing.Point(696, 518);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(873, 10);
+			this.splitter2.Size = new System.Drawing.Size(841, 10);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -222,6 +222,7 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
+			this.Resize += new System.EventHandler(this.Form1_Resize);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);

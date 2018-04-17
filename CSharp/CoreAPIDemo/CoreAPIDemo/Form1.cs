@@ -1,10 +1,8 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
-using Microsoft.CSharp;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
@@ -26,6 +24,8 @@ namespace CoreAPIDemo
 			Bitmap img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\folder_24.png");
 			il.Images.Add(img);
 			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\run_24.png");
+			il.Images.Add(img);
+			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\runGreyed_24.png");
 			il.Images.Add(img);
 			sampleTree.ImageList = il;
 			Type[] typeList = Assembly.GetExecutingAssembly().GetTypes();
@@ -52,11 +52,9 @@ namespace CoreAPIDemo
 					TreeNode child = root.Nodes.Insert(-1, classType.Name + "_" + mi.Name, attr.Description);
 					if (child != null)
 					{
-						child.ImageIndex = 1;
+						child.ImageIndex = 2;
 						child.SelectedImageIndex = 1;
 					}
-						
-
 				}
 					
 			}
@@ -121,7 +119,17 @@ namespace CoreAPIDemo
 				return "";
 			nEnd += sWS.Length + 2;
 			string sRes = sData.Substring(nIndex, nEnd - nIndex);
-			sRes = sRes.Replace(sWS, "");
+			string[] aData = sRes.Split('\n');
+			sRes = "";
+			for (int i = 0; i < aData.Length; i++)
+			{
+				string sTmp = aData[i];
+				int nPos = sTmp.IndexOf(sWS);
+				if (nPos < 0)
+					sRes += sTmp;
+				else
+					sRes += sTmp.Substring(sWS.Length);
+			}
 			return sRes;
 		}
 
@@ -211,6 +219,8 @@ namespace CoreAPIDemo
 				destRect.bottom = rcRes.top - rcRes.bottom;
 			}
 
+			if (((int)(destRect.right - destRect.left) < 1) || ((int)(destRect.bottom - destRect.top) < 1))
+				return;
 			Bitmap image = new Bitmap((int)(destRect.right - destRect.left), (int)(destRect.bottom - destRect.top));
 
 
@@ -307,10 +317,9 @@ namespace CoreAPIDemo
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
+			UpdateCodeSample(e.Node);
 			if ((e.X < e.Node.Bounds.Left) && (e.Node.Name.IndexOf('_') >= 0))
 				InvokeMethod(e.Node);
-			else
-				UpdateCodeSample(e.Node);
 		}
 
 		private void splitter2_SplitterMoved(object sender, SplitterEventArgs e)
@@ -321,6 +330,17 @@ namespace CoreAPIDemo
 		private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			UpdatePreviewFromCurrentDocument();
+		}
+
+		private FormWindowState m_LastWndState = FormWindowState.Normal;
+		private void Form1_Resize(object sender, EventArgs e)
+		{
+			if (WindowState != m_LastWndState)
+			{
+				UpdatePreviewFromCurrentDocument();
+				m_LastWndState = WindowState;
+			}
+			
 		}
 	}
 }

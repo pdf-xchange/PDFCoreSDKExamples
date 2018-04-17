@@ -62,6 +62,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IStreamWrapper.cs" />
+    <Compile Include="Page.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -109,6 +110,7 @@
     <Content Include="Images\folder_24.png" />
     <Content Include="Images\next_24.png" />
     <Content Include="Images\prev_24.png" />
+    <Content Include="Images\runGreyed_24.png" />
     <Content Include="Images\run_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
