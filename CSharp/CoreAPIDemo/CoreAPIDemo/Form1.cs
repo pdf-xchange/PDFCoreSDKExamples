@@ -2,24 +2,31 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
+
 	public partial class Form1 : Form
 	{
 		public IPXC_Inst		m_pxcInst = null;
 		public IPXC_Document	m_CurDoc = null;
-		
+
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
 			m_pxcInst.Init("");
 			InitializeComponent();
 		}
+		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+		private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
+
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			SetWindowTheme(sampleTree.Handle, "explorer", null);
+
 			ImageList il = new ImageList();
 			Bitmap img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\folder_24.png");
 			il.Images.Add(img);
@@ -40,7 +47,7 @@ namespace CoreAPIDemo
 			DescriptionAttribute attr = classType.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
 			if (attr == null)
 				return;
-			
+
 			TreeNode root = sampleTree.Nodes.Insert(-1, attr.Description);
 			root.ImageIndex = 0;
 			root.SelectedImageIndex = 0;
@@ -56,7 +63,7 @@ namespace CoreAPIDemo
 						child.SelectedImageIndex = 1;
 					}
 				}
-					
+
 			}
 		}
 
@@ -341,7 +348,7 @@ namespace CoreAPIDemo
 				UpdatePreviewFromCurrentDocument();
 				m_LastWndState = WindowState;
 			}
-			
+
 		}
 	}
 }
