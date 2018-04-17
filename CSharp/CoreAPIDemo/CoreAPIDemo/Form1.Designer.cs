@@ -46,8 +46,11 @@
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.panel3 = new System.Windows.Forms.Panel();
 			this.toolStrip3 = new System.Windows.Forms.ToolStrip();
-			this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+			this.filterEdit = new System.Windows.Forms.ToolStripTextBox();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.expandAll = new System.Windows.Forms.ToolStripButton();
+			this.collapseAll = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -68,14 +71,14 @@
 			this.sampleTree.Location = new System.Drawing.Point(0, 35);
 			this.sampleTree.Name = "sampleTree";
 			this.sampleTree.ShowLines = false;
-			this.sampleTree.Size = new System.Drawing.Size(572, 864);
+			this.sampleTree.Size = new System.Drawing.Size(758, 864);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseClick);
 			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
 			// 
 			// splitter1
 			// 
-			this.splitter1.Location = new System.Drawing.Point(572, 0);
+			this.splitter1.Location = new System.Drawing.Point(758, 0);
 			this.splitter1.Name = "splitter1";
 			this.splitter1.Size = new System.Drawing.Size(10, 899);
 			this.splitter1.TabIndex = 0;
@@ -89,7 +92,7 @@
             this.runSample});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(987, 35);
+			this.toolStrip1.Size = new System.Drawing.Size(801, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -113,7 +116,7 @@
             this.nextPage});
 			this.toolStrip2.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(987, 35);
+			this.toolStrip2.Size = new System.Drawing.Size(801, 35);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -123,7 +126,7 @@
 			this.prevPage.Image = ((System.Drawing.Image)(resources.GetObject("prevPage.Image")));
 			this.prevPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.prevPage.Name = "prevPage";
-			this.prevPage.Size = new System.Drawing.Size(28, 28);
+			this.prevPage.Size = new System.Drawing.Size(28, 32);
 			this.prevPage.Text = "Previuos Page";
 			this.prevPage.Click += new System.EventHandler(this.prevPage_Click);
 			// 
@@ -139,7 +142,7 @@
 			// pagesCount
 			// 
 			this.pagesCount.Name = "pagesCount";
-			this.pagesCount.Size = new System.Drawing.Size(29, 28);
+			this.pagesCount.Size = new System.Drawing.Size(29, 32);
 			this.pagesCount.Text = "/0";
 			// 
 			// nextPage
@@ -148,7 +151,7 @@
 			this.nextPage.Image = ((System.Drawing.Image)(resources.GetObject("nextPage.Image")));
 			this.nextPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.nextPage.Name = "nextPage";
-			this.nextPage.Size = new System.Drawing.Size(28, 28);
+			this.nextPage.Size = new System.Drawing.Size(28, 32);
 			this.nextPage.Text = "Next Page";
 			this.nextPage.Click += new System.EventHandler(this.nextPage_Click);
 			// 
@@ -159,16 +162,16 @@
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(0, 35);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(987, 483);
+			this.previewImage.Size = new System.Drawing.Size(801, 483);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
 			// splitter2
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.splitter2.Location = new System.Drawing.Point(582, 518);
+			this.splitter2.Location = new System.Drawing.Point(768, 518);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(987, 10);
+			this.splitter2.Size = new System.Drawing.Size(801, 10);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -196,7 +199,6 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -209,7 +211,7 @@
 			this.codeSource.RightBracket2 = '}';
 			this.codeSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
 			this.codeSource.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("codeSource.ServiceColors")));
-			this.codeSource.Size = new System.Drawing.Size(987, 336);
+			this.codeSource.Size = new System.Drawing.Size(801, 336);
 			this.codeSource.TabIndex = 2;
 			this.codeSource.Zoom = 100;
 			// 
@@ -218,9 +220,9 @@
 			this.panel1.Controls.Add(this.codeSource);
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(582, 528);
+			this.panel1.Location = new System.Drawing.Point(768, 528);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(987, 371);
+			this.panel1.Size = new System.Drawing.Size(801, 371);
 			this.panel1.TabIndex = 3;
 			// 
 			// panel2
@@ -228,9 +230,9 @@
 			this.panel2.Controls.Add(this.previewImage);
 			this.panel2.Controls.Add(this.toolStrip2);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(582, 0);
+			this.panel2.Location = new System.Drawing.Point(768, 0);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(987, 518);
+			this.panel2.Size = new System.Drawing.Size(801, 518);
 			this.panel2.TabIndex = 4;
 			// 
 			// panel3
@@ -240,27 +242,31 @@
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel3.Location = new System.Drawing.Point(0, 0);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(572, 899);
+			this.panel3.Size = new System.Drawing.Size(758, 899);
 			this.panel3.TabIndex = 5;
 			// 
 			// toolStrip3
 			// 
 			this.toolStrip3.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripTextBox1,
-            this.toolStripButton1});
+            this.filterEdit,
+            this.toolStripButton1,
+            this.toolStripSeparator1,
+            this.expandAll,
+            this.collapseAll});
 			this.toolStrip3.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip3.Name = "toolStrip3";
-			this.toolStrip3.Size = new System.Drawing.Size(572, 35);
+			this.toolStrip3.Size = new System.Drawing.Size(758, 35);
 			this.toolStrip3.TabIndex = 1;
 			this.toolStrip3.Text = "toolStrip3";
 			// 
-			// toolStripTextBox1
+			// filterEdit
 			// 
-			this.toolStripTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
-			this.toolStripTextBox1.Name = "toolStripTextBox1";
-			this.toolStripTextBox1.Size = new System.Drawing.Size(500, 31);
+			this.filterEdit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.filterEdit.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+			this.filterEdit.Name = "filterEdit";
+			this.filterEdit.Size = new System.Drawing.Size(500, 31);
+			this.filterEdit.TextChanged += new System.EventHandler(this.filterEdit_TextChanged);
 			// 
 			// toolStripButton1
 			// 
@@ -268,8 +274,34 @@
 			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(28, 31);
-			this.toolStripButton1.Text = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(28, 32);
+			this.toolStripButton1.Text = "Filter Samples";
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 35);
+			// 
+			// expandAll
+			// 
+			this.expandAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.expandAll.Image = ((System.Drawing.Image)(resources.GetObject("expandAll.Image")));
+			this.expandAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.expandAll.Name = "expandAll";
+			this.expandAll.Size = new System.Drawing.Size(28, 32);
+			this.expandAll.Text = "Expand All";
+			this.expandAll.Click += new System.EventHandler(this.expandAll_Click);
+			// 
+			// collapseAll
+			// 
+			this.collapseAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.collapseAll.Image = ((System.Drawing.Image)(resources.GetObject("collapseAll.Image")));
+			this.collapseAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.collapseAll.Name = "collapseAll";
+			this.collapseAll.Size = new System.Drawing.Size(28, 32);
+			this.collapseAll.Text = "Collapse All";
+			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
 			// 
 			// Form1
 			// 
@@ -323,8 +355,11 @@
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.ToolStrip toolStrip3;
-		private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+		private System.Windows.Forms.ToolStripTextBox filterEdit;
 		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton expandAll;
+		private System.Windows.Forms.ToolStripButton collapseAll;
 	}
 }
 

@@ -107,6 +107,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Images\collapseAll_24.png" />
+    <Content Include="Images\expandAll_24.png" />
+    <Content Include="Images\filter_24.png" />
     <Content Include="Images\folder_24.png" />
     <Content Include="Images\next_24.png" />
     <Content Include="Images\prev_24.png" />

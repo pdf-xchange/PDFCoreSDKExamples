@@ -35,6 +35,12 @@ namespace CoreAPIDemo
 			img = new Bitmap(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\runGreyed_24.png");
 			il.Images.Add(img);
 			sampleTree.ImageList = il;
+			RefillTree();
+		}
+
+		private void RefillTree()
+		{
+			sampleTree.Nodes.Clear();
 			Type[] typeList = Assembly.GetExecutingAssembly().GetTypes();
 			foreach (Type t in typeList)
 			{
@@ -48,13 +54,27 @@ namespace CoreAPIDemo
 			if (attr == null)
 				return;
 
+			string[] aFilters = filterEdit.Text.Split(' ');
 			TreeNode root = sampleTree.Nodes.Insert(-1, attr.Description);
 			root.ImageIndex = 0;
 			root.SelectedImageIndex = 0;
 			foreach (MethodInfo mi in classType.GetMethods())
 			{
 				attr = mi.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
-				if (attr != null)
+				if (attr == null)
+					continue;
+				bool bSuccess = true;
+				for (int i = 0; i < aFilters.Length; i++)
+				{
+					if ((aFilters[i].Length == 0) && (aFilters.Length > 1))
+						continue;
+					if (attr.Description.IndexOf(aFilters[i], StringComparison.CurrentCultureIgnoreCase) < 0)
+					{
+						bSuccess = false;
+						break;
+					}
+				}
+				if (bSuccess)
 				{
 					TreeNode child = root.Nodes.Insert(-1, classType.Name + "_" + mi.Name, attr.Description);
 					if (child != null)
@@ -63,8 +83,10 @@ namespace CoreAPIDemo
 						child.SelectedImageIndex = 1;
 					}
 				}
-
 			}
+			root.Expand();
+			if (root.Nodes.Count == 0)
+				sampleTree.Nodes.Remove(root);
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
@@ -349,6 +371,26 @@ namespace CoreAPIDemo
 				m_LastWndState = WindowState;
 			}
 
+		}
+
+		private void filterEdit_TextChanged(object sender, EventArgs e)
+		{
+			RefillTree();
+		}
+
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			RefillTree();
+		}
+
+		private void expandAll_Click(object sender, EventArgs e)
+		{
+			sampleTree.ExpandAll();
+		}
+
+		private void collapseAll_Click(object sender, EventArgs e)
+		{
+			sampleTree.CollapseAll();
 		}
 	}
 }
