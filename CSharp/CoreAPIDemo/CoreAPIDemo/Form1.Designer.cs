@@ -75,7 +75,7 @@
             this.runSample});
 			this.toolStrip1.Location = new System.Drawing.Point(696, 472);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(659, 35);
+			this.toolStrip1.Size = new System.Drawing.Size(841, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -99,7 +99,7 @@
             this.nextPage});
 			this.toolStrip2.Location = new System.Drawing.Point(696, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(659, 31);
+			this.toolStrip2.Size = new System.Drawing.Size(841, 31);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -142,7 +142,7 @@
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(696, 0);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(659, 472);
+			this.previewImage.Size = new System.Drawing.Size(841, 472);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
@@ -151,7 +151,7 @@
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitter2.Location = new System.Drawing.Point(696, 462);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(659, 10);
+			this.splitter2.Size = new System.Drawing.Size(841, 10);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -169,23 +169,29 @@
         '\"',
         '\'',
         '\''};
+			this.codeSource.AutoIndentCharsPatterns = "\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\n^\\s*(case|default)\\s*[^:]*(" +
+    "?<range>:)\\s*(?<range>[^;]+);\n";
 			this.codeSource.AutoScrollMinSize = new System.Drawing.Size(35, 22);
 			this.codeSource.BackBrush = null;
+			this.codeSource.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
 			this.codeSource.CharHeight = 22;
 			this.codeSource.CharWidth = 12;
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
-			this.codeSource.Location = new System.Drawing.Point(812, 532);
+			this.codeSource.LeftBracket = '(';
+			this.codeSource.LeftBracket2 = '{';
+			this.codeSource.Location = new System.Drawing.Point(696, 507);
 			this.codeSource.Name = "codeSource";
 			this.codeSource.Paddings = new System.Windows.Forms.Padding(0);
 			this.codeSource.ReadOnly = true;
+			this.codeSource.RightBracket = ')';
+			this.codeSource.RightBracket2 = '}';
 			this.codeSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
 			this.codeSource.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("codeSource.ServiceColors")));
-			this.codeSource.Size = new System.Drawing.Size(740, 392);
+			this.codeSource.Size = new System.Drawing.Size(841, 392);
 			this.codeSource.TabIndex = 2;
 			this.codeSource.Zoom = 100;
 			// 
@@ -193,7 +199,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1355, 899);
+			this.ClientSize = new System.Drawing.Size(1537, 899);
 			this.Controls.Add(this.toolStrip2);
 			this.Controls.Add(this.splitter2);
 			this.Controls.Add(this.previewImage);
@@ -206,6 +212,7 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
+			this.Resize += new System.EventHandler(this.Form1_Resize);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);

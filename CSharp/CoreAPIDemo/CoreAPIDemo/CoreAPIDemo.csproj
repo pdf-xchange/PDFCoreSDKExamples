@@ -109,6 +109,7 @@
     <Content Include="Images\folder_24.png" />
     <Content Include="Images\next_24.png" />
     <Content Include="Images\prev_24.png" />
+    <Content Include="Images\runGreyed_24.png" />
     <Content Include="Images\run_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
