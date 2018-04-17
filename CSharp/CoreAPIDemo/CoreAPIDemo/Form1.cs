@@ -40,6 +40,7 @@ namespace CoreAPIDemo
 
 		private void RefillTree()
 		{
+			sampleTree.BeginUpdate();
 			sampleTree.Nodes.Clear();
 			Type[] typeList = Assembly.GetExecutingAssembly().GetTypes();
 			foreach (Type t in typeList)
@@ -47,6 +48,7 @@ namespace CoreAPIDemo
 				AddClassToTree(t);
 			}
 			sampleTree.Sort();
+			sampleTree.EndUpdate();
 		}
 		private void AddClassToTree(Type classType)
 		{
