@@ -51,16 +51,16 @@
 			this.sampleTree.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sampleTree.Location = new System.Drawing.Point(0, 0);
 			this.sampleTree.Name = "sampleTree";
-			this.sampleTree.Size = new System.Drawing.Size(802, 924);
+			this.sampleTree.Size = new System.Drawing.Size(686, 899);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseClick);
 			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
 			// 
 			// splitter1
 			// 
-			this.splitter1.Location = new System.Drawing.Point(802, 0);
+			this.splitter1.Location = new System.Drawing.Point(686, 0);
 			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(10, 924);
+			this.splitter1.Size = new System.Drawing.Size(10, 899);
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
 			this.splitter1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter1_SplitterMoved);
@@ -71,20 +71,19 @@
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runSample});
-			this.toolStrip1.Location = new System.Drawing.Point(812, 477);
+			this.toolStrip1.Location = new System.Drawing.Point(696, 472);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(740, 45);
+			this.toolStrip1.Size = new System.Drawing.Size(659, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// runSample
 			// 
-			this.runSample.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.runSample.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.runSample.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.runSample.Image = ((System.Drawing.Image)(resources.GetObject("runSample.Image")));
 			this.runSample.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.runSample.Name = "runSample";
-			this.runSample.Size = new System.Drawing.Size(169, 42);
+			this.runSample.Size = new System.Drawing.Size(144, 32);
 			this.runSample.Text = "Run Sample";
 			this.runSample.Click += new System.EventHandler(this.runSample_Click);
 			// 
@@ -96,9 +95,9 @@
             this.currentPage,
             this.pagesCount,
             this.nextPage});
-			this.toolStrip2.Location = new System.Drawing.Point(812, 0);
+			this.toolStrip2.Location = new System.Drawing.Point(696, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(740, 31);
+			this.toolStrip2.Size = new System.Drawing.Size(659, 31);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -139,18 +138,18 @@
 			// 
 			this.previewImage.BackColor = System.Drawing.SystemColors.Control;
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.previewImage.Location = new System.Drawing.Point(812, 0);
+			this.previewImage.Location = new System.Drawing.Point(696, 0);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(740, 532);
+			this.previewImage.Size = new System.Drawing.Size(659, 472);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
 			// splitter2
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.splitter2.Location = new System.Drawing.Point(812, 522);
+			this.splitter2.Location = new System.Drawing.Point(696, 462);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(740, 10);
+			this.splitter2.Size = new System.Drawing.Size(659, 10);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -158,22 +157,22 @@
 			// codeSource
 			// 
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.codeSource.Location = new System.Drawing.Point(812, 532);
+			this.codeSource.Location = new System.Drawing.Point(696, 507);
 			this.codeSource.Multiline = true;
 			this.codeSource.Name = "codeSource";
 			this.codeSource.ReadOnly = true;
-			this.codeSource.Size = new System.Drawing.Size(740, 392);
+			this.codeSource.Size = new System.Drawing.Size(659, 392);
 			this.codeSource.TabIndex = 2;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1552, 924);
+			this.ClientSize = new System.Drawing.Size(1355, 899);
 			this.Controls.Add(this.toolStrip2);
-			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.splitter2);
 			this.Controls.Add(this.previewImage);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.codeSource);
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.sampleTree);
