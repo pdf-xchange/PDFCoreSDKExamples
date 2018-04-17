@@ -71,7 +71,7 @@
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runSample});
-			this.toolStrip1.Location = new System.Drawing.Point(812, 879);
+			this.toolStrip1.Location = new System.Drawing.Point(812, 477);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(740, 45);
 			this.toolStrip1.TabIndex = 0;
@@ -141,14 +141,14 @@
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(812, 0);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(740, 487);
+			this.previewImage.Size = new System.Drawing.Size(740, 532);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
 			// splitter2
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.splitter2.Location = new System.Drawing.Point(812, 477);
+			this.splitter2.Location = new System.Drawing.Point(812, 522);
 			this.splitter2.Name = "splitter2";
 			this.splitter2.Size = new System.Drawing.Size(740, 10);
 			this.splitter2.TabIndex = 0;
@@ -158,7 +158,7 @@
 			// codeSource
 			// 
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.codeSource.Location = new System.Drawing.Point(812, 487);
+			this.codeSource.Location = new System.Drawing.Point(812, 532);
 			this.codeSource.Multiline = true;
 			this.codeSource.Name = "codeSource";
 			this.codeSource.Size = new System.Drawing.Size(740, 392);
@@ -170,10 +170,10 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1552, 924);
 			this.Controls.Add(this.toolStrip2);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.splitter2);
 			this.Controls.Add(this.previewImage);
 			this.Controls.Add(this.codeSource);
-			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.sampleTree);
 			this.Name = "Form1";

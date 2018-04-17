@@ -66,7 +66,6 @@ namespace CoreAPIDemo
 			AuthCallback clbk = new AuthCallback();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(destPath, clbk);
 			Parent.m_bNeedToCloseDoc = true;
-			
 		}
 
 		[Description("Save Document To File")]
