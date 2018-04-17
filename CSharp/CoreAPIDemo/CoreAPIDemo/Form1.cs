@@ -317,9 +317,9 @@ namespace CoreAPIDemo
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
+			UpdateCodeSample(e.Node);
 			if ((e.X < e.Node.Bounds.Left) && (e.Node.Name.IndexOf('_') >= 0))
 				InvokeMethod(e.Node);
-			UpdateCodeSample(e.Node);
 		}
 
 		private void splitter2_SplitterMoved(object sender, SplitterEventArgs e)
