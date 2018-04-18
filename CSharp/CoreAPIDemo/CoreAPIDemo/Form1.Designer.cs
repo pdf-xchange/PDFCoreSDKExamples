@@ -34,6 +34,7 @@
 			this.splitter1 = new System.Windows.Forms.Splitter();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.runSample = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.prevPage = new System.Windows.Forms.ToolStripButton();
 			this.currentPage = new System.Windows.Forms.ToolStripTextBox();
@@ -51,7 +52,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandAll = new System.Windows.Forms.ToolStripButton();
 			this.collapseAll = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -91,6 +92,7 @@
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runSample,
+            this.toolStripSeparator2,
             this.toolStripButton2});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
@@ -107,6 +109,15 @@
 			this.runSample.Size = new System.Drawing.Size(144, 32);
 			this.runSample.Text = "Run Sample";
 			this.runSample.Click += new System.EventHandler(this.runSample_Click);
+			// 
+			// toolStripButton2
+			// 
+			this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton2.Name = "toolStripButton2";
+			this.toolStripButton2.Size = new System.Drawing.Size(144, 32);
+			this.toolStripButton2.Text = "Go to Source";
+			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
 			// 
 			// toolStrip2
 			// 
@@ -201,7 +212,6 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -306,14 +316,10 @@
 			this.collapseAll.Text = "Collapse All";
 			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
 			// 
-			// toolStripButton2
+			// toolStripSeparator2
 			// 
-			this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton2.Name = "toolStripButton2";
-			this.toolStripButton2.Size = new System.Drawing.Size(144, 32);
-			this.toolStripButton2.Text = "Go to Source";
-			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 35);
 			// 
 			// Form1
 			// 
@@ -374,6 +380,7 @@
 		private System.Windows.Forms.ToolStripButton expandAll;
 		private System.Windows.Forms.ToolStripButton collapseAll;
 		private System.Windows.Forms.ToolStripButton toolStripButton2;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	}
 }
 

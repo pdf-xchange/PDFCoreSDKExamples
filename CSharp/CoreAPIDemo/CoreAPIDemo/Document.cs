@@ -8,7 +8,7 @@ namespace CoreAPIDemo
 	[Description("Document")]
 	public class Document
 	{
-		[Description("Create New Document")]
+		[Description("Create new document")]
 		static public void CreateNewDoc(Form1 Parent)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
@@ -23,7 +23,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = coreDoc;
 		}
 
-		[Description("Open Document From String Path")]
+		[Description("Open document from string path")]
 		static public void OpenDocFromStringPath(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
@@ -31,7 +31,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
 		}
 
-		[Description("Open Document From IStream")]
+		[Description("Open document from IStream")]
 		static public void OpenDocumentFromStream(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
@@ -53,7 +53,7 @@ namespace CoreAPIDemo
 			}
 		}
 
-		[Description("Open Password Protected Document From IAFS_Name")]
+		[Description("Open password protected document from IAFS_Name")]
 		static public void OpenPasswordProtectedDocument(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\PasswordProtected.pdf";
@@ -64,7 +64,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(destPath, clbk);
 		}
 
-		[Description("Save Document To File")]
+		[Description("Save document to file")]
 		static public void SaveDocumentToFile(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
