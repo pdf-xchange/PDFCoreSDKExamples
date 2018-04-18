@@ -119,6 +119,16 @@ namespace CoreAPIDemo
 			return null;
 		}
 
+		private int GetMethodLine(string className, string methodName)
+		{
+			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\" + className + ".cs";
+			string sData = System.IO.File.ReadAllText(sPath);
+			int nIndex = sData.IndexOf(methodName);
+
+			string[] aDataLen = sData.Substring(0, nIndex).Split('\n');
+			return aDataLen.Length;
+		}
+
 		private string GetMethodCode(string className, string methodName)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\" + className + ".cs";
@@ -164,7 +174,6 @@ namespace CoreAPIDemo
 			}
 			return sRes;
 		}
-
 		private void UpdateCodeSample(TreeNode curNode)
 		{
 			codeSource.Text = "";
@@ -394,6 +403,30 @@ namespace CoreAPIDemo
 		private void collapseAll_Click(object sender, EventArgs e)
 		{
 			sampleTree.CollapseAll();
+		}
+
+		private void toolStripButton2_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				TreeNode curNode = sampleTree.SelectedNode;
+				MethodInfo theMethod = GetCurrentMethod(curNode);
+				if (theMethod == null)
+					return;
+
+				int fileline = GetMethodLine(theMethod.DeclaringType.Name, theMethod.Name);
+				string filePath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\"
+					+ theMethod.DeclaringType.Name + ".cs";
+
+				EnvDTE.DTE dte = (EnvDTE.DTE)System.Runtime.InteropServices.Marshal.GetActiveObject("VisualStudio.DTE");
+				dte.MainWindow.Activate();
+				EnvDTE.Window w = dte.ItemOperations.OpenFile(filePath);
+				((EnvDTE.TextSelection)dte.ActiveDocument.Selection).GotoLine(fileline, true);
+			}
+			catch (Exception err)
+			{
+				Console.Write(err.Message);
+			}
 		}
 	}
 }
