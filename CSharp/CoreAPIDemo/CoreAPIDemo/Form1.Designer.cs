@@ -34,6 +34,7 @@
 			this.splitter1 = new System.Windows.Forms.Splitter();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.runSample = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.prevPage = new System.Windows.Forms.ToolStripButton();
@@ -52,7 +53,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandAll = new System.Windows.Forms.ToolStripButton();
 			this.collapseAll = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -109,6 +109,11 @@
 			this.runSample.Size = new System.Drawing.Size(144, 32);
 			this.runSample.Text = "Run Sample";
 			this.runSample.Click += new System.EventHandler(this.runSample_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 35);
 			// 
 			// toolStripButton2
 			// 
@@ -212,6 +217,7 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -288,7 +294,7 @@
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(28, 32);
-			this.toolStripButton1.Text = "Filter Samples";
+			this.toolStripButton1.Text = "Clear Filter";
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// toolStripSeparator1
@@ -315,11 +321,6 @@
 			this.collapseAll.Size = new System.Drawing.Size(28, 32);
 			this.collapseAll.Text = "Collapse All";
 			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 35);
 			// 
 			// Form1
 			// 

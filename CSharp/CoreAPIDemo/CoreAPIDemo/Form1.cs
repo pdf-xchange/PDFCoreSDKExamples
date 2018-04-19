@@ -392,6 +392,7 @@ namespace CoreAPIDemo
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
+			filterEdit.Text = "";
 			RefillTree();
 		}
 

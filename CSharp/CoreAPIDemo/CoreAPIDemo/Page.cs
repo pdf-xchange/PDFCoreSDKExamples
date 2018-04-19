@@ -77,7 +77,7 @@ namespace CoreAPIDemo
 			for (uint i = 0; i < Parent.m_CurDoc.Pages.Count; i++)
 			{
 				IPXC_Page page = Parent.m_CurDoc.Pages[i];
-				PXC_Rect contentRect = page.get_Box(PXC_BoxType.PBox_BleedBox);
+				PXC_Rect contentRect = page.get_Box(PXC_BoxType.PBox_BBox);
 				page.set_Box(PXC_BoxType.PBox_MediaBox, ref contentRect);
 			}
 		}
