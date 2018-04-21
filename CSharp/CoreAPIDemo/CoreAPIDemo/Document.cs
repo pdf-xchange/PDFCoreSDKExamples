@@ -23,6 +23,21 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = coreDoc;
 		}
 
+		[Description("Open document with open file dialog")]
+		static public void OpenDocWithOpenDialog(Form1 Parent)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Filter = "PDF Documents (*.pdf)|*.pdf|All Files (*.*)|*.*";
+			ofd.DefaultExt = "pdf";
+			ofd.FilterIndex = 1;
+			ofd.CheckPathExists = true;
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				Parent.CloseDocument();
+				Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(ofd.FileName, null);
+			}
+		}
+
 		[Description("Open document from string path")]
 		static public void OpenDocFromStringPath(Form1 Parent)
 		{
