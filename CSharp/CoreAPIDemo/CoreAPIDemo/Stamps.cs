@@ -93,13 +93,14 @@ namespace CoreAPIDemo
 			double nHeight = 0;
 			double nWidth = 0;
 			si.GetSize(out nWidth, out nHeight);
-			PXC_Rect rc;
+			PXC_Rect rc;//Annotation rectangle
 			rc.left = 0;
 			rc.right = nWidth;
 			rc.top = rcPB.top;
 			rc.bottom = rc.top - nHeight;
 			IPXC_Annotation annot = firstPage.InsertNewAnnot(nStamp, ref rc, 0);
 			IPXC_AnnotData_Stamp stampData = (IPXC_AnnotData_Stamp)annot.Data;
+			stampData.set_BBox(rc); //Stamp rectangle boundaries
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
 		}
@@ -131,13 +132,14 @@ namespace CoreAPIDemo
 			double nWidth = 0;
 			si.GetSize(out nWidth, out nHeight);
 			//Increasing width and height by 20
-			PXC_Rect rc;
+			PXC_Rect rc; //Annotation rectangle
 			rc.left = 0;
 			rc.right = nWidth * 20;
 			rc.top = rcPB.top;
 			rc.bottom = rc.top - nHeight * 20;
 			IPXC_Annotation annot = firstPage.InsertNewAnnot(nStamp, ref rc, 0);
 			IPXC_AnnotData_Stamp stampData = (IPXC_AnnotData_Stamp)annot.Data;
+			stampData.set_BBox(rc); //Stamp rectangle boundaries
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
 		}
