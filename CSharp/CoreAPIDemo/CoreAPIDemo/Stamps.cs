@@ -116,11 +116,8 @@ namespace CoreAPIDemo
 			IAFS_Name name = afsInst.DefaultFileSys.StringToName(sPath);
 			int openFileFlags = (int)(AFS_OpenFileFlags.AFS_OpenFile_Read | AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
 			IAFS_File destFile = afsInst.DefaultFileSys.OpenFile(name, openFileFlags);
-			//Loading collection from file
-			string sStamps = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\MyStamps.pdf";
-			IAFS_Name stampsName = afsInst.DefaultFileSys.StringToName(sStamps);
-			IAFS_File stampsFile = afsInst.DefaultFileSys.OpenFile(stampsName, openFileFlags);
-			IPXC_StampsCollection sc = Parent.m_pxcInst.StampsManager.LoadCollection(stampsFile);
+			//Creating new collection
+			IPXC_StampsCollection sc = Parent.m_pxcInst.StampsManager.CreateEmptyCollection("My Stamps");
 
 			IPXC_StampInfo si = sc.AddStamp(destFile, "My Stamp");
 			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
