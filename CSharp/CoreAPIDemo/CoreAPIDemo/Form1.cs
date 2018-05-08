@@ -339,6 +339,8 @@ namespace CoreAPIDemo
 
 		private void prevPage_Click(object sender, EventArgs e)
 		{
+			if (m_CurDoc == null)
+				return;
 			int nPage = int.Parse(currentPage.Text) - 1;
 			if (nPage > 0)
 				currentPage.Text = (nPage).ToString();
@@ -346,6 +348,8 @@ namespace CoreAPIDemo
 
 		private void nextPage_Click(object sender, EventArgs e)
 		{
+			if (m_CurDoc == null)
+				return;
 			int nPage = int.Parse(currentPage.Text) - 1;
 			if (nPage < (m_CurDoc.Pages.Count - 1))
 			{

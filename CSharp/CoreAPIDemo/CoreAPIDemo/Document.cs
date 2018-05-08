@@ -92,6 +92,7 @@ namespace CoreAPIDemo
 			if (sfd.ShowDialog() == DialogResult.OK)
 			{
 				Parent.m_CurDoc.WriteToFile(sfd.FileName);
+				System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + sfd.FileName + "\"");
 			}
 		}
 	}
