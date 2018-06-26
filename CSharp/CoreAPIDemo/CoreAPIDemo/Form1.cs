@@ -388,7 +388,6 @@ namespace CoreAPIDemo
 			}
 
 		}
-
 		private void filterEdit_TextChanged(object sender, EventArgs e)
 		{
 			RefillTree();
@@ -412,15 +411,15 @@ namespace CoreAPIDemo
 
 		public void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator CC, double cx, double baseLineY, string sText, double fontSize)
 		{
-			IPXC_Font pFont = Doc.CreateNewFont("Arial", 0, 400);
+			IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 			CC.SaveState();
 			CC.SetFillColorRGB(0x00000000);
-			CC.SetFont(pFont);
-			double twidth = 0;
-			double theight = 0;
-			CC.CalcTextSize(fontSize, sText,out twidth, out theight, -1);
+			CC.SetFont(defFont);
+			double nWidth = 0;
+			double nHeight = 0;
+			CC.CalcTextSize(fontSize, sText,out nWidth, out nHeight, -1);
 			CC.SetFontSize(fontSize);
-			CC.ShowTextLine(cx - twidth / 2.0, baseLineY, sText, -1, 0 | 256);
+			CC.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
 			CC.RestoreState();
 		}
 
