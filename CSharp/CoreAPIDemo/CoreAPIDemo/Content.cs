@@ -8,8 +8,22 @@ namespace CoreAPIDemo
 	[Description("Content")]
 	public class Content
 	{
-		[Description("Add Text with different Fonts and Styles to the current document")]
-		static public void DrawTextOnPage(Form1 Parent)
+		[Description("Add Text with different Text Rendering Mode to the current document")]
+		static public void DrawTextRenderingModesOnPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+		}
+
+		[Description("Add Text with different Char and Word Spacing to the current document")]
+		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+		}
+
+		[Description("Add Text with different Scaling, Subscript and Superscript to the current document")]
+		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
