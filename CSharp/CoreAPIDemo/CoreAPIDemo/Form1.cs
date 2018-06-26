@@ -423,6 +423,39 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 		}
 
+		public IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore)
+		{
+			IPXC_Pattern Ptr = null;
+			do
+			{
+				IPXC_Image Img = Doc.AddImageFromFile(str);
+				PXC_Rect bbox;
+				bbox.left = 0;
+				bbox.bottom = 0;
+				bbox.right = Img.Width * 72.0 / 96.0;
+				bbox.top = Img.Height * 72.0 / 96.0;
+				IPXC_ContentCreator CC = Doc.CreateContentCreator();
+
+				PXC_Matrix im = new PXC_Matrix();
+				im.a = bbox.right;
+				im.b = 0;
+				im.c = 0;
+				im.d = bbox.top;
+				im.e = 0;
+				im.f = 0;
+				CC.SaveState();
+				CC.ConcatCS(im);
+				CC.PlaceImage(Img);
+				CC.RestoreState();
+				Ptr = Doc.CreateTilePattern(ref bbox);
+				IPXC_Content C = CC.Detach();
+				C.set_BBox(ref bbox);
+				Ptr.SetContent(C, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			}
+			while (false);
+			return Ptr;
+		}
+
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
