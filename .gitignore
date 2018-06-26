@@ -162,3 +162,5 @@ $RECYCLE.BIN/
 /.vs
 /CSharp/CoreAPIDemo/.vs/
 /CSharp/CoreAPIDemo/packages/
+/cpp/MFCSample/.vs/MFCSample/v15
+/cpp/MFCSample/Debug.x86
