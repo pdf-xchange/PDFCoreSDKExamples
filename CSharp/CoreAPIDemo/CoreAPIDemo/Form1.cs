@@ -388,7 +388,6 @@ namespace CoreAPIDemo
 			}
 
 		}
-
 		private void filterEdit_TextChanged(object sender, EventArgs e)
 		{
 			RefillTree();
@@ -409,7 +408,6 @@ namespace CoreAPIDemo
 		{
 			sampleTree.CollapseAll();
 		}
-
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
 			try
