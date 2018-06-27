@@ -14,7 +14,7 @@ namespace CoreAPIDemo
 		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
 		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
 
-[Description("Add Text with different Text Rendering Mode to the current document")]
+		[Description("Add Text with different Text Rendering Mode to the current document")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -457,6 +457,17 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+
 		}
 	}
 }
