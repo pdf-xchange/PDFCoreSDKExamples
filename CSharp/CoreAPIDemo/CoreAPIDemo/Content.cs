@@ -19,7 +19,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-
+#warning Implement this method
 		}
 
 		[Description("Add Text with different Char and Word Spacing to the current document")]
@@ -27,6 +27,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+#warning Implement this method
 		}
 
 		[Description("Add Text with different Scaling, Subscript and Superscript to the current document")]
@@ -34,6 +35,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+#warning Implement this method
 		}
 
 		[Description("Add Arcs with different Styles to the current document")]
@@ -205,6 +207,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+#warning Implement this method
 		}
 
 		[Description("Add Fillings with different Styles to the current document")]
@@ -274,7 +277,7 @@ namespace CoreAPIDemo
 			double r = 1.0 * 72.0;
 			double rr;
 
-			string[] FrstTitles = { "NONZERO WINDING NUMBER RULE", "EVEN-ODD RULE" };
+			string[] RuleTitles = { "NONZERO WINDING NUMBER RULE", "EVEN-ODD RULE" };
 			PXC_FillRule[] rules = { PXC_FillRule.FillRule_Winding, PXC_FillRule.FillRule_EvenOdd };
 
 			for (int i = 0; i < 2; i++)
@@ -282,7 +285,7 @@ namespace CoreAPIDemo
 				x = 2.0 * 72.0;
 
 				PXC_FillRule rule = rules[i];
-				drawTitle(Parent.m_CurDoc, CC, (rc.right + rc.left) / 2, y - r - 15, FrstTitles[i], 15);
+				drawTitle(Parent.m_CurDoc, CC, (rc.right + rc.left) / 2, y - r - 15, RuleTitles[i], 15);
 
 				const int num = 5;
 				double[] points = new double[num * 2];
@@ -366,7 +369,7 @@ namespace CoreAPIDemo
 			CC.Rect(X[0], Y, X[0] + w, Y + h);
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
 			drawTitle(Parent.m_CurDoc, CC, X[0] + w / 2, Y - 0.1 * 72.0, "STROKE & FILL", 15);
-			string[] ScndTitles =
+			string[] PatternTitles =
 			{
 				"PATTERN FILL: CrossHatch",
 				"PATTERN FILL: CrossDiagonal",
@@ -385,7 +388,7 @@ namespace CoreAPIDemo
 				Pat = null;
 				CC.Rect(X[k], Y, X[k] + w, Y + h);
 				CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
-				drawTitle(Parent.m_CurDoc, CC, X[k] + w / 2, Y - 0.1 * 72.0, ScndTitles[i], 15);
+				drawTitle(Parent.m_CurDoc, CC, X[k] + w / 2, Y - 0.1 * 72.0, PatternTitles[i], 15);
 				k ^= 1;
 				if (k == 0)
 					Y -= dy;
@@ -450,6 +453,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+#warning Implement this method
 		}
 
 		[Description("Add content with different Coordinate System Transformations (matrix usages)")]
