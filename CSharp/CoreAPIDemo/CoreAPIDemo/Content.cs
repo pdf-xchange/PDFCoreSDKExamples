@@ -216,33 +216,29 @@ namespace CoreAPIDemo
 			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
 			{
 				IPXC_Pattern Patt = null;
-				do
-				{
-					IPXC_Image Img = doc.AddImageFromFile(str);
-					PXC_Rect bbox;
-					bbox.left = 0;
-					bbox.bottom = 0;
-					bbox.right = Img.Width * 72.0 / 96.0;
-					bbox.top = Img.Height * 72.0 / 96.0;
-					IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
+				IPXC_Image Img = doc.AddImageFromFile(str);
+				PXC_Rect bbox;
+				bbox.left = 0;
+				bbox.bottom = 0;
+				bbox.right = Img.Width * 72.0 / 96.0;
+				bbox.top = Img.Height * 72.0 / 96.0;
+				IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
 
-					PXC_Matrix im = new PXC_Matrix();
-					im.a = bbox.right;
-					im.b = 0;
-					im.c = 0;
-					im.d = bbox.top;
-					im.e = 0;
-					im.f = 0;
-					ContCrt.SaveState();
-					ContCrt.ConcatCS(im);
-					ContCrt.PlaceImage(Img);
-					ContCrt.RestoreState();
-					Patt = doc.CreateTilePattern(ref bbox);
-					IPXC_Content C = ContCrt.Detach();
-					C.set_BBox(ref bbox);
-					Patt.SetContent(C, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-				}
-				while (false);
+				PXC_Matrix im = new PXC_Matrix();
+				im.a = bbox.right;
+				im.b = 0;
+				im.c = 0;
+				im.d = bbox.top;
+				im.e = 0;
+				im.f = 0;
+				ContCrt.SaveState();
+				ContCrt.ConcatCS(im);
+				ContCrt.PlaceImage(Img);
+				ContCrt.RestoreState();
+				Patt = doc.CreateTilePattern(ref bbox);
+				IPXC_Content content = ContCrt.Detach();
+				content.set_BBox(ref bbox);
+				Patt.SetContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 				return Patt;
 			};
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
@@ -278,7 +274,7 @@ namespace CoreAPIDemo
 			double r = 1.0 * 72.0;
 			double rr;
 
-			string[] TitForFrstP = { "NONZERO WINDING NUMBER RULE", "EVEN-ODD RULE" };
+			string[] FrstTitles = { "NONZERO WINDING NUMBER RULE", "EVEN-ODD RULE" };
 			PXC_FillRule[] rules = { PXC_FillRule.FillRule_Winding, PXC_FillRule.FillRule_EvenOdd };
 
 			for (int i = 0; i < 2; i++)
@@ -286,7 +282,7 @@ namespace CoreAPIDemo
 				x = 2.0 * 72.0;
 
 				PXC_FillRule rule = rules[i];
-				drawTitle(Parent.m_CurDoc, CC, (rc.right + rc.left) / 2, y - r - 15, TitForFrstP[i], 15);
+				drawTitle(Parent.m_CurDoc, CC, (rc.right + rc.left) / 2, y - r - 15, FrstTitles[i], 15);
 
 				const int num = 5;
 				double[] points = new double[num * 2];
@@ -370,14 +366,14 @@ namespace CoreAPIDemo
 			CC.Rect(X[0], Y, X[0] + w, Y + h);
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
 			drawTitle(Parent.m_CurDoc, CC, X[0] + w / 2, Y - 0.1 * 72.0, "STROKE & FILL", 15);
-			string[] TitForScndP =
+			string[] ScndTitles =
 			{
-				"PATTER FILL: CrossHatch",
-				"PATTER FILL: CrossDiagonal",
-				"PATTER FILL: DiagonalLeft",
-				"PATTER FILL: DiagonalRight",
-				"PATTER FILL: Horizontal",
-				"PATTER FILL: Vertical"
+				"PATTERN FILL: CrossHatch",
+				"PATTERN FILL: CrossDiagonal",
+				"PATTERN FILL: DiagonalLeft",
+				"PATTERN FILL: DiagonalRight",
+				"PATTERN FILL: Horizontal",
+				"PATTERN FILL: Vertical"
 			};
 
 			int k = 1;
@@ -389,7 +385,7 @@ namespace CoreAPIDemo
 				Pat = null;
 				CC.Rect(X[k], Y, X[k] + w, Y + h);
 				CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
-				drawTitle(Parent.m_CurDoc, CC, X[k] + w / 2, Y - 0.1 * 72.0, TitForScndP[i], 15);
+				drawTitle(Parent.m_CurDoc, CC, X[k] + w / 2, Y - 0.1 * 72.0, ScndTitles[i], 15);
 				k ^= 1;
 				if (k == 0)
 					Y -= dy;
