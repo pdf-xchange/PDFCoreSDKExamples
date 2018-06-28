@@ -412,7 +412,7 @@ namespace CoreAPIDemo
 		static public void DrawPolygonsAndCurvesOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
-			const uint argbWhiteGreen = 0x00008888;
+			const uint argbDarkLime = 0x00008888;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
 			{
@@ -507,7 +507,7 @@ namespace CoreAPIDemo
 				a += 360.0 / ncnt;
 			}
 			CC.PolygonSA(xy, true);
-			CC.SetFillColorRGB(argbWhiteGreen);
+			CC.SetFillColorRGB(argbDarkLime);
 			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
 
 			double xorig = 6.2 * 72.0;
@@ -516,7 +516,7 @@ namespace CoreAPIDemo
 
 			drawTitle(Parent.m_CurDoc, CC, rc.right - x, y - r - 0.2 * 72.0, "LISSAJOUS FIGURE", 15);
 
-			CC.SetFillColorRGB(argbWhiteGreen);
+			CC.SetFillColorRGB(argbDarkLime);
 			CC.SetStrokeColorRGB(argbBlack);
 			for (int i = 0; i < 200; i++)
 			{
@@ -537,7 +537,7 @@ namespace CoreAPIDemo
 
 			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "RECTANGLE", 15);
 
-			CC.SetFillColorRGB(argbWhiteGreen);
+			CC.SetFillColorRGB(argbDarkLime);
 			CC.SetStrokeColorRGB(argbBlack);
 			CC.Rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
 			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
@@ -557,7 +557,7 @@ namespace CoreAPIDemo
 
 			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "ROUND RECTANGLE", 15);
 
-			CC.SetFillColorRGB(argbWhiteGreen);
+			CC.SetFillColorRGB(argbDarkLime);
 			CC.SetStrokeColorRGB(argbBlack);
 			CC.RoundRect(rect.left, rect.bottom, rect.right, rect.top, ew, eh);
 			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
@@ -576,7 +576,7 @@ namespace CoreAPIDemo
 		static public void DrawFillingsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
-			const uint argbWhiteGreen = 0x00008888;
+			const uint argbDarkLime = 0x00008888;
 			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
 			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
 			{
@@ -662,7 +662,7 @@ namespace CoreAPIDemo
 				CC.PolygonSA(points, true);
 
 				CC.SetStrokeColorRGB(argbBlack);
-				CC.SetFillColorRGB(argbWhiteGreen);
+				CC.SetFillColorRGB(argbDarkLime);
 				CC.FillPath(true, true, rule);
 
 				x = (rc.right + rc.left) / 2;
@@ -875,107 +875,6 @@ namespace CoreAPIDemo
 		[Description("Add content with different Coordinate System Transformations (matrix usages)")]
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
-			//DON`T WORK. WILL BE CORRECTED
-			/*//delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
-			DrawArrLine drawArrLine = (ConCret, xfrom, yfrom, xto, yto, linewidth, bDashed) => {
-				double b;
-				double xr, yr;
-				double R;
-				double cos_a, sin_a;
-
-				ConCret.SaveState();
-				// Calculation
-				b = 35.0 * Math.PI / 180.0;
-				yr = linewidth * 2.0;
-				xr = (-yr * Math.Cos(b / 2) / Math.Sin(b / 2));
-				R = Math.Sqrt((xto - xfrom) * (xto - xfrom) + (yto - yfrom) * (yto - yfrom));
-				sin_a = (yto - yfrom) / R;
-				cos_a = (xto - xfrom) / R;
-				// CS Transform
-				PXC_Matrix m;
-				m.a = cos_a;
-				m.b = sin_a;
-				m.c = -sin_a;
-				m.d = cos_a;
-				m.e = xfrom;
-				m.f = yfrom;
-				ConCret.ConcatCS(ref m);
-				// Draw Line
-				ConCret.SetLineWidth(linewidth);
-				if (bDashed)
-				{
-					ConCret.SetDash(3, 6, 0);
-				}
-				ConCret.SetColorRGB(0x00000000);
-				ConCret.MoveTo(0, 0);
-				ConCret.LineTo(R - linewidth * 2, 0);
-				ConCret.StrokePath(true);
-				ConCret.NoDash();
-				// CS Translate
-				ConCret.TranslateCS(R, 0);
-				// Draw Arrow
-				ConCret.SetLineWidth(linewidth / 2);
-				ConCret.MoveTo(xr, -yr);
-				ConCret.LineTo(0, 0);
-				ConCret.LineTo(xr, yr);
-				ConCret.FillPath(true, false, PXC_FillRule.FillRule_Winding);
-				ConCret.RestoreState();
-			};
-
-			//delegate void DrawCS(double x0, double y0, double w, double h);
-			DrawCS drawCS = (ConCret, x0, y0, w, h) =>
-			{
-				// move CS to (x0,y0)
-				ConCret.TranslateCS(x0, y0);
-				// Draw
-				drawArrLine( ConCret, -w / 2, 0, w / 2, 0, 1 * 72.0, false);
-				drawArrLine( ConCret, 0, -h / 2, 0, h / 2, 1 * 72.0, false);
-				PXC_PointF c;
-				c.x = c.y = 0.0f;
-				ConCret.Circle(c.x , c.y, 1 * 72.0);
-				ConCret.StrokePath(true);
-			};
-
-			DrawN drawN = (ConCret, cx, baseLineY) =>
-			{
-				double yn;
-				PXC_TextRenderingMode old_mode;
-				ConCret.SetTextRenderMode(PXC_TextRenderingMode.TRM_Stroke);
-				yn = 160;
-				IPXC_Font defFont = Parent.m_CurDoc.CreateNewFont("Arial", 0, 17);
-				ConCret.SetFont(defFont);
-				//IPXC_GetPageTextOptions Pxc_getPageTO = Parent.m_pxcInst.CreateGetPageTextOptions(0);
-				//PXC_GetLineInfo(page, out oldw, out join, out cap, out mlimit);
-				ConCret.SetLineWidth(0.5);
-				PDFXC_Funcs.PXC_TextOutW(page, ref origin, "n", 1);
-				PDFXC_Funcs.PXC_SetLineWidth(page, oldw);
-				PDFXC_Funcs.PXC_SetTextOptions(page, ref old);
-				PDFXC_Funcs.PXC_TextRenderingMode trm;
-				PDFXC_Funcs.PXC_SetTextRMode(page, old_mode, out trm);
-
-				ConCret.SaveState();
-				double nWidth = 0;
-				double nHeight = 0;
-				ConCret.CalcTextSize(17, "n", out nWidth, out nHeight, -1);
-				ConCret.SetFontSize(17);
-				ConCret.ShowTextLine( - nWidth / 2.0, baseLineY, "n", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
-				ConCret.RestoreState();
-			};
-
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
-			{
-				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
-				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(0x00000000);
-				ContCrt.SetFont(defFont);
-				double nWidth = 0;
-				double nHeight = 0;
-				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
-				ContCrt.SetFontSize(fontSize);
-				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
-				ContCrt.RestoreState();
-			};
-
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
 
