@@ -10,7 +10,7 @@ namespace CoreAPIDemo
 	public class Content
 	{
 
-		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, uint argbFillColor = 0x00000000);
 		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
 		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
 		delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
@@ -23,11 +23,11 @@ namespace CoreAPIDemo
 			const uint argbDarkLime = 0x00008888;
 			const uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
 				double Width = 0;
 				double Height = 0;
@@ -233,14 +233,183 @@ namespace CoreAPIDemo
 		[Description("Add Text with different Char and Word Spacing to the current document")]
 		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
 		{
-			
+			const uint argbDarkLime = 0x00008888;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double Width = 0;
+				double Height = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out Width, out Height, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - Width / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+
+			double x = 1.8 * 72.0;
+			double y = rc.top - 0.5 * 72.0;
+			double xs = 2.5 * 72.0;
+			double ys = 0.85 * 72.0;
+
+			string[] txts = new string[]
+				{
+					"-2 PT",
+					"DEFAULT",
+					"2 PT",
+					"-10 PT",
+					"DEFAULT",
+					"10 PT"
+				};
+			for (int i = 0; i < 6; i++)
+			{
+				drawTitle(Parent.m_CurDoc, CC, x, y - i * ys - 5, txts[i], 15);
+			}
+
+			CC.SaveState();
+			CC.SetTextRenderMode(PXC_TextRenderingMode.TRM_FillStroke);
+
+			CC.SetFillColorRGB(argbDarkLime);
+			string text = "Character Spacing";
+			CC.SetCharSpace(-2.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetCharSpace(0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetCharSpace(2.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			CC.SetCharSpace(0);
+
+			y -= ys;
+			text = "Word Spacing";
+			CC.SetWordSpace(-10);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetWordSpace(0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetWordSpace(10);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+			CC.SetWordSpace(0);
+
+			CC.RestoreState();
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
 		[Description("Add Text with different Scaling, Subscript and Superscript to the current document")]
 		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
+			const uint argbDarkLime = 0x00008888;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double Width = 0;
+				double Height = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out Width, out Height, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - Width / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+
+			double x = 1.8 * 72.0;
+			double y = rc.top - 0.5 * 72.0;
+			double xs = 2.5 * 72.0;
+			double ys = 0.85 * 72.0;
+
+
+			string[] txts = new string[]
+				{
+					"80%",
+					"DEFAULT (100%)",
+					"120%",
+					"+10 PT",
+					"-10 PT",
+					"±10 PT"
+				};
+
+			for (int i = 0; i < 6; i++)
+			{
+				drawTitle(Parent.m_CurDoc, CC, x, y - i * ys - 5, txts[i], 15);
+			}
+
+			CC.SaveState();
+			CC.SetTextRenderMode(PXC_TextRenderingMode.TRM_FillStroke);
+			CC.SetFillColorRGB(argbDarkLime);
+			string text = "Horizontal Scaling";
+			CC.SetTextScale(80);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetTextScale(100);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+
+			y -= ys;
+			CC.SetTextScale(120);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			CC.SetTextScale(100);
+
+			y -= ys;
+			text = "This text is ";
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, argbDarkLime);
+			CC.SetTextRise(10.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 110, y + 2, "superscripted", 25, argbDarkLime);
+
+			CC.SetTextRise(0.0);
+			y -= ys;
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, argbDarkLime);
+			CC.SetTextRise(-10);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 100, y + 2, "subscripted", 25, argbDarkLime);
+
+			CC.SetTextRise(0.0);
+			y -= ys;
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 82, y + 2, "This", 25, argbDarkLime);
+			CC.SetTextRise(-10.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 28, y + 2, "text", 25, argbDarkLime);
+			CC.SetTextRise(10.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 41, y + 2, "moves", 25, argbDarkLime);
+			CC.SetTextRise(0.0);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 128, y + 2, "around", 25, argbDarkLime);
+
+			CC.RestoreState();
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
 #warning Implement this method
 		}
 
@@ -249,11 +418,11 @@ namespace CoreAPIDemo
 		{
 			const uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) => 
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) => 
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
 				double nWidth = 0;
 				double nHeight = 0;
@@ -414,11 +583,11 @@ namespace CoreAPIDemo
 			const uint argbBlack = 0x00000000;
 			const uint argbDarkLime = 0x00008888;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
 				double nWidth = 0;
 				double nHeight = 0;
@@ -607,11 +776,11 @@ namespace CoreAPIDemo
 				return Patt;
 			};
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
 				double nWidth = 0;
 				double nHeight = 0;
@@ -788,11 +957,11 @@ namespace CoreAPIDemo
 				return Patt;
 			};
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
 				double nWidth = 0;
 				double nHeight = 0;
@@ -877,7 +1046,7 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-
+/*
 			PXC_Rect rc;
 			rc.left = 0;
 			rc.right = 600;
