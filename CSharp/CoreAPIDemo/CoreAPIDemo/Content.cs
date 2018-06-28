@@ -2,8 +2,7 @@
 using System;
 using System.Windows.Forms;
 using PDFXCoreAPI;
-
-
+using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
@@ -13,8 +12,11 @@ namespace CoreAPIDemo
 
 		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
 		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
+		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
+		delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
+		delegate void DrawN(IPXC_ContentCreator CC, double cx, double baseLineY);
 
-[Description("Add Text with different Text Rendering Mode to the current document")]
+		[Description("Add Text with different Text Rendering Mode to the current document")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -205,16 +207,175 @@ namespace CoreAPIDemo
 		[Description("Add Polygons and Curves with different Styles to the current document")]
 		static public void DrawPolygonsAndCurvesOnPage(Form1 Parent)
 		{
+			const uint argbBlack = 0x00000000;
+			const uint argbDarkLime = 0x00008888;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.SetFont(defFont);
+				double nWidth = 0;
+				double nHeight = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-#warning Implement this method
+
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+
+			double x = 2.2 * 72.0;
+			double y = rc.top - 2.5 * 72.0;
+			double r = 1.2 * 72.0;
+
+			double b = 1.3333333;
+			double br = b * r;
+			double[] p = new double[12];
+			p[0] = p[8] = p[10] = x - r;
+			p[1] = p[3] = y + br;
+			p[2] = p[4] = p[6] = x + r;
+			p[5] = p[11] = y;
+			p[7] = p[9] = y - br;
+
+			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "FAST-BEZIER \"CIRCLE\"", 15);
+
+			CC.SetLineWidth(1.0);
+			CC.SetStrokeColorRGB(argbBlack);
+			CC.MoveTo(x - r, y);
+			CC.PolyCurveSA(p, false);
+			CC.StrokePath(false);
+
+			x = 6.2 * 72.0;
+			y = rc.top - 2.5 * 72.0;
+			double rr = r / 2.0;
+			double a = 0.05 * 72.0;
+
+			PXC_Point center;
+			center.x = x;
+			center.y = y;
+			PXC_Point p1 = center;
+			PXC_Point p2 = center;
+
+			p1.y -= rr;
+			p2.y += rr;
+
+			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "CHINA MONAD", 15);
+
+			CC.SetLineWidth(1.0);
+			CC.SetColorRGB(argbBlack);
+
+			CC.CircleArc(center.x, center.y, r, 90.0, -90.0, true);
+			CC.CircleArc(p1.x, p1.y, rr, 270.0, 90.0, true);
+			CC.CircleArc(p2.x, p2.y, rr, -90.0, 90.0, true);
+			CC.Circle(p1.x, p1.y, 0.1 * 72.0);
+			CC.Circle(p2.x, p2.y, 0.1 * 72.0);
+			CC.FillPath(false, true, PXC_FillRule.FillRule_EvenOdd);
+			CC.CircleArc(center.x, center.y, r, 90.0, 270.0, true);
+			CC.StrokePath(false);
+
+			const int ncnt = 8;
+			x = 2.2 * 72.0;
+			y = rc.top - 6 * 72.0;
+			r = 1.3 * 72.0;
+			double[] xy = new double[ncnt * 2];
+
+			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "POLYGON", 15);
+
+			a = -90;
+			for (int i = 0; i < ncnt; i++)
+			{
+				xy[i * 2] = x + r * Math.Cos(a * Math.PI / 180.0);
+				xy[i * 2 + 1] = y - r * Math.Sin(a * Math.PI / 180.0);
+				a += 360.0 / ncnt;
+			}
+			CC.PolygonSA(xy, true);
+			CC.SetFillColorRGB(argbDarkLime);
+			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
+
+			double xorig = 6.2 * 72.0;
+			double yorig = rc.top - 6 * 72.0;
+			r = 1.2 * 72.0;
+
+			drawTitle(Parent.m_CurDoc, CC, rc.right - x, y - r - 0.2 * 72.0, "LISSAJOUS FIGURE", 15);
+
+			CC.SetFillColorRGB(argbDarkLime);
+			CC.SetStrokeColorRGB(argbBlack);
+			for (int i = 0; i < 200; i++)
+			{
+				double ang = Math.PI * i / 100.0;
+				x = xorig + r * Math.Cos(3 * ang);
+				y = yorig - r * Math.Sin(5 * ang);
+				if (i > 0)
+					CC.LineTo(x, y);
+				else
+					CC.MoveTo(x, y);
+			}
+			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
+
+			x = 2.2 * 72.0;
+			y = rc.top - 9 * 72.0;
+			double w = 2.5 * 72.0;
+			double h = 1.2 * 72.0;
+
+			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "RECTANGLE", 15);
+
+			CC.SetFillColorRGB(argbDarkLime);
+			CC.SetStrokeColorRGB(argbBlack);
+			CC.Rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
+			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
+
+			x = 6.2 * 72.0;
+			y = rc.top - 9 * 72.0;
+			w = 2.5 * 72.0;
+			h = 1.2 * 72.0;
+			double ew = w / 5.0;
+			double eh = h / 5.0;
+
+			PXC_Rect rect;
+			rect.left = x - w / 2;
+			rect.top = y + h / 2;
+			rect.right = x + w / 2;
+			rect.bottom = y - h / 2;
+
+			drawTitle(Parent.m_CurDoc, CC, x, y - r - 0.1 * 72.0, "ROUND RECTANGLE", 15);
+
+			CC.SetFillColorRGB(argbDarkLime);
+			CC.SetStrokeColorRGB(argbBlack);
+			CC.RoundRect(rect.left, rect.bottom, rect.right, rect.top, ew, eh);
+			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
+			CC.SetStrokeColorRGB(((255 << 0) + (255 << 8) + (255 << 16)));
+			CC.SetLineWidth(0.0);
+			CC.SetDash(1, 1, 0);
+			rect.right = rect.left + ew;
+			rect.bottom = rect.top - eh;
+			CC.Ellipse(rect.left, rect.bottom, rect.right, rect.top);
+			CC.StrokePath(false);
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Parent.UpdateControlsFromDocument();
+			Parent.UpdatePreviewFromCurrentDocument();
 		}
 
 		[Description("Add Fillings with different Styles to the current document")]
 		static public void DrawFillingsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
-			const uint argbBlue = 0x00008888;
+			const uint argbDarkLime = 0x00008888;
 			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
 			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
 			{
@@ -300,7 +461,7 @@ namespace CoreAPIDemo
 				CC.PolygonSA(points, true);
 
 				CC.SetStrokeColorRGB(argbBlack);
-				CC.SetFillColorRGB(argbBlue);
+				CC.SetFillColorRGB(argbDarkLime);
 				CC.FillPath(true, true, rule);
 
 				x = (rc.right + rc.left) / 2;
@@ -354,7 +515,7 @@ namespace CoreAPIDemo
 
 			CC.SetLineWidth(1.0);
 			CC.SetStrokeColorRGB(argbBlack);
-			CC.SetFillColorRGB(argbBlue);
+			CC.SetFillColorRGB(argbDarkLime);
 
 			CC.Rect(X[0], Y, X[0] + w, Y + h);
 			CC.StrokePath(false);
@@ -384,7 +545,7 @@ namespace CoreAPIDemo
 			for (int i = (int)PXC_StdPatternType.StdPattern_CrossHatch; i <= (int)PXC_StdPatternType.StdPattern_Vertical; i++)
 			{
 				Pat = Parent.m_CurDoc.GetStdTilePattern((PXC_StdPatternType)i);
-				CC.SetPatternRGB(Pat, true, argbBlue);
+				CC.SetPatternRGB(Pat, true, argbDarkLime);
 				Pat = null;
 				CC.Rect(X[k], Y, X[k] + w, Y + h);
 				CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
@@ -394,7 +555,7 @@ namespace CoreAPIDemo
 					Y -= dy;
 			}
 			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst);
-			CC.SetPatternRGB(Pat, true, argbBlue);
+			CC.SetPatternRGB(Pat, true, argbDarkLime);
 			CC.Rect(X[k], Y, X[k] + w, Y + h);
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
 			drawTitle(Parent.m_CurDoc, CC, X[1] + w / 2, Y - 0.1 * 72.0, "PATTERN FILL: Image", 15);
