@@ -624,5 +624,13 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 #warning Implement this method
 		}
+
+		[Description("Display Font parameters")]
+		static public void DisplayFontParameters(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+#warning Implement this method
+		}
 	}
 }
