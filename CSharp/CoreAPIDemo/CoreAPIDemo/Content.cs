@@ -16,6 +16,7 @@ namespace CoreAPIDemo
 		delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
 		delegate void DrawN(IPXC_ContentCreator CC, double cx, double baseLineY);
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
+		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 
 		[Description("Add Text with different Text Rendering Mode to the current document")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
@@ -409,8 +410,6 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-
-#warning Implement this method
 		}
 
 		[Description("Add Arcs with different Styles to the current document")]
@@ -789,7 +788,6 @@ namespace CoreAPIDemo
 				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
 				ContCrt.RestoreState();
 			};
-
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
 
@@ -880,7 +878,6 @@ namespace CoreAPIDemo
 			double w = (rc.right - rc.left - 3 * 72.0) / 2.0;
 			double h = 1 * 72.0;
 			y = rc.top - 1.0 * 72.0 - h;
-			double dy = 2 * 72.0;
 			x = rc.left + 1.0 * 72.0;
 
 			IPXC_GradientStops Stops = Parent.m_CurDoc.CreateShadeStops();
@@ -917,9 +914,142 @@ namespace CoreAPIDemo
 
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
-			Parent.UpdateControlsFromDocument();
-			Parent.UpdatePreviewFromCurrentDocument();
-			
+			IPXC_Page thirdPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			double[,] TRIVERTEXxy = new double[4,2];
+			uint[] TRIVERTEXcolor = new uint[4];
+			uint[,] GRADIENT_TRIANGLE = new uint[3, 3];
+
+			rc.left = 72.0;
+			rc.top = 800 - 72.0;
+			rc.right = 600 - 72.0;
+			rc.bottom = 800 - 3.5 * 72.0;
+			h = rc.bottom - rc.top;
+
+			drawTitle(Parent.m_CurDoc, CC, 600 / 2, rc.bottom - 0.2 * 72.0, "GRADIENT FILL (GRADIENT_FILL_RECT_H)", 15);
+
+			TRIVERTEXxy[0,0] = rc.left;
+			TRIVERTEXxy[0,1] = rc.top;
+			TRIVERTEXcolor[0] = 0x00000000;
+
+			TRIVERTEXxy[1,0] = rc.right;
+			TRIVERTEXxy[1,1] = rc.top;
+			TRIVERTEXcolor[1] = 0x000000ff;
+
+			TRIVERTEXxy[2,0] = rc.right;
+			TRIVERTEXxy[2,1] = rc.bottom;
+			TRIVERTEXcolor[2] = 0x0000ff00;
+
+			TRIVERTEXxy[3,0] = rc.right;
+			TRIVERTEXxy[3,1] = rc.bottom;
+			TRIVERTEXcolor[3] = 0x00ffffff;
+
+			GRADIENT_TRIANGLE[0,0] = 0;
+			GRADIENT_TRIANGLE[0,1] = 1;
+			GRADIENT_TRIANGLE[0,2] = 2;
+
+			GRADIENT_TRIANGLE[1,0] = 1;
+			GRADIENT_TRIANGLE[1,1] = 2;
+			GRADIENT_TRIANGLE[1,2] = 3;
+
+			GRADIENT_TRIANGLE[2,0] = 2;
+			GRADIENT_TRIANGLE[2,1] = 3;
+			GRADIENT_TRIANGLE[2,2] = 0;
+
+			IPXC_GradientStops stops;
+			stops = Parent.m_CurDoc.CreateShadeStops();
+
+			stops.AddStopRGB(0.0, 0x00000000);
+			stops.AddStopRGB(0.33, 0x000000ff);
+			stops.AddStopRGB(0.66, 0x0000ff00);
+			stops.AddStopRGB(1.0, 0x00ff0000);
+
+			IPXC_Shading shade;
+			PXC_Point point0, point1;
+			point0.x = rc.left; point0.y = rc.bottom;
+			point1.x = rc.right; point1.y = rc.bottom;
+			shade = Parent.m_CurDoc.CreateLinearShade(ref point0, ref point1, stops, 6);
+
+			double[] xy = new double[16];
+			xy[0] = rc.left;
+			xy[1] = rc.top;
+			xy[2] = rc.left + (rc.right - rc.left) / 3;
+			xy[3] = rc.top;
+			xy[4] = rc.left + (rc.right - rc.left) / 3;
+			xy[5] = rc.top - (rc.top - rc.bottom) / 8;
+			xy[6] = rc.right;
+			xy[7] = rc.top - (rc.top - rc.bottom) / 8;
+			xy[8] = rc.right;
+			xy[9] = rc.bottom;
+			xy[10] = rc.left + ((rc.right - rc.left) / 3) * 2;
+			xy[11] = rc.bottom;
+			xy[12] = rc.left + ((rc.right - rc.left) / 3) * 2;
+			xy[13] = rc.bottom + (rc.top - rc.bottom) / 8;
+			xy[14] = rc.left;
+			xy[15] = rc.bottom + (rc.top - rc.bottom) / 8;
+
+			CC.SaveState();
+			CC.SetShadeAsPattern(shade, true);
+			CC.PolygonSA(xy, true);
+			CC.SetStrokeColorRGB(argbBlack);
+			CC.FillPath(true, false, PXC_FillRule.FillRule_Winding);
+			CC.RestoreState();
+
+			string text = "PDF-XCHANGE";
+			IPXC_Font Font = Parent.m_CurDoc.CreateNewFont("Impact", 0, 0);
+			CC.SetFont(Font);
+			CC.SetFontSize(120);
+
+			stops = Parent.m_CurDoc.CreateShadeStops();
+
+			stops.AddStopRGB(0.0, 0x00000000);
+			stops.AddStopRGB(0.33, 0x000000ff);
+			stops.AddStopRGB(0.66, 0x0000ff00);
+			stops.AddStopRGB(1.0, 0x00ff0000);
+
+			point0.x = rc.left; point0.y = rc.top;
+			point1.x = rc.right; point1.y = rc.bottom;
+
+			shade = Parent.m_CurDoc.CreateLinearShade(ref point0, ref point1, stops, 3);
+
+			CC.SaveState();
+			CC.SetShadeAsPattern(shade, true);
+			CC.SetTextScale(70.0);
+			CC.SetTextRenderMode(PXC_TextRenderingMode.TRM_Fill);
+			CC.ShowTextLine(72, y - 1.8 * 72.0, text, -1, 0);
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 600 / 2, y - 3.8 * 72.0, "GRADIENT FILL (GRADIENT_FILL_RECT_V)", 15);
+
+			/*vert[0].x = rc.left;
+			vert[0].y = rc.top;
+			vert[0].color = 0x000000;
+
+			vert[1].x = rc.right;
+			vert[1].y = rc.top + h / 3;
+			vert[1].color = Common.RGB(255, 0, 0);
+
+			vert[2].x = rc.left;
+			vert[2].y = rc.bottom - h / 3;
+			vert[2].color = Common.RGB(0, 255, 0);
+
+			vert[3].x = rc.right;
+			vert[3].y = rc.bottom;
+			vert[3].color = Common.RGB(0, 0, 255);
+
+			gRect[0].UpperLeft = 3;
+			gRect[0].LowerRight = 2;
+			gRect[1].UpperLeft = 2;
+			gRect[1].LowerRight = 1;
+			gRect[2].UpperLeft = 1;
+			gRect[2].LowerRight = 0;
+			ptr = Marshal.AllocHGlobal(Marshal.SizeOf(gRect[0]) * 3);
+			Marshal.StructureToPtr(gRect[0], ptr, false);
+			Marshal.StructureToPtr(gRect[1], (IntPtr)(ptr.ToInt64() + 8), false);
+			Marshal.StructureToPtr(gRect[2], (IntPtr)(ptr.ToInt64() + 16), false);
+			PDFXC_Funcs.PXC_GradientFill(cpage, vert, 4, ptr, 3,
+				PDFXC_Funcs.PXC_GradientMode.Gradient_Rect_V);
+			Marshal.FreeHGlobal(ptr);
+			return res;*/
+			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
 		[Description("Add Patterns with different Styles to the current document")]
@@ -1044,9 +1174,65 @@ namespace CoreAPIDemo
 		[Description("Add content with different Coordinate System Transformations (matrix usages)")]
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
+			uint argbBlack = 0x00000000;
+			//delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
+			CrossArrLine crossArrLine = (Doc, ContCrt, point) =>
+			{
+				ContCrt.SaveState();
+				ContCrt.SetLineWidth(1.0);
+				ContCrt.SetStrokeColorRGB(argbBlack);
+				ContCrt.NoDash();
+				ContCrt.MoveTo(point.x - 53, point.y);
+				ContCrt.LineTo(point.x + 53, point.y);
+
+				ContCrt.MoveTo(point.x + 53, point.y);
+				double[] pts = new double[6];
+				double a = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					double xx = 2 * Math.Cos(a * Math.PI / 180.0);
+					double yy = 2 * Math.Sin(a * Math.PI / 180.0);
+					pts[j * 2 + 0] = point.x + 51 + xx;
+					pts[j * 2 + 1] = point.y - yy;
+					a += 120;
+				}
+				ContCrt.SetLineJoin(PXC_LineJoin.LineJoin_Miter);
+				ContCrt.PolygonSA(pts, true);
+				ContCrt.StrokePath(true);
+
+				ContCrt.MoveTo(point.x, point.y + 53);
+				ContCrt.LineTo(point.x, point.y - 53);
+
+				ContCrt.SetFillColorRGB(argbBlack);
+				ContCrt.Circle(point.x, point.y, 1);
+
+				/*double[] pts = new double[3 * 2];
+				for (int i = 0; i < joins.Length; i++)
+				{
+					double a = 30;
+					for (int j = 0; j < 3; j++)
+					{
+						double xx = r * Math.Cos(a * Math.PI / 180.0);
+						double yy = r * Math.Sin(a * Math.PI / 180.0);
+						pts[j * 2 + 0] = x + xx;
+						pts[j * 2 + 1] = y - yy;
+						a += 120;
+					}
+					CC.SetLineJoin(joins[i]);
+					CC.PolygonSA(pts, true);
+					CC.StrokePath(true);
+					x += I2P(2);
+				}*/
+
+				ContCrt.StrokePath(true);
+				
+				ContCrt.RestoreState();
+			};
+
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-/*
+
 			PXC_Rect rc;
 			rc.left = 0;
 			rc.right = 600;
@@ -1059,54 +1245,14 @@ namespace CoreAPIDemo
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
 
+			PXC_Point p;
+			p.x = 143;
+			p.y = rc.top - 252;
+			crossArrLine(Parent.m_CurDoc, CC, p);
 
-			double x, y, xs, ys;
-			PXC_PointF or;
 
-			x = 2 * 72.0;
-			y = 800 - 3.5 * 72.0;
-
-			CC.SaveState();
-			drawCS(CC, x, y, 1.5 * 72.0, 1.5 * 72.0);
-			xs = 0.5 * 72.0;
-			ys = 1 * 72.0;
-
-			drawArrLine(CC, -0.5 * 72.0, 0, -0.5 * 72.0, ys, 1, true);
-			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", 0, 17);
-			or.x = -0.8f * 72.0f;
-			or.y = 0.5f * 72.0f + 17;
-			drawTitle(Parent.m_CurDoc, CC, or.x, or.y, "t", 1);
-			double oldrise = 0.0;
-			
-			CC.SetTSetTextRise(page, Common.P2L(-10), ref oldrise);
-			PDFXC_Funcs.PXC_SetCurrentFont(page, tb3_fnt, tb3_fntsize);
-			or.x = Common.I2L(-0.7);
-			PDFXC_Funcs.PXC_TextOutW(page, ref or, "y", 1);
-			oldrise = 0.0;
-			PDFXC_Funcs.PXC_SetTextRise(page, 0, ref oldrise);
-
-			DrawArrLine(page, 0, Common.I2L(-0.5), xs, Common.I2L(-0.5), Common.P2L(1), true);
-			PDFXC_Funcs.PXC_SetCurrentFont(page, tb2_fnt, tb2_fntsize);
-			or.x = Common.I2L(0.15);
-			or.y = Common.I2L(-0.55);
-			PDFXC_Funcs.PXC_TextOutW(page, ref or, "t", 1);
-			oldrise = 0.0;
-			PDFXC_Funcs.PXC_SetTextRise(page, Common.P2L(-10), ref oldrise);
-			PDFXC_Funcs.PXC_SetCurrentFont(page, tb3_fnt, tb3_fntsize);
-			or.x = Common.I2L(0.25);
-			PDFXC_Funcs.PXC_TextOutW(page, ref or, "x", 1);
-			oldrise = 0.0;
-			PDFXC_Funcs.PXC_SetTextRise(page, 0, ref oldrise);
-
-			DrawCS(page, xs, ys, Common.I2L(1.5), Common.I2L(1.5));
-			DrawN(page);
-
-			PDFXC_Funcs.PXC_RestoreState(page);
-			Common.Title(pdf, page, x + Common.I2L(0.5), y - Common.I2L(1.4), "TRANSLATION", Common.P2L(15));
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
-			Parent.UpdateControlsFromDocument();
-			Parent.UpdatePreviewFromCurrentDocument();*/
 #warning Implement this method
 		}
 	}
