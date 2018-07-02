@@ -18,7 +18,7 @@ namespace CoreAPIDemo
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 
-		[Description("Add Text with different Text Rendering Mode to the current document")]
+		[Description("Text Rendering Mode")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -239,7 +239,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add Text with different Char and Word Spacing to the current document")]
+		[Description("Text Character and Word Spacing")]
 		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -325,7 +325,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add Text with different Scaling, Subscript and Superscript to the current document")]
+		[Description("Text Scaling, Subscript and Superscript")]
 		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -420,7 +420,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add Arcs with different Styles to the current document")]
+		[Description("Draw Arcs")]
 		static public void DrawArcsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -594,7 +594,7 @@ namespace CoreAPIDemo
 			Parent.UpdatePreviewFromCurrentDocument();
 		}
 
-		[Description("Add Polygons and Curves with different Styles to the current document")]
+		[Description("Draw Polygons and Curves")]
 		static public void DrawPolygonsAndCurvesOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -758,7 +758,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add Fillings with different Styles to the current document")]
+		[Description("Fills and Gradients")]
 		static public void DrawFillingsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1022,7 +1022,7 @@ namespace CoreAPIDemo
 			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add Patterns with different Styles to the current document")]
+		[Description("Patterns")]
 		static public void DrawPatternsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1141,7 +1141,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Add content with different Coordinate System Transformations (matrix usages)")]
+		[Description("Coordinate System Transformations (matrix usages)")]
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
 			uint argbBlack = 0x00000000;
@@ -1204,11 +1204,9 @@ namespace CoreAPIDemo
 
 
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-
-#warning Implement this method
 		}
 
-		[Description("Display Font parameters")]
+		[Description("Stroke Types")]
 		static public void DisplayFontParameters(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
