@@ -1353,7 +1353,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("Stroke Types")]
-		static public void DisplayFontParameters(Form1 Parent)
+		static public void AddStrokeTypes(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
