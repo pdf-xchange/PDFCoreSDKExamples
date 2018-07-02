@@ -161,8 +161,11 @@ namespace CoreAPIDemo
 			CC.SetFont(Font2);
 
 			PXC_Rect pr;
-			pr.left = x; pr.right = pr.left + w;
-			pr.top = y; pr.bottom = pr.top - h;
+			pr.left = x;
+			pr.right = pr.left + w;
+			pr.top = y;
+			pr.bottom = pr.top - h;
+
 			fillByGradient(Parent.m_CurDoc, CC, pr);
 
 			CC.SaveState();
@@ -174,7 +177,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, x + w / 2, y - 1.1 * 72.0, "TRM_Stroke", 15);
 
 			x += xs;
-			pr.left += xs; pr.right += xs;
+			pr.left += xs;
+			pr.right += xs;
+
 			CC.SaveState();
 			CC.SetCharSpace(2.0);
 			CC.SetTextScale(150.0);
@@ -214,8 +219,11 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, rc.right / 2 + 15, y - 1.8 * 72.0, "HatchType_Horizontal PATTERN", 15);
 
 
-			x = rc.right / 4; y -= 1.8 * 72.0;
-			pr.left += xs; pr.right += xs;
+			x = rc.right / 4;
+			y -= 1.8 * 72.0;
+			pr.left += xs;
+			pr.right += xs;
+
 			CC.SaveState();
 			IIXC_Inst Ixc_Inst = (IIXC_Inst)Parent.m_pxcInst.GetExtension("IXC");
 			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst);
@@ -470,20 +478,28 @@ namespace CoreAPIDemo
 			CC.Arc(rect, 0, 270, true);
 			CC.StrokePath(false);
 
-			rect.left -= 4 * 72.0; rect.right -= 4 * 72.0;
-			rect.top -= 3 * 72.0; rect.bottom -= 3 * 72.0;
+			rect.left -= 4 * 72.0;
+			rect.right -= 4 * 72.0;
+			rect.top -= 3 * 72.0;
+			rect.bottom -= 3 * 72.0;
+
 			drawTitle(Parent.m_CurDoc, CC, (rect.left + rect.right) / 2.0, rect.bottom - 0.2 * 72.0, "CLOSED ARC", 15);
 			CC.SetStrokeColorRGB(argbBlack);
 			CC.Arc(rect, 0, 270.0, true);
 			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
 
-			rect.left += 4 * 72.0; rect.right += 4 * 72.0;
+			rect.left += 4 * 72.0;
+			rect.right += 4 * 72.0;
+
 			drawTitle(Parent.m_CurDoc, CC, (rect.left + rect.right) / 2.0, rect.bottom - 0.2 * 72.0, "PIE", 15);
 			CC.Pie(rect, 0, 270.0);
 			CC.FillPath(true, true, PXC_FillRule.FillRule_Winding);
 
-			rect.left -= 4 * 72.0; rect.right -= 4 * 72.0;
-			rect.top -= 3 * 72.0; rect.bottom -= 3 * 72.0;
+			rect.left -= 4 * 72.0;
+			rect.right -= 4 * 72.0;
+			rect.top -= 3 * 72.0;
+			rect.bottom -= 3 * 72.0;
+
 			drawTitle(Parent.m_CurDoc, CC, (rect.left + rect.right) / 2.0, rect.bottom - 0.2 * 72.0, "CHORD", 15);
 			CC.SetStrokeColorRGB((uint)(200 << 0) + (200 << 8) + (200 << 16));
 			CC.SetDash(3, 3, 0);
@@ -495,7 +511,9 @@ namespace CoreAPIDemo
 			CC.Chord(rect, 0, 270.0);
 			CC.StrokePath(false);
 
-			rect.left += 4 * 72.0; rect.right += 4 * 72.0;
+			rect.left += 4 * 72.0;
+			rect.right += 4 * 72.0;
+
 			PXC_Point pnt;
 			pnt.x = (rect.left + rect.right) / 2;
 			pnt.y = (rect.top + rect.bottom) / 2;
@@ -888,8 +906,10 @@ namespace CoreAPIDemo
 			Stops.AddStopRGB(1.0, 0xfff500);
 
 			PXC_Point p0, p1;
-			p0.x = x; p0.y = y + h;
-			p1.x = x; p1.y = y;
+			p0.x = x;
+			p0.y = y + h;
+			p1.x = x;
+			p1.y = y;
 
 			IPXC_Shading Shade = Parent.m_CurDoc.CreateLinearShade(p0, p1, Stops, 3);
 
@@ -904,8 +924,10 @@ namespace CoreAPIDemo
 			r = h / 2;
 			Shade = null;
 			Stops.Reset();
-			p0.x = x; p0.y = y + r;
-			p1.x = p0.x - 0.5 * r; p1.y = p0.y + 0.5 * r;
+			p0.x = x;
+			p0.y = y + r;
+			p1.x = p0.x - 0.5 * r;
+			p1.y = p0.y + 0.5 * r;
 			Stops.AddStopRGB(0.0, 0x5c5c5c);
 			Stops.AddStopRGB(1.0, 0xf2f2f2);
 			Shade = Parent.m_CurDoc.CreateRadialShade(p0, p1, h / 2, 0.0, Stops, 0);
@@ -926,35 +948,6 @@ namespace CoreAPIDemo
 			h = rc.bottom - rc.top;
 
 			drawTitle(Parent.m_CurDoc, CC, 600 / 2, rc.bottom - 0.2 * 72.0, "GRADIENT FILL (GRADIENT_FILL_RECT_H)", 15);
-
-			TRIVERTEXxy[0,0] = rc.left;
-			TRIVERTEXxy[0,1] = rc.top;
-			TRIVERTEXcolor[0] = 0x00000000;
-
-			TRIVERTEXxy[1,0] = rc.right;
-			TRIVERTEXxy[1,1] = rc.top;
-			TRIVERTEXcolor[1] = 0x000000ff;
-
-			TRIVERTEXxy[2,0] = rc.right;
-			TRIVERTEXxy[2,1] = rc.bottom;
-			TRIVERTEXcolor[2] = 0x0000ff00;
-
-			TRIVERTEXxy[3,0] = rc.right;
-			TRIVERTEXxy[3,1] = rc.bottom;
-			TRIVERTEXcolor[3] = 0x00ffffff;
-
-			GRADIENT_TRIANGLE[0,0] = 0;
-			GRADIENT_TRIANGLE[0,1] = 1;
-			GRADIENT_TRIANGLE[0,2] = 2;
-
-			GRADIENT_TRIANGLE[1,0] = 1;
-			GRADIENT_TRIANGLE[1,1] = 2;
-			GRADIENT_TRIANGLE[1,2] = 3;
-
-			GRADIENT_TRIANGLE[2,0] = 2;
-			GRADIENT_TRIANGLE[2,1] = 3;
-			GRADIENT_TRIANGLE[2,2] = 0;
-
 			IPXC_GradientStops stops;
 			stops = Parent.m_CurDoc.CreateShadeStops();
 
@@ -965,8 +958,10 @@ namespace CoreAPIDemo
 
 			IPXC_Shading shade;
 			PXC_Point point0, point1;
-			point0.x = rc.left; point0.y = rc.bottom;
-			point1.x = rc.right; point1.y = rc.bottom;
+			point0.x = rc.left;
+			point0.y = rc.bottom;
+			point1.x = rc.right;
+			point1.y = rc.bottom;
 			shade = Parent.m_CurDoc.CreateLinearShade(ref point0, ref point1, stops, 6);
 
 			double[] xy = new double[16];
@@ -1006,8 +1001,13 @@ namespace CoreAPIDemo
 			stops.AddStopRGB(0.66, 0x0000ff00);
 			stops.AddStopRGB(1.0, 0x00ff0000);
 
-			point0.x = rc.left; point0.y = rc.top;
-			point1.x = rc.right; point1.y = rc.bottom;
+			rc.top = 6.94 * 72.0;
+			rc.bottom = 5.63 * 72.0;
+
+			point0.x = rc.left;
+			point0.y = rc.top;
+			point1.x = rc.left;
+			point1.y = rc.bottom;
 
 			shade = Parent.m_CurDoc.CreateLinearShade(ref point0, ref point1, stops, 3);
 
@@ -1019,36 +1019,6 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 			drawTitle(Parent.m_CurDoc, CC, 600 / 2, y - 3.8 * 72.0, "GRADIENT FILL (GRADIENT_FILL_RECT_V)", 15);
 
-			/*vert[0].x = rc.left;
-			vert[0].y = rc.top;
-			vert[0].color = 0x000000;
-
-			vert[1].x = rc.right;
-			vert[1].y = rc.top + h / 3;
-			vert[1].color = Common.RGB(255, 0, 0);
-
-			vert[2].x = rc.left;
-			vert[2].y = rc.bottom - h / 3;
-			vert[2].color = Common.RGB(0, 255, 0);
-
-			vert[3].x = rc.right;
-			vert[3].y = rc.bottom;
-			vert[3].color = Common.RGB(0, 0, 255);
-
-			gRect[0].UpperLeft = 3;
-			gRect[0].LowerRight = 2;
-			gRect[1].UpperLeft = 2;
-			gRect[1].LowerRight = 1;
-			gRect[2].UpperLeft = 1;
-			gRect[2].LowerRight = 0;
-			ptr = Marshal.AllocHGlobal(Marshal.SizeOf(gRect[0]) * 3);
-			Marshal.StructureToPtr(gRect[0], ptr, false);
-			Marshal.StructureToPtr(gRect[1], (IntPtr)(ptr.ToInt64() + 8), false);
-			Marshal.StructureToPtr(gRect[2], (IntPtr)(ptr.ToInt64() + 16), false);
-			PDFXC_Funcs.PXC_GradientFill(cpage, vert, 4, ptr, 3,
-				PDFXC_Funcs.PXC_GradientMode.Gradient_Rect_V);
-			Marshal.FreeHGlobal(ptr);
-			return res;*/
 			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
@@ -1182,17 +1152,17 @@ namespace CoreAPIDemo
 				ContCrt.SetLineWidth(1.0);
 				ContCrt.SetStrokeColorRGB(argbBlack);
 				ContCrt.NoDash();
-				ContCrt.MoveTo(point.x - 53, point.y);
-				ContCrt.LineTo(point.x + 53, point.y);
+				ContCrt.MoveTo(point.x - 0.74 * 72.0, point.y);
+				ContCrt.LineTo(point.x + 0.74 * 72.0, point.y);
 
-				ContCrt.MoveTo(point.x + 53, point.y);
+				ContCrt.MoveTo(point.x + 0.74 * 72.0, point.y);
 				double[] pts = new double[6];
 				double a = 0;
 				for (int j = 0; j < 3; j++)
 				{
 					double xx = 2 * Math.Cos(a * Math.PI / 180.0);
 					double yy = 2 * Math.Sin(a * Math.PI / 180.0);
-					pts[j * 2 + 0] = point.x + 51 + xx;
+					pts[j * 2 + 0] = point.x + 0.7 * 72.0 + xx;
 					pts[j * 2 + 1] = point.y - yy;
 					a += 120;
 				}
@@ -1200,29 +1170,11 @@ namespace CoreAPIDemo
 				ContCrt.PolygonSA(pts, true);
 				ContCrt.StrokePath(true);
 
-				ContCrt.MoveTo(point.x, point.y + 53);
-				ContCrt.LineTo(point.x, point.y - 53);
+				ContCrt.MoveTo(point.x, point.y + 0.74 * 72.0);
+				ContCrt.LineTo(point.x, point.y - 0.74 * 72.0);
 
 				ContCrt.SetFillColorRGB(argbBlack);
 				ContCrt.Circle(point.x, point.y, 1);
-
-				/*double[] pts = new double[3 * 2];
-				for (int i = 0; i < joins.Length; i++)
-				{
-					double a = 30;
-					for (int j = 0; j < 3; j++)
-					{
-						double xx = r * Math.Cos(a * Math.PI / 180.0);
-						double yy = r * Math.Sin(a * Math.PI / 180.0);
-						pts[j * 2 + 0] = x + xx;
-						pts[j * 2 + 1] = y - yy;
-						a += 120;
-					}
-					CC.SetLineJoin(joins[i]);
-					CC.PolygonSA(pts, true);
-					CC.StrokePath(true);
-					x += I2P(2);
-				}*/
 
 				ContCrt.StrokePath(true);
 				
@@ -1246,8 +1198,8 @@ namespace CoreAPIDemo
 			IMathHelper math = Aux_Inst.MathHelper;
 
 			PXC_Point p;
-			p.x = 143;
-			p.y = rc.top - 252;
+			p.x = 2 * 72.0;
+			p.y = rc.top - 3.5 * 72.0;
 			crossArrLine(Parent.m_CurDoc, CC, p);
 
 
