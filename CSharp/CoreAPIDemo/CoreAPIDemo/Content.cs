@@ -12,9 +12,9 @@ namespace CoreAPIDemo
 
 		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, uint argbFillColor = 0x00000000);
 		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
-		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
-		delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
-		delegate void DrawN(IPXC_ContentCreator CC, double cx, double baseLineY);
+		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, bool bDashed);
+		delegate void DrawCS(IPXC_ContentCreator CC, PXC_Point point);
+		delegate void DrawN(IPXC_ContentCreator CC, PXC_Point point, IPXC_Font font);
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 
@@ -937,10 +937,6 @@ namespace CoreAPIDemo
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
 			IPXC_Page thirdPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
-			double[,] TRIVERTEXxy = new double[4,2];
-			uint[] TRIVERTEXcolor = new uint[4];
-			uint[,] GRADIENT_TRIANGLE = new uint[3, 3];
-
 			rc.left = 72.0;
 			rc.top = 800 - 72.0;
 			rc.right = 600 - 72.0;
@@ -1145,42 +1141,82 @@ namespace CoreAPIDemo
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
 			uint argbBlack = 0x00000000;
-			//delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
-			CrossArrLine crossArrLine = (Doc, ContCrt, point) =>
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
 			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
-				ContCrt.SetLineWidth(1.0);
-				ContCrt.SetStrokeColorRGB(argbBlack);
-				ContCrt.NoDash();
-				ContCrt.MoveTo(point.x - 0.74 * 72.0, point.y);
-				ContCrt.LineTo(point.x + 0.74 * 72.0, point.y);
-
-				ContCrt.MoveTo(point.x + 0.74 * 72.0, point.y);
-				double[] pts = new double[6];
-				double a = 0;
-				for (int j = 0; j < 3; j++)
-				{
-					double xx = 2 * Math.Cos(a * Math.PI / 180.0);
-					double yy = 2 * Math.Sin(a * Math.PI / 180.0);
-					pts[j * 2 + 0] = point.x + 0.7 * 72.0 + xx;
-					pts[j * 2 + 1] = point.y - yy;
-					a += 120;
-				}
-				ContCrt.SetLineJoin(PXC_LineJoin.LineJoin_Miter);
-				ContCrt.PolygonSA(pts, true);
-				ContCrt.StrokePath(true);
-
-				ContCrt.MoveTo(point.x, point.y + 0.74 * 72.0);
-				ContCrt.LineTo(point.x, point.y - 0.74 * 72.0);
-
-				ContCrt.SetFillColorRGB(argbBlack);
-				ContCrt.Circle(point.x, point.y, 1);
-
-				ContCrt.StrokePath(true);
-				
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double nWidth = 0;
+				double nHeight = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
 				ContCrt.RestoreState();
 			};
+			//delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
+			DrawArrLine drawArrLine = (ContCret, xfrom, yfrom, xto, yto, bDashes) =>
+			{
+				ContCret.SaveState();
+				ContCret.SetLineWidth(1.0);
+				ContCret.SetStrokeColorRGB(argbBlack);
+				
+				ContCret.NoDash();
+				if (bDashes)
+				{
+					ContCret.SetDash(6.0, 6.0, 5);
+				}
 
+				ContCret.MoveTo(xfrom, yfrom);
+				ContCret.LineTo(xto, yto);
+				ContCret.StrokePath(true);
+				ContCret.RestoreState();
+
+				if (xto > xfrom)
+				{
+					double[] xy = new double[6];
+					xy[0] = xto - 2;
+					xy[1] = yto + 1;
+					xy[2] = xto + 2;
+					xy[3] = yto;
+					xy[4] = xto - 2;
+					xy[5] = yto - 1;
+					ContCret.PolygonSA(xy, true);
+					ContCret.StrokePath(true);
+				}
+				else if (yto > yfrom)
+				{
+					double[] xy = new double[6];
+					xy[0] = xto + 1;
+					xy[1] = yto - 2;
+					xy[2] = xto;
+					xy[3] = yto + 2;
+					xy[4] = xto - 1;
+					xy[5] = yto - 2;
+					ContCret.PolygonSA(xy, true);
+					ContCret.StrokePath(true);
+				}
+				
+			};
+			//delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
+			DrawCS drawCS = (ContCret, point) =>
+			{
+				drawArrLine(ContCret, point.x - 0.74 * 72.0, point.y, point.x + 0.74 * 72.0, point.y, false);
+				drawArrLine(ContCret, point.x, point.y - 0.74 * 72.0, point.x, point.y + 0.74 * 72.0, false);
+				ContCret.Circle(point.x, point.y, 1);
+				ContCret.StrokePath(true);
+			};
+			//delegate void DrawN(IPXC_ContentCreator CC, double cx, double baseLineY);
+			DrawN drawN = (ContCret, point, font) =>
+			{
+				string text = "n";
+				ContCret.SetLineWidth(0.5);
+				ContCret.SetFont(font);
+				ContCret.SetFontSize(144);
+				ContCret.SetTextRenderMode(PXC_TextRenderingMode.TRM_Stroke);
+				ContCret.ShowTextLine(point.x + 0.1 * 72.0, point.y + 1.782 * 72.0, text);
+			};
 
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -1196,12 +1232,122 @@ namespace CoreAPIDemo
 			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
-
+			IPXC_Font Font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 1000);
+			PXC_Matrix globalMatrix;
+			PXC_Matrix m;
 			PXC_Point p;
-			p.x = 2 * 72.0;
-			p.y = rc.top - 3.5 * 72.0;
-			crossArrLine(Parent.m_CurDoc, CC, p);
+			p.x = 0;
+			p.y = 0;
 
+			CC.SaveState();
+				globalMatrix.a = 1;
+				globalMatrix.b = 0;
+				globalMatrix.c = 0;
+				globalMatrix.d = 1;
+				globalMatrix.e = 2 * 72.0;
+				globalMatrix.f = rc.top - 3.5 * 72.0;
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p);
+				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 72.0, true);
+				drawArrLine(CC, p.x, p.y - 0.5 * 72.0, p.x + 72, p.y - 0.5 * 72.0, true);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "t", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.6 * 72.0, p.y + 0.35 * 72.0, "y", 10);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "t", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
+				CC.SaveState();
+					m.a = 1;
+					m.b = 0;
+					m.c = 0;
+					m.d = 1;
+					m.e = 0.5 * 72.0;
+					m.f = 1.0 * 72.0;
+					CC.ConcatCS(m);
+					drawCS(CC, p);
+					drawN(CC, p, Font);
+				CC.RestoreState();
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 5 * 72.0, "TRANSLATION", 15);
+
+			CC.SaveState();
+				globalMatrix.a = 1;
+				globalMatrix.b = 0;
+				globalMatrix.c = 0;
+				globalMatrix.d = 1;
+				globalMatrix.e = 5.5 * 72.0;
+				globalMatrix.f = rc.top - 3.5 * 72.0;
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p);
+				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 1.5 * 72.0, true);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "S", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.6 * 72.0, p.y + 0.35 * 72.0, "y", 10);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "S", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
+				drawArrLine(CC, p.x, p.y - 0.5 * 72.0, p.x + 1.3 * 72, p.y - 0.5 * 72.0, true);
+				CC.SaveState();
+					m.a = 1.3;
+					m.b = 0;
+					m.c = 0;
+					m.d = 1.7;
+					m.e = 0;
+					m.f = 0;
+					CC.ConcatCS(m);
+					drawCS(CC, p);
+					drawN(CC, p, Font);
+				CC.RestoreState();
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 5.7 * 72.0, rc.top - 5 * 72.0, "SCALING", 15);
+
+			CC.SaveState();
+				globalMatrix.a = 1;
+				globalMatrix.b = 0;
+				globalMatrix.c = 0;
+				globalMatrix.d = 1;
+				globalMatrix.e = 2.5 * 72.0;
+				globalMatrix.f = rc.top - 7.5 * 72.0;
+				CC.ConcatCS(globalMatrix);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.5 * 72.0, p.y + 0.3 * 72.0, "Θ", 15);
+				CC.CircleArc(p.x, p.y, 30, 0, 45);
+				drawCS(CC, p);
+				CC.SaveState();
+					m.a = 1;
+					m.b = 1;
+					m.c = -1;
+					m.d = 1;
+					m.e = 0;
+					m.f = 0;
+					CC.ConcatCS(m);
+					drawCS(CC, p);
+					drawN(CC, p, Font);
+				CC.RestoreState();
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 8.5 * 72.0, "ROTATION", 15);
+
+			CC.SaveState();
+				globalMatrix.a = 1;
+				globalMatrix.b = 0;
+				globalMatrix.c = 0;
+				globalMatrix.d = 1;
+				globalMatrix.e = 5.7 * 72.0;
+				globalMatrix.f = rc.top - 7.5 * 72.0;
+				CC.ConcatCS(globalMatrix);
+				CC.CircleArc(p.x, p.y, 30, 0, 26);
+				CC.CircleArc(p.x, p.y, 30, 90, 64);
+				drawCS(CC, p);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.1 * 72.0, p.y + 0.65 * 72.0, "ß", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.5 * 72.0, p.y + 0.25 * 72.0, "α", 15);
+				CC.SaveState();
+					m.a = 1;
+					m.b = 0.5;
+					m.c = 0.5;
+					m.d = 1;
+					m.e = 0;
+					m.f = 0;
+					CC.ConcatCS(m);
+					drawCS(CC, p);
+					drawN(CC, p, Font);
+				CC.RestoreState();
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 5.7 * 72.0, rc.top - 8.5 * 72.0, "SKEWING", 15);
 
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
