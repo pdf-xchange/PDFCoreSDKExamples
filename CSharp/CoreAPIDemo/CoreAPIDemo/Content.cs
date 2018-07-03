@@ -16,7 +16,7 @@ namespace CoreAPIDemo
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 
-		[Description("4.2. Text Rendering Mode")]
+		[Description("4.3. Text Rendering Mode")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -237,7 +237,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.3. Text Character and Word Spacing")]
+		[Description("4.4. Text Character and Word Spacing")]
 		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -323,7 +323,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.4. Text Scaling, Subscript and Superscript")]
+		[Description("4.5. Text Scaling, Subscript and Superscript")]
 		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -418,7 +418,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.8. Draw Arcs")]
+		[Description("4.9. Draw Arcs")]
 		static public void DrawArcsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -590,7 +590,7 @@ namespace CoreAPIDemo
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.9. Draw Polygons and Curves")]
+		[Description("4.10. Draw Polygons and Curves")]
 		static public void DrawPolygonsAndCurvesOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -754,7 +754,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.5. Fills and Gradients")]
+		[Description("4.6. Fills and Gradients")]
 		static public void DrawFillingsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1014,7 +1014,7 @@ namespace CoreAPIDemo
 			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.6. Patterns")]
+		[Description("4.7. Patterns")]
 		static public void DrawPatternsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1348,12 +1348,29 @@ namespace CoreAPIDemo
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("4.7. Stroke Types")]
+		[Description("4.8. Stroke Types")]
 		static public void AddStrokeTypes(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
 #warning Implement this method
+		}
+
+		[Description("4.2. Place image with different transformations")]
+		static public void PlaceImageWithDifferentTransformations(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			//Placing image by it's original size
+#warning Todo
+			//Placing 45 degree rotated image
+#warning Todo
+			//Stretching image inside the given rectangle
+#warning Todo
+			//Proportionally placing image inside the given rectangle
+#warning Todo
+
 		}
 	}
 }
