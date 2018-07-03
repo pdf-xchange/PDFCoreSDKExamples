@@ -1692,18 +1692,141 @@ namespace CoreAPIDemo
 		[Description("4.2. Place image with different transformations")]
 		static public void PlaceImageWithDifferentTransformations(Form1 Parent)
 		{
+			uint argbBlack = 0x00000000;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double nWidth = 0;
+				double nHeight = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
 
-			//Placing image by it's original size
-#warning Todo
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
+			IMathHelper mathHelper = Aux_Inst.MathHelper;
+			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\Editor_welcome.png");
+			PXC_Matrix contentMatrix = new PXC_Matrix();
+			PXC_Matrix globalMatrix = new PXC_Matrix();
+			
+			//Placing image by it's original size / 5.0
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 1.0 * 72.0, rc.top - 4.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, Img.Width / 5.0, Img.Height / 5.0);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / 2, -15, "ORIGINAL", 15);
+			}
+			CC.RestoreState();
+
 			//Placing 45 degree rotated image
-#warning Todo
-			//Stretching image inside the given rectangle
-#warning Todo
-			//Proportionally placing image inside the given rectangle
-#warning Todo
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 6.3 * 72.0, rc.top - 4.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, Img.Width / 5.0, Img.Height / 5.0);
+					contentMatrix = mathHelper.Matrix_Rotate(ref contentMatrix, 45);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / -2, -15, "ROTATION", 15);
+			}
+			CC.RestoreState();
 
+			//Stretching image inside the given rectangle
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			PXC_Rect rect = new PXC_Rect();
+			rect.right = 2 * 72.0;
+			rect.top = 2 * 72.0;
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 1.0 * 72.0, rc.top - 9.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					CC.SetLineWidth(4.0);
+					CC.Rect(rect.left, rect.bottom, rect.right, rect.top);
+					CC.StrokePath(true);
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, rect.right, rect.top);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / 2, -15, "STRETCHING", 15);
+			}
+			CC.RestoreState();
+			//Proportionally placing image inside the given rectangle
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			PXC_Rect rcImg = new PXC_Rect(); 
+			rect = new PXC_Rect();
+			rect.right = 3 * 72.0;
+			rect.top = 3 * 72.0;
+			
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 4.3 * 72.0, rc.top - 9.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					{
+						double k1 = (rect.right - rect.left) / Math.Abs(rect.top - rect.bottom);
+						double k2 = (double)Img.Width / Img.Height;
+						if (k1 >= k2)
+						{
+							rcImg = rect;
+							rcImg.right = rcImg.top * k2;
+						}
+						else
+						{
+							rcImg = rect;
+							rcImg.top = rcImg.right / k2;
+						}
+					}
+
+					CC.SetLineWidth(4.0);
+					CC.Rect(rect.left, rect.bottom, rect.right, rect.top);
+					CC.StrokePath(true);
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, rcImg.right, rcImg.top);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / 2, -15, "PROPORTIONALLY PLACING", 15);
+			}
+			CC.RestoreState();
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 	}
 }
