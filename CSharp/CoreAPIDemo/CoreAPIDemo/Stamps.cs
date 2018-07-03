@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
-	[Description("Stamps")]
+	[Description("6. Stamps")]
 	class Stamps
 	{
-		[Description("Add Draft stamp from a standard collection by Stamp ID")]
+		[Description("6.1. Add Draft stamp from a standard collection by Stamp ID")]
 		static public void AddStandardStampByID(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -33,7 +32,7 @@ namespace CoreAPIDemo
 			annot.Data = stampData;
 		}
 
-		[Description("Add Expired stamp from a standard collection by index in collection")]
+		[Description("6.2. Add Expired stamp from a standard collection by index in collection")]
 		static public void AddStandardStampByIndexInCollection(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -69,7 +68,7 @@ namespace CoreAPIDemo
 			annot.Data = stampData;
 		}
 
-		[Description("Load stamps collection from stamp file and place stamp from it")]
+		[Description("6.3. Load stamps collection from stamp file and place stamp from it")]
 		static public void LoadStampsCollectionFromFile(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -104,7 +103,7 @@ namespace CoreAPIDemo
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
 		}
-		[Description("Load stamp from image file")]
+		[Description("6.4. Load stamp from image file")]
 		static public void LoadStampFromTheImageFile(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

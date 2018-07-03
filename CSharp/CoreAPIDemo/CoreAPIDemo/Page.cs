@@ -4,10 +4,10 @@ using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
-	[Description("Page")]
+	[Description("3. Page")]
 	class Page
 	{
-		[Description("Insert empty pages into the beginning of the current document")]
+		[Description("3.1. Insert empty pages into the beginning of the current document")]
 		static public void InsertEmptyPages(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -19,7 +19,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc.Pages.AddEmptyPages(0, 3, ref rcMedia, null, out urd);
 		}
 
-		[Description("Insert page from another document into the beginning of the current document")]
+		[Description("3.2. Insert page from another document into the beginning of the current document")]
 		static public void InsertPagesFromOtherDocument(Form1 Parent)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -39,7 +39,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc.Pages.InsertPagesFromDoc(srcDoc, 0, 0, 1, (int)PXC_InsertPagesFlags.IPF_Annots_Copy | (int)PXC_InsertPagesFlags.IPF_Widgets_Copy);
 		}
 
-		[Description("Remove first page from the current document")]
+		[Description("3.3. Remove first page from the current document")]
 		static public void RemoveFirstPageFromTheDocument(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -54,7 +54,7 @@ namespace CoreAPIDemo
 				MessageBox.Show("The last page can't be removed from the document!");
 		}
 
-		[Description("Move first page of the current document into the last page position")]
+		[Description("3.4. Move first page of the current document into the last page position")]
 		static public void MoveFirstPageToBack(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -69,7 +69,7 @@ namespace CoreAPIDemo
 				MessageBox.Show("Current document has one page - nothing to move!");
 		}
 
-		[Description("Resize document pages to the size of the content")]
+		[Description("3.5. Resize document pages to the size of the content")]
 		static public void ResizeDocumentPagesToTheContent(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

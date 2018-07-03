@@ -1,17 +1,12 @@
 ﻿using PDFXCoreAPI;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreAPIDemo
 {
-	[Description("Form Fields")]
+	[Description("5. Form Fields")]
 	class FormFields
 	{
-		[Description("Add Button form field with icon and an URI Action link")]
+		[Description("5.1. Add Button form field with icon and an URI Action link")]
 		static public void AddButtonWithIconAndURI(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

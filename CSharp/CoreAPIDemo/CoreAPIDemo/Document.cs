@@ -5,10 +5,10 @@ using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
-	[Description("Document")]
+	[Description("2. Document")]
 	public class Document
 	{
-		[Description("Create new document")]
+		[Description("2.1. Create new document")]
 		static public void CreateNewDoc(Form1 Parent)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
@@ -23,7 +23,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = coreDoc;
 		}
 
-		[Description("Open document with open file dialog")]
+		[Description("2.2. Open document with open file dialog")]
 		static public void OpenDocWithOpenDialog(Form1 Parent)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -38,7 +38,7 @@ namespace CoreAPIDemo
 			}
 		}
 
-		[Description("Open document from string path")]
+		[Description("2.3. Open document from string path")]
 		static public void OpenDocFromStringPath(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
@@ -46,7 +46,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
 		}
 
-		[Description("Open document from IStream")]
+		[Description("2.4. Open document from IStream")]
 		static public void OpenDocumentFromStream(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
@@ -68,7 +68,7 @@ namespace CoreAPIDemo
 			}
 		}
 
-		[Description("Open password protected document from IAFS_Name")]
+		[Description("2.5. Open password protected document from IAFS_Name")]
 		static public void OpenPasswordProtectedDocument(Form1 Parent)
 		{
 			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\PasswordProtected.pdf";
@@ -79,8 +79,8 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(destPath, clbk);
 		}
 
-		[Description("Save document to file")]
-		static public void SaveDocumentToFile(Form1 Parent)
+		[Description("2.6. Save document to file")]
+		static public void SaveDocToFile(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				return;

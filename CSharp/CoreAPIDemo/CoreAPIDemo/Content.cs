@@ -1,16 +1,14 @@
-﻿using System.ComponentModel;
-using System;
-using System.Windows.Forms;
+﻿using System;
+using System.ComponentModel;
 using PDFXCoreAPI;
-using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
-	[Description("Content")]
+	[Description("4. Content")]
 	public class Content
 	{
 
-		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, uint argbFillColor = 0x00000000);
+		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, uint color = 0x00000000);
 		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
 		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, bool bDashed);
 		delegate void DrawCS(IPXC_ContentCreator CC, PXC_Point point);
@@ -18,7 +16,7 @@ namespace CoreAPIDemo
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 
-		[Description("Text Rendering Mode")]
+		[Description("4.2. Text Rendering Mode")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -239,7 +237,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Text Character and Word Spacing")]
+		[Description("4.3. Text Character and Word Spacing")]
 		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -325,7 +323,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Text Scaling, Subscript and Superscript")]
+		[Description("4.4. Text Scaling, Subscript and Superscript")]
 		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
@@ -420,7 +418,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Draw Arcs")]
+		[Description("4.8. Draw Arcs")]
 		static public void DrawArcsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -590,11 +588,9 @@ namespace CoreAPIDemo
 			}
 
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-			Parent.UpdateControlsFromDocument();
-			Parent.UpdatePreviewFromCurrentDocument();
 		}
 
-		[Description("Draw Polygons and Curves")]
+		[Description("4.9. Draw Polygons and Curves")]
 		static public void DrawPolygonsAndCurvesOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -758,7 +754,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Fills and Gradients")]
+		[Description("4.5. Fills and Gradients")]
 		static public void DrawFillingsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1018,7 +1014,7 @@ namespace CoreAPIDemo
 			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Patterns")]
+		[Description("4.6. Patterns")]
 		static public void DrawPatternsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
@@ -1137,7 +1133,7 @@ namespace CoreAPIDemo
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Coordinate System Transformations (matrix usages)")]
+		[Description("4.1. Coordinate System Transformations (matrix usages)")]
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
 			uint argbBlack = 0x00000000;
@@ -1352,7 +1348,7 @@ namespace CoreAPIDemo
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
-		[Description("Stroke Types")]
+		[Description("4.7. Stroke Types")]
 		static public void AddStrokeTypes(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
