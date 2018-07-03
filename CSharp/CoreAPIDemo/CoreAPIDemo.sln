@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreAPIDemo", "CoreAPIDemo\CoreAPIDemo.csproj", "{A5CBC24E-8779-4E8A-822A-2141ECD7A928}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreAPIDemo", "CoreAPIDemo.csproj", "{A5CBC24E-8779-4E8A-822A-2141ECD7A928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C2ABFD9F-8409-4354-A13C-10425B9A0759}
+		SolutionGuid = {9A85EA06-40AC-4B64-A0A4-CB0A64057E24}
 	EndGlobalSection
 EndGlobal
