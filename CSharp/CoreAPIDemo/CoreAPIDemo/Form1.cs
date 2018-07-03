@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -39,7 +40,38 @@ namespace CoreAPIDemo
 			img = new Bitmap(sImgFolder + "runGreyed_24.png");
 			il.Images.Add(img);
 			sampleTree.ImageList = il;
+			sampleTree.TreeViewNodeSorter = new NodeSorter();
 			RefillTree();
+		}
+
+		public class NodeSorter : IComparer
+		{
+			// Compare the length of the strings, or the strings
+			// themselves, if they are the same length.
+			public int Compare(object x, object y)
+			{
+				TreeNode tx = x as TreeNode;
+				TreeNode ty = y as TreeNode;
+
+				int index = tx.Text.IndexOf(' ');
+				string sXNum = tx.Text.Substring(0, index);
+				index = ty.Text.IndexOf(' ');
+				string sYNum = ty.Text.Substring(0, index);
+
+				string[] aXNums = sXNum.Split('.');
+				string[] aYNums = sYNum.Split('.');
+				for (int i = 0; i < aXNums.Length; i++)
+				{
+					if (i >= aYNums.Length)
+						return 1; //x is greater
+					int nX = int.Parse(aXNums[i]);
+					int nY = int.Parse(aYNums[i]);
+					if (nX == nY)
+						continue;
+					return (nX > nY) ? 1 : -1;
+				}
+				return 0;
+			}
 		}
 
 		private void RefillTree()
@@ -51,6 +83,7 @@ namespace CoreAPIDemo
 			{
 				AddClassToTree(t);
 			}
+			
 			sampleTree.Sort();
 			sampleTree.EndUpdate();
 		}
