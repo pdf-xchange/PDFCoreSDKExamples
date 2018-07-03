@@ -1,8 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -203,7 +206,10 @@ namespace CoreAPIDemo
 		public void UpdatePreviewFromCurrentDocument()
 		{
 			if (m_CurDoc == null)
+			{
+				previewImage.Image = null;
 				return;
+			}
 			int nPage = int.Parse(currentPage.Text) - 1;
 			if (nPage >= m_CurDoc.Pages.Count)
 			{
@@ -430,6 +436,30 @@ namespace CoreAPIDemo
 			{
 				Console.Write(err.Message);
 			}
+		}
+
+		private void toolStripButton3_Click(object sender, EventArgs e)
+		{
+			CloseDocument();
+
+			UpdateControlsFromDocument();
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		private void btnSave_Click(object sender, EventArgs e)
+		{
+			Document.SaveDocumentToFile(this);
+		}
+
+		private void btnOpen_Click(object sender, EventArgs e)
+		{
+			if (m_CurDoc == null)
+				return;
+
+			String FileName = Path.GetTempFileName();
+			FileName = FileName.Replace(".tmp", ".pdf");
+			m_CurDoc.WriteToFile(FileName);
+			Process pr = Process.Start(FileName);
 		}
 	}
 }
