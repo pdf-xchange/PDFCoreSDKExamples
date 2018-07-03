@@ -22,7 +22,7 @@ namespace CoreAPIDemo
 			const uint argbDarkLime = 0x00008888;
 			const uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -242,7 +242,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbDarkLime = 0x00008888;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
 				ContCrt.SaveState();
@@ -293,29 +293,29 @@ namespace CoreAPIDemo
 			CC.SetFillColorRGB(argbDarkLime);
 			string text = "Character Spacing";
 			CC.SetCharSpace(-2.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetCharSpace(0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetCharSpace(2.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 			CC.SetCharSpace(0);
 
 			y -= ys;
 			text = "Word Spacing";
 			CC.SetWordSpace(-10);
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetWordSpace(0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetWordSpace(10);
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 25, y + 2, text, 25, 400, argbDarkLime);
 			CC.SetWordSpace(0);
 
 			CC.RestoreState();
@@ -328,7 +328,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbDarkLime = 0x00008888;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
 				ContCrt.SaveState();
@@ -380,38 +380,38 @@ namespace CoreAPIDemo
 			CC.SetFillColorRGB(argbDarkLime);
 			string text = "Horizontal Scaling";
 			CC.SetTextScale(80);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetTextScale(100);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 
 			y -= ys;
 			CC.SetTextScale(120);
-			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs, y + 2, text, 25, 400, argbDarkLime);
 			CC.SetTextScale(100);
 
 			y -= ys;
 			text = "This text is ";
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, 400, argbDarkLime);
 			CC.SetTextRise(10.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs + 110, y + 2, "superscripted", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 110, y + 2, "superscripted", 25, 400, argbDarkLime);
 
 			CC.SetTextRise(0.0);
 			y -= ys;
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 40, y + 2, text, 25, 400, argbDarkLime);
 			CC.SetTextRise(-10);
-			drawTitle(Parent.m_CurDoc, CC, x + xs + 100, y + 2, "subscripted", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 100, y + 2, "subscripted", 25, 400, argbDarkLime);
 
 			CC.SetTextRise(0.0);
 			y -= ys;
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 82, y + 2, "This", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 82, y + 2, "This", 25, 400, argbDarkLime);
 			CC.SetTextRise(-10.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs - 28, y + 2, "text", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs - 28, y + 2, "text", 25, 400, argbDarkLime);
 			CC.SetTextRise(10.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs + 41, y + 2, "moves", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 41, y + 2, "moves", 25, 400, argbDarkLime);
 			CC.SetTextRise(0.0);
-			drawTitle(Parent.m_CurDoc, CC, x + xs + 128, y + 2, "around", 25, argbDarkLime);
+			drawTitle(Parent.m_CurDoc, CC, x + xs + 128, y + 2, "around", 25, 400, argbDarkLime);
 
 			CC.RestoreState();
 
@@ -423,7 +423,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) => 
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) => 
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -596,7 +596,7 @@ namespace CoreAPIDemo
 			const uint argbBlack = 0x00000000;
 			const uint argbDarkLime = 0x00008888;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -789,7 +789,7 @@ namespace CoreAPIDemo
 				return Patt;
 			};
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -1049,7 +1049,7 @@ namespace CoreAPIDemo
 				return Patt;
 			};
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -1138,9 +1138,9 @@ namespace CoreAPIDemo
 		{
 			uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, color) =>
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
-				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 700);
 				ContCrt.SaveState();
 				ContCrt.SetFillColorRGB(color);
 				ContCrt.SetFont(defFont);
@@ -1246,9 +1246,9 @@ namespace CoreAPIDemo
 				drawCS(CC, p);
 				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 72.0, true);
 				drawArrLine(CC, p.x, p.y - 0.5 * 72.0, p.x + 72, p.y - 0.5 * 72.0, true);
-				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "t", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "t", 15, 700);
 				drawTitle(Parent.m_CurDoc, CC, p.x - 0.6 * 72.0, p.y + 0.35 * 72.0, "y", 10);
-				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "t", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "t", 15, 700);
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
 				CC.SaveState();
 					m.a = 1;
@@ -1274,9 +1274,9 @@ namespace CoreAPIDemo
 				CC.ConcatCS(globalMatrix);
 				drawCS(CC, p);
 				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 1.5 * 72.0, true);
-				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "S", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x - 0.7 * 72.0, p.y + 0.5 * 72.0, "S", 15, 700);
 				drawTitle(Parent.m_CurDoc, CC, p.x - 0.6 * 72.0, p.y + 0.35 * 72.0, "y", 10);
-				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "S", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "S", 15, 700);
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
 				drawArrLine(CC, p.x, p.y - 0.5 * 72.0, p.x + 1.3 * 72, p.y - 0.5 * 72.0, true);
 				CC.SaveState();
