@@ -32,15 +32,21 @@ namespace CoreAPIDemo
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
 
 			ImageList il = new ImageList();
-			string sImgFolder = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\";
-			Bitmap img = new Bitmap(sImgFolder + "folder_24.png");
-			il.Images.Add(img);
-			img = new Bitmap(sImgFolder + "run_24.png");
-			il.Images.Add(img);
-			img = new Bitmap(sImgFolder + "runGreyed_24.png");
-			il.Images.Add(img);
-			sampleTree.ImageList = il;
-			sampleTree.TreeViewNodeSorter = new NodeSorter();
+			try
+			{
+				string sImgFolder = System.Environment.CurrentDirectory + "\\Images\\";
+				Bitmap img = new Bitmap(sImgFolder + "folder_24.png");
+				il.Images.Add(img);
+				img = new Bitmap(sImgFolder + "run_24.png");
+				il.Images.Add(img);
+				img = new Bitmap(sImgFolder + "runGreyed_24.png");
+				il.Images.Add(img);
+				sampleTree.ImageList = il;
+				sampleTree.TreeViewNodeSorter = new NodeSorter();
+			}
+			catch (Exception)
+			{
+			}
 			RefillTree();
 		}
 
@@ -83,7 +89,7 @@ namespace CoreAPIDemo
 			{
 				AddClassToTree(t);
 			}
-			
+
 			sampleTree.Sort();
 			sampleTree.EndUpdate();
 		}

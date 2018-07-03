@@ -163,13 +163,19 @@
     <Content Include="Images\CoreAPI_32.ico" />
     <Content Include="Images\Editor_welcome.png" />
     <Content Include="Images\expandAll_24.png" />
-    <Content Include="Images\folder_24.png" />
+    <Content Include="Images\folder_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\gotoSource_24.png" />
     <Content Include="Images\next_24.png" />
     <Content Include="Images\openWith_24.png" />
     <Content Include="Images\prev_24.png" />
-    <Content Include="Images\runGreyed_24.png" />
-    <Content Include="Images\run_24.png" />
+    <Content Include="Images\runGreyed_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\run_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\saveDoc_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
