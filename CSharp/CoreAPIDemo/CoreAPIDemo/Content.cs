@@ -8,10 +8,10 @@ namespace CoreAPIDemo
 	public class Content
 	{
 
-		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, uint color = 0x00000000);
-		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
-		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, bool bDashed);
-		delegate void DrawCS(IPXC_ContentCreator CC, PXC_Point point);
+		delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint color = 0x00000000);
+		delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore, IMathHelper mathHelper);
+		delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, bool bDashed, bool bArr = true, uint nColor = 0x00000000);
+		delegate void DrawCS(IPXC_ContentCreator CC, PXC_Point point, bool bCircle = true, double nWidth = 0.74 * 72.0, bool bArr = true, uint nColor = 0x00000000);
 		delegate void DrawN(IPXC_ContentCreator CC, PXC_Point point, IPXC_Font font);
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
@@ -21,7 +21,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbDarkLime = 0x00008888;
 			const uint argbBlack = 0x00000000;
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
@@ -35,8 +35,8 @@ namespace CoreAPIDemo
 				ContCrt.ShowTextLine(cx - Width / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
 				ContCrt.RestoreState();
 			};
-			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
-			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
+			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore, IMathHelper mathHelper);
+			CreateImagePattern crtImgPat = (str, doc, ImgCore, mathHelper) =>
 			{
 				IPXC_Pattern Patt = null;
 				IPXC_Image Img = doc.AddImageFromFile(str);
@@ -48,12 +48,8 @@ namespace CoreAPIDemo
 				IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
 
 				PXC_Matrix im = new PXC_Matrix();
-				im.a = bbox.right;
-				im.b = 0;
-				im.c = 0;
-				im.d = bbox.top;
-				im.e = 0;
-				im.f = 0;
+				mathHelper.Matrix_Reset(ref im);
+				im = mathHelper.Matrix_Scale(ref im, bbox.right, bbox.top);
 				ContCrt.SaveState();
 				ContCrt.ConcatCS(im);
 				ContCrt.PlaceImage(Img);
@@ -224,7 +220,9 @@ namespace CoreAPIDemo
 
 			CC.SaveState();
 			IIXC_Inst Ixc_Inst = (IIXC_Inst)Parent.m_pxcInst.GetExtension("IXC");
-			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst);
+			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
+			IMathHelper math = Aux_Inst.MathHelper;
+			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
 			CC.SetPatternRGB(Pat, true, argbDarkLime);
 			CC.SetCharSpace(2.0);
 			CC.SetTextScale(150.0);
@@ -241,7 +239,7 @@ namespace CoreAPIDemo
 		static public void DrawTextWithDifferentSpacingOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
@@ -327,7 +325,7 @@ namespace CoreAPIDemo
 		static public void DrawTextWithScaleSubSuperscriptOnPage(Form1 Parent)
 		{
 			const uint argbDarkLime = 0x00008888;
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 1000);
@@ -422,7 +420,7 @@ namespace CoreAPIDemo
 		static public void DrawArcsOnPage(Form1 Parent)
 		{
 			const uint argbBlack = 0x00000000;
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) => 
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
@@ -759,36 +757,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbBlack = 0x00000000;
 			const uint argbDarkLime = 0x00008888;
-			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
-			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
-			{
-				IPXC_Pattern Patt = null;
-				IPXC_Image Img = doc.AddImageFromFile(str);
-				PXC_Rect bbox;
-				bbox.left = 0;
-				bbox.bottom = 0;
-				bbox.right = Img.Width * 72.0 / 96.0;
-				bbox.top = Img.Height * 72.0 / 96.0;
-				IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
-
-				PXC_Matrix im = new PXC_Matrix();
-				im.a = bbox.right;
-				im.b = 0;
-				im.c = 0;
-				im.d = bbox.top;
-				im.e = 0;
-				im.f = 0;
-				ContCrt.SaveState();
-				ContCrt.ConcatCS(im);
-				ContCrt.PlaceImage(Img);
-				ContCrt.RestoreState();
-				Patt = doc.CreateTilePattern(ref bbox);
-				IPXC_Content content = ContCrt.Detach();
-				content.set_BBox(ref bbox);
-				Patt.SetContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-				return Patt;
-			};
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
@@ -1019,8 +988,8 @@ namespace CoreAPIDemo
 		{
 			const uint argbBlack = 0x00000000;
 			const uint argbDarkLime = 0x00008888;
-			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore);
-			CreateImagePattern crtImgPat = (str, doc, ImgCore) =>
+			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore, IMathHelper mathHelper);
+			CreateImagePattern crtImgPat = (str, doc, ImgCore, mathHelper) =>
 			{
 				IPXC_Pattern Patt = null;
 				IPXC_Image Img = doc.AddImageFromFile(str);
@@ -1032,12 +1001,8 @@ namespace CoreAPIDemo
 				IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
 
 				PXC_Matrix im = new PXC_Matrix();
-				im.a = bbox.right;
-				im.b = 0;
-				im.c = 0;
-				im.d = bbox.top;
-				im.e = 0;
-				im.f = 0;
+				mathHelper.Matrix_Reset(ref im);
+				im = mathHelper.Matrix_Scale(ref im, bbox.right, bbox.top);
 				ContCrt.SaveState();
 				ContCrt.ConcatCS(im);
 				ContCrt.PlaceImage(Img);
@@ -1048,7 +1013,7 @@ namespace CoreAPIDemo
 				Patt.SetContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 				return Patt;
 			};
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
@@ -1124,7 +1089,9 @@ namespace CoreAPIDemo
 				if (k == 0)
 					Y -= dy;
 			}
-			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst);
+			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
+			IMathHelper math = Aux_Inst.MathHelper;
+			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
 			CC.SetPatternRGB(Pat, true, argbDarkLime);
 			CC.Rect(X[k], Y, X[k] + w, Y + h);
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
@@ -1136,8 +1103,8 @@ namespace CoreAPIDemo
 		[Description("4.1. Coordinate System Transformations (matrix usages)")]
 		static public void AddCoordinateSystemTransformations(Form1 Parent)
 		{
-			uint argbBlack = 0x00000000;
-			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize);
+			uint argbGray = 0x00bbbbbb;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
 			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 700);
@@ -1152,11 +1119,11 @@ namespace CoreAPIDemo
 				ContCrt.RestoreState();
 			};
 			//delegate void DrawArrLine(IPXC_ContentCreator CC, double xfrom, double yfrom, double xto, double yto, double linewidth, bool bDashed);
-			DrawArrLine drawArrLine = (ContCret, xfrom, yfrom, xto, yto, bDashes) =>
+			DrawArrLine drawArrLine = (ContCret, xfrom, yfrom, xto, yto, bDashes, bArr, color) =>
 			{
 				ContCret.SaveState();
 				ContCret.SetLineWidth(1.0);
-				ContCret.SetStrokeColorRGB(argbBlack);
+				ContCret.SetStrokeColorRGB(color);
 				
 				ContCret.NoDash();
 				if (bDashes)
@@ -1169,7 +1136,7 @@ namespace CoreAPIDemo
 				ContCret.StrokePath(true);
 				ContCret.RestoreState();
 
-				if (xto > xfrom)
+				if (xto > xfrom && bArr)
 				{
 					double[] xy = new double[6];
 					xy[0] = xto - 2;
@@ -1181,7 +1148,7 @@ namespace CoreAPIDemo
 					ContCret.PolygonSA(xy, true);
 					ContCret.StrokePath(true);
 				}
-				else if (yto > yfrom)
+				else if (yto > yfrom && bArr)
 				{
 					double[] xy = new double[6];
 					xy[0] = xto + 1;
@@ -1196,12 +1163,15 @@ namespace CoreAPIDemo
 				
 			};
 			//delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
-			DrawCS drawCS = (ContCret, point) =>
+			DrawCS drawCS = (ContCret, point, bCircle, nWidth, bArr, color) =>
 			{
-				drawArrLine(ContCret, point.x - 0.74 * 72.0, point.y, point.x + 0.74 * 72.0, point.y, false);
-				drawArrLine(ContCret, point.x, point.y - 0.74 * 72.0, point.x, point.y + 0.74 * 72.0, false);
-				ContCret.Circle(point.x, point.y, 1);
-				ContCret.StrokePath(true);
+				drawArrLine(ContCret, point.x - nWidth, point.y, point.x + nWidth, point.y, false, bArr, color);
+				drawArrLine(ContCret, point.x, point.y - nWidth, point.x, point.y + nWidth, false, bArr, color);
+				if (bCircle)
+				{
+					ContCret.Circle(point.x, point.y, 1);
+					ContCret.StrokePath(true);
+				}
 			};
 			//delegate void DrawN(IPXC_ContentCreator CC, double cx, double baseLineY);
 			DrawN drawN = (ContCret, point, font) =>
@@ -1229,19 +1199,19 @@ namespace CoreAPIDemo
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
 			IPXC_Font Font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 1000);
-			PXC_Matrix globalMatrix;
-			PXC_Matrix m;
+			PXC_Matrix globalMatrix = new PXC_Matrix();
+			PXC_Matrix contentMatrix = new PXC_Matrix();
 			PXC_Point p;
 			p.x = 0;
 			p.y = 0;
 
 			CC.SaveState();
-				globalMatrix.a = 1;
-				globalMatrix.b = 0;
-				globalMatrix.c = 0;
-				globalMatrix.d = 1;
-				globalMatrix.e = 2 * 72.0;
-				globalMatrix.f = rc.top - 3.5 * 72.0;
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2 * 72.0, rc.top - 3.5 * 72.0);
 				CC.ConcatCS(globalMatrix);
 				drawCS(CC, p);
 				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 72.0, true);
@@ -1251,26 +1221,25 @@ namespace CoreAPIDemo
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.35 * 72.0, p.y - 0.6 * 72.0, "t", 15, 700);
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
 				CC.SaveState();
-					m.a = 1;
-					m.b = 0;
-					m.c = 0;
-					m.d = 1;
-					m.e = 0.5 * 72.0;
-					m.f = 1.0 * 72.0;
-					CC.ConcatCS(m);
+				{
+					//Translate contentMatrix from origin to given piont
+					contentMatrix = math.Matrix_Translate(ref contentMatrix, 0.5 * 72.0, 1.0 * 72.0);
+					CC.ConcatCS(contentMatrix);
 					drawCS(CC, p);
 					drawN(CC, p, Font);
+				}
 				CC.RestoreState();
+			}
 			CC.RestoreState();
 			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 5 * 72.0, "TRANSLATION", 15);
 
 			CC.SaveState();
-				globalMatrix.a = 1;
-				globalMatrix.b = 0;
-				globalMatrix.c = 0;
-				globalMatrix.d = 1;
-				globalMatrix.e = 5.5 * 72.0;
-				globalMatrix.f = rc.top - 3.5 * 72.0;
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.5 * 72.0, rc.top - 3.5 * 72.0);
 				CC.ConcatCS(globalMatrix);
 				drawCS(CC, p);
 				drawArrLine(CC, p.x - 0.5 * 72.0, p.y, p.x - 0.5 * 72.0, p.y + 1.5 * 72.0, true);
@@ -1280,97 +1249,593 @@ namespace CoreAPIDemo
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.45 * 72.0, p.y - 0.7 * 72.0, "x", 10);
 				drawArrLine(CC, p.x, p.y - 0.5 * 72.0, p.x + 1.3 * 72, p.y - 0.5 * 72.0, true);
 				CC.SaveState();
-					m.a = 1.3;
-					m.b = 0;
-					m.c = 0;
-					m.d = 1.7;
-					m.e = 0;
-					m.f = 0;
-					CC.ConcatCS(m);
-					drawCS(CC, p);
+				{
+					//Scale contentMatrix from origin to given size
+					contentMatrix = math.Matrix_Scale(ref contentMatrix, 1.3, 1.7);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false);
 					drawN(CC, p, Font);
+				}
 				CC.RestoreState();
+			}
 			CC.RestoreState();
 			drawTitle(Parent.m_CurDoc, CC, 5.7 * 72.0, rc.top - 5 * 72.0, "SCALING", 15);
 
 			CC.SaveState();
-				globalMatrix.a = 1;
-				globalMatrix.b = 0;
-				globalMatrix.c = 0;
-				globalMatrix.d = 1;
-				globalMatrix.e = 2.5 * 72.0;
-				globalMatrix.f = rc.top - 7.5 * 72.0;
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2.5 * 72.0, rc.top - 7.5 * 72.0);
+
 				CC.ConcatCS(globalMatrix);
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.5 * 72.0, p.y + 0.3 * 72.0, "Θ", 15);
 				CC.CircleArc(p.x, p.y, 30, 0, 45);
 				drawCS(CC, p);
 				CC.SaveState();
-					m.a = 1;
-					m.b = 1;
-					m.c = -1;
-					m.d = 1;
-					m.e = 0;
-					m.f = 0;
-					CC.ConcatCS(m);
+				{
+					//Rotate contentMatrix from origin to given angle
+					contentMatrix = math.Matrix_Rotate(ref contentMatrix, 45);
+					CC.ConcatCS(contentMatrix);
 					drawCS(CC, p);
 					drawN(CC, p, Font);
+				}
 				CC.RestoreState();
+			}
 			CC.RestoreState();
 			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 8.5 * 72.0, "ROTATION", 15);
 
 			CC.SaveState();
-				globalMatrix.a = 1;
-				globalMatrix.b = 0;
-				globalMatrix.c = 0;
-				globalMatrix.d = 1;
-				globalMatrix.e = 5.7 * 72.0;
-				globalMatrix.f = rc.top - 7.5 * 72.0;
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.7 * 72.0, rc.top - 7.5 * 72.0);
 				CC.ConcatCS(globalMatrix);
-				CC.CircleArc(p.x, p.y, 30, 0, 26);
-				CC.CircleArc(p.x, p.y, 30, 90, 64);
+				CC.CircleArc(p.x, p.y, 30, 0, 20);
+				CC.CircleArc(p.x, p.y, 30, 90, 70);
 				drawCS(CC, p);
 				drawTitle(Parent.m_CurDoc, CC, p.x + 0.1 * 72.0, p.y + 0.65 * 72.0, "ß", 15);
-				drawTitle(Parent.m_CurDoc, CC, p.x + 0.5 * 72.0, p.y + 0.25 * 72.0, "α", 15);
+				drawTitle(Parent.m_CurDoc, CC, p.x + 0.5 * 72.0, p.y + 0.23 * 72.0, "α", 15);
 				CC.SaveState();
-					m.a = 1;
-					m.b = 0.5;
-					m.c = 0.5;
-					m.d = 1;
-					m.e = 0;
-					m.f = 0;
-					CC.ConcatCS(m);
-					drawCS(CC, p);
+				{
+					//Skew contentMatrix from origin to given angles α and ß
+					contentMatrix = math.Matrix_Skew(ref contentMatrix, 20, 20);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false);
 					drawN(CC, p, Font);
+					CC.RestoreState();
+				}
 				CC.RestoreState();
-			CC.RestoreState();
+			}
 			drawTitle(Parent.m_CurDoc, CC, 5.7 * 72.0, rc.top - 8.5 * 72.0, "SKEWING", 15);
-
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			IPXC_Page secondPage = Parent.m_CurDoc.Pages.InsertPage(1, ref rc, out urData);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2 * 72.0, rc.top - 1.5 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false);
+				drawN(CC, p, Font);
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.3 * 72.0, rc.top - 2.3 * 72.0, "ORIGIN", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2 * 72.0, rc.top - 4.2 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Translate contentMatrix from origin to given piont
+					contentMatrix = math.Matrix_Translate(ref contentMatrix, 0.4 * 72.0, 0.4 * 72.0);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 5 * 72.0, "STEP 1: TRANSLATION", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2 * 72.0, rc.top - 7 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Rotate contentMatrix from origin to given angle
+					contentMatrix = math.Matrix_Rotate(ref contentMatrix, 30);
+					//Translate contentMatrix from origin to given piont
+					contentMatrix = math.Matrix_Translate(ref contentMatrix, 0.4 * 72.0, 0.4 * 72.0);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 7.8 * 72.0, "STEP 2: ROTATION", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 2 * 72.0, rc.top - 9.8 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Scale contentMatrix from origin to given size
+					contentMatrix = math.Matrix_Scale(ref contentMatrix, 1.2, 1);
+					//Rotate contentMatrix from origin to given angle
+					contentMatrix = math.Matrix_Rotate(ref contentMatrix, 30);
+					//Translate contentMatrix from origin to given piont
+					contentMatrix = math.Matrix_Translate(ref contentMatrix, 0.4 * 72.0, 0.4 * 72.0);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 2.5 * 72.0, rc.top - 10.6 * 72.0, "STEP 3: SCALING", 15);
+
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.5 * 72.0, rc.top - 1.5 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false);
+				drawN(CC, p, Font);
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 5.8 * 72.0, rc.top - 2.3 * 72.0, "ORIGIN", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.5 * 72.0, rc.top - 4.2 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Scale contentMatrix from origin to given size
+					contentMatrix = math.Matrix_Scale(ref contentMatrix, 1.2, 1);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 6 * 72.0, rc.top - 5 * 72.0, "STEP 1: SCALING", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.5 * 72.0, rc.top - 7 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Rotate contentMatrix from origin to given angle
+					contentMatrix = math.Matrix_Rotate(ref contentMatrix, 30);
+					//Scale contentMatrix from origin to given size
+					contentMatrix = math.Matrix_Scale(ref contentMatrix, 1.2, 1);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 6 * 72.0, rc.top - 7.8 * 72.0, "STEP 2: ROTATION", 15);
+
+			CC.SaveState();
+			{
+				//Reset globalMatrix and contentMatrix
+				math.Matrix_Reset(ref globalMatrix);
+				math.Matrix_Reset(ref contentMatrix);
+				//Translate globalMatrix from origin to given piont
+				globalMatrix = math.Matrix_Translate(ref globalMatrix, 5.5 * 72.0, rc.top - 9.8 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				drawCS(CC, p, false, 53.28, false, argbGray);
+				CC.SaveState();
+				{
+					//Translate contentMatrix from origin to given piont
+					contentMatrix = math.Matrix_Translate(ref contentMatrix, 0.4 * 72.0, 0.35 * 72.0);
+					//Rotate contentMatrix from origin to given angle
+					contentMatrix = math.Matrix_Rotate(ref contentMatrix, 30);
+					//Scale contentMatrix from origin to given size
+					contentMatrix = math.Matrix_Scale(ref contentMatrix, 1.2, 1);
+					CC.ConcatCS(contentMatrix);
+					drawCS(CC, p, false, 53.28, false);
+					drawN(CC, p, Font);
+				}
+				CC.RestoreState();
+			}
+			CC.RestoreState();
+			drawTitle(Parent.m_CurDoc, CC, 6 * 72.0, rc.top - 10.6 * 72.0, "STEP 3: TRANSLATION", 15);
+
+			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
 		[Description("4.8. Stroke Types")]
 		static public void AddStrokeTypes(Form1 Parent)
 		{
+			uint argbBlack = 0x00000000;
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double nWidth = 0;
+				double nHeight = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+			//delegate IPXC_Pattern CreateImagePattern(string str, IPXC_Document Doc, IIXC_Inst g_ImgCore, IMathHelper mathHelper);
+			CreateImagePattern crtImgPat = (str, doc, ImgCore, mathHelper) =>
+			{
+				IPXC_Pattern Patt = null;
+				IPXC_Image Img = doc.AddImageFromFile(str);
+				PXC_Rect bbox;
+				bbox.left = 0;
+				bbox.bottom = 0;
+				bbox.right = Img.Width * 72.0 / 96.0;
+				bbox.top = Img.Height * 72.0 / 96.0;
+				IPXC_ContentCreator ContCrt = doc.CreateContentCreator();
+
+				PXC_Matrix im = new PXC_Matrix();
+				mathHelper.Matrix_Reset(ref im);
+				im = mathHelper.Matrix_Scale(ref im, bbox.right, bbox.top);
+				ContCrt.SaveState();
+				ContCrt.ConcatCS(im);
+				ContCrt.PlaceImage(Img);
+				ContCrt.RestoreState();
+				Patt = doc.CreateTilePattern(ref bbox);
+				IPXC_Content content = ContCrt.Detach();
+				content.set_BBox(ref bbox);
+				Patt.SetContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				return Patt;
+			};
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-#warning Implement this method
+
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
+
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
+			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
+
+			double x = (rc.right + rc.left) / 2.0;
+			double y = rc.top - 0.8 * 72.0;
+			CC.SetLineWidth(5.0);
+			CC.SetStrokeColorRGB(argbBlack);
+			CC.NoDash();
+			CC.MoveTo(x - 3.5 * 72.0, y);
+			CC.LineTo(x + 3.5 * 72.0, y);
+			CC.StrokePath(false);
+			drawTitle(Parent.m_CurDoc, CC, x, y - 8, "SOLID LINE", 15);
+
+			x = (rc.right + rc.left) / 2.0;
+			y = rc.top - 1.5 * 72.0;
+			CC.SetDash(20.0, 10.0, 5.0);
+			CC.MoveTo(x - 3.5 * 72.0, y);
+			CC.LineTo(x + 3.5 * 72.0, y);
+			CC.StrokePath(false);
+			CC.NoDash();
+			drawTitle(Parent.m_CurDoc, CC, x, y - 8, "DASHED", 15);
+
+			x = (rc.right + rc.left) / 2.0;
+			y = rc.top - 2.2 * 72.0;
+			double[] dashArr = { 70, 10, 10, 5, 3, 5, 10, 10 };
+			CC.SetDashCA(dashArr, 1.0);
+			CC.MoveTo(x - 3.5 * 72.0, y);
+			CC.LineTo(x + 3.5 * 72.0, y);
+			CC.StrokePath(false);
+			CC.NoDash();
+			drawTitle(Parent.m_CurDoc, CC, x, y - 8, "POLY DASHED", 15);
+
+			x = (rc.right + rc.left) / 2.0;
+			y = rc.top - 3.0 * 72.0;
+			string[] titles = { "LineCap_Butt", "LineCap_Round", "LineCap_Square" };
+			PXC_LineCap[] caps = { PXC_LineCap.LineCap_Butt, PXC_LineCap.LineCap_Round, PXC_LineCap.LineCap_Square };
+			for (int i = 0; i < caps.Length; i++)
+			{
+				CC.SetLineCap(caps[i]);
+				CC.MoveTo(x - 72.0, y);
+				CC.LineTo(x + 72.0, y);
+				CC.StrokePath(false);
+				drawTitle(Parent.m_CurDoc, CC, x, y - 15, titles[i], 15);
+				y -= 0.8 * 72.0;
+			}
+
+
+			x = (rc.right + rc.left) / 2.0 - 2.0 * 72.0;
+			y = rc.top - 5.9 * 72.0;
+			double r = 0.5 * 72.0;
+			CC.SetLineWidth(15);
+			CC.SaveState();
+			PXC_LineJoin[] joins = { PXC_LineJoin.LineJoin_Bevel, PXC_LineJoin.LineJoin_Miter, PXC_LineJoin.LineJoin_Round };
+			titles[0] = "LineJoin_Miter";
+			titles[1] = "LineJoin_Round";
+			titles[2] = "LineJoin_Bevel";
+			double[] pts = new double[3 * 2];
+			for (int i = 0; i < joins.Length; i++)
+			{
+				double a = 30;
+				for (int j = 0; j < 3; j++)
+				{
+					double xx = r * Math.Cos(a * Math.PI / 180.0);
+					double yy = r * Math.Sin(a * Math.PI / 180.0);
+					pts[j * 2 + 0] = x + xx;
+					pts[j * 2 + 1] = y - yy;
+					a += 120;
+				}
+				CC.SetLineJoin(joins[i]);
+				CC.PolygonSA(pts, true);
+				CC.StrokePath(true);
+				drawTitle(Parent.m_CurDoc, CC, x, y - r, titles[i], 15);
+				x += 2.0 * 72.0;
+			}
+			CC.RestoreState();
+
+			x = (rc.right + rc.left) / 2.0 - 2.0 * 72.0;
+			y = rc.top - 7.7 * 72.0;
+			CC.SaveState();
+			CC.SetLineJoin(PXC_LineJoin.LineJoin_Miter);
+			titles[0] = "NO MITER LIMIT";
+			titles[1] = "MITER LIMIT";
+			for (int i = 0; i < 2; i++)
+			{
+				CC.MoveTo(x - 72.0, y + 0.5 * 72.0);
+				CC.LineTo(x + 72.0, y);
+				CC.LineTo(x - 72.0, y);
+				CC.StrokePath(false);
+				drawTitle(Parent.m_CurDoc, CC, x, y - 14, titles[i], 15);
+				x += 4.0 * 72.0;
+				CC.SetMiterLimit(3.0);
+			}
+			CC.RestoreState();
+
+			x = rc.left + 2.5 * 72.0;
+			y = rc.top - 8.4 * 72.0;
+			IColor Color;
+			Color = auxInst.CreateColor(ColorType.ColorType_Gray);
+			int numSteps = 256;
+			float minV = 0.0f;
+			float maxV = 1.0f;
+			double width = 1.5 * 72.0;
+			double height = 1.5 * 72.0;
+			double dx = (width / (numSteps - 1)) / 2.0;
+			double dy = (height / (numSteps - 1)) / 2.0;
+			PXC_Rect rect = new PXC_Rect();
+			rect.left = x - width / 2.0;
+			rect.right = rect.left + width;
+			rect.bottom = y - height - 2.0;
+			rect.top = rect.bottom + height;
+			CC.SetLineWidth(1.0);
+			CC.SetLineJoin(PXC_LineJoin.LineJoin_Bevel);
+			for (int i = 0; i < numSteps; i++)
+			{
+				Color.SetGray(minV + ((maxV - minV) * i / (numSteps - 1)));
+				CC.SetColor(Color, Color);
+				CC.Rect(rect.left, rect.top, rect.right, rect.bottom);
+				CC.StrokePath(true);
+				rect.left += dx; rect.right -= dx;
+				rect.bottom += dy; rect.top -= dy;
+			}
+			drawTitle(Parent.m_CurDoc, CC, x, y - 1.9 * 72.0, "GRADIENT FILL EMULATION", 15);
+
+
+			x = rc.right - 2.5 * 72.0;
+			y = rc.top - 9.4 * 72.0;
+			width = 3.0 * 72.0;
+			height = 1.5 * 72.0;
+			rect.left = x - (width / 2);
+			rect.right = rect.left + width;
+			rect.top = y + height / 2;
+			rect.bottom = rect.top - height;
+			CC.SetLineWidth(15);
+			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
+			IMathHelper math = Aux_Inst.MathHelper;
+			IPXC_Pattern Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, ixcInst, math);
+			CC.SetPattern(Pat, false);
+			CC.Ellipse(rect.left, rect.bottom, rect.right, rect.top);
+			CC.StrokePath(true);
+			drawTitle(Parent.m_CurDoc, CC, x, y - 65, "Stroke With Image Pattern", 15);
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 
 		[Description("4.2. Place image with different transformations")]
 		static public void PlaceImageWithDifferentTransformations(Form1 Parent)
 		{
+			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
+			{
+				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
+				ContCrt.SaveState();
+				ContCrt.SetFillColorRGB(color);
+				ContCrt.SetFont(defFont);
+				double nWidth = 0;
+				double nHeight = 0;
+				ContCrt.CalcTextSize(fontSize, sText, out nWidth, out nHeight, -1);
+				ContCrt.SetFontSize(fontSize);
+				ContCrt.ShowTextLine(cx - nWidth / 2.0, baseLineY, sText, -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+				ContCrt.RestoreState();
+			};
+
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
+			PXC_Rect rc;
+			rc.left = 0;
+			rc.right = 600;
+			rc.top = 800;
+			rc.bottom = 0;
 
-			//Placing image by it's original size
-#warning Todo
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
+			IMathHelper mathHelper = Aux_Inst.MathHelper;
+			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\Editor_welcome.png");
+			PXC_Matrix contentMatrix = new PXC_Matrix();
+			PXC_Matrix globalMatrix = new PXC_Matrix();
+			
+			//Placing image by it's original size / 5.0
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 1.0 * 72.0, rc.top - 4.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, Img.Width / 5.0, Img.Height / 5.0);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / 2, -15, "ORIGINAL", 15);
+			}
+			CC.RestoreState();
+
 			//Placing 45 degree rotated image
-#warning Todo
-			//Stretching image inside the given rectangle
-#warning Todo
-			//Proportionally placing image inside the given rectangle
-#warning Todo
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 6.3 * 72.0, rc.top - 4.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, Img.Width / 5.0, Img.Height / 5.0);
+					contentMatrix = mathHelper.Matrix_Rotate(ref contentMatrix, 45);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / -2, -15, "ROTATION", 15);
+			}
+			CC.RestoreState();
 
+			//Stretching image inside the given rectangle
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			PXC_Rect rect = new PXC_Rect();
+			rect.right = 2 * 72.0;
+			rect.top = 2 * 72.0;
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 1.0 * 72.0, rc.top - 9.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				{
+					CC.SetLineWidth(4.0);
+					CC.Rect(rect.left, rect.bottom, rect.right, rect.top);
+					CC.StrokePath(true);
+					contentMatrix = mathHelper.Matrix_Scale(ref contentMatrix, rect.right, rect.top);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, contentMatrix.a / 2, -15, "STRETCHING", 15);
+			}
+			CC.RestoreState();
+			//Proportionally placing image inside the given rectangle
+			mathHelper.Matrix_Reset(ref contentMatrix);
+			mathHelper.Matrix_Reset(ref globalMatrix);
+			PXC_Rect rcImg = new PXC_Rect(); 
+			rect = new PXC_Rect();
+			rect.right = 3 * 72.0;
+			rect.top = 2 * 72.0;
+			
+			CC.SaveState();
+			{
+				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 4.3 * 72.0, rc.top - 9.0 * 72.0);
+				CC.ConcatCS(globalMatrix);
+				CC.SaveState();
+				double nW = rect.right - rect.left;
+				double nH = rect.top - rect.bottom;
+				{
+					//Proportional resize rectangle calculation
+					{
+						double k1 = nW / nH;
+						double k2 = (double)Img.Width / Img.Height;
+						if (k1 >= k2)
+						{
+							rcImg = rect;
+							rcImg.right = nW / 2.0 + rcImg.top * k2 / 2.0;
+							rcImg.left = nW / 2.0 - rcImg.top * k2 / 2.0;
+						}
+						else
+						{
+							rcImg = rect;
+							rcImg.top = nH / 2.0 + rcImg.right / k2 / 2.0;
+							rcImg.bottom = nH / 2.0 - rcImg.right / k2 / 2.0;
+						}
+					}
+					//Moving the image rectangle to the center
+					
+
+					CC.SetLineWidth(4.0);
+					CC.Rect(rect.left, rect.bottom, rect.right, rect.top);
+					CC.StrokePath(true);
+					PXC_Rect rcImage = new PXC_Rect();
+					rcImage.right = 1;
+					rcImage.top = 1;
+					contentMatrix = mathHelper.Matrix_RectToRect(ref rcImage, ref rcImg);
+					CC.ConcatCS(contentMatrix);
+					CC.PlaceImage(Img);
+				}
+				CC.RestoreState();
+				drawTitle(Parent.m_CurDoc, CC, nW / 2.0, -15, "PROPORTIONALLY PLACING", 15);
+			}
+			CC.RestoreState();
+
+			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 		}
 	}
 }

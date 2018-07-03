@@ -41,6 +41,10 @@
 			this.currentPage = new System.Windows.Forms.ToolStripTextBox();
 			this.pagesCount = new System.Windows.Forms.ToolStripLabel();
 			this.nextPage = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.btnOpen = new System.Windows.Forms.ToolStripButton();
+			this.btnSave = new System.Windows.Forms.ToolStripButton();
+			this.btnClose = new System.Windows.Forms.ToolStripButton();
 			this.previewImage = new System.Windows.Forms.PictureBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.codeSource = new FastColoredTextBoxNS.FastColoredTextBox();
@@ -180,6 +184,38 @@
 			this.nextPage.Size = new System.Drawing.Size(28, 32);
 			this.nextPage.Text = "Next Page";
 			this.nextPage.Click += new System.EventHandler(this.nextPage_Click);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 35);
+			// 
+			// btnOpen
+			// 
+			this.btnOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnOpen.Image")));
+			this.btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnOpen.Name = "btnOpen";
+			this.btnOpen.Size = new System.Drawing.Size(241, 32);
+			this.btnOpen.Text = "Open with Default Viewer";
+			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+			// 
+			// btnSave
+			// 
+			this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+			this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(77, 32);
+			this.btnSave.Text = "Save";
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			// 
+			// btnClose
+			// 
+			this.btnClose.Image = ((System.Drawing.Image)(resources.GetObject("btnClose.Image")));
+			this.btnClose.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnClose.Name = "btnClose";
+			this.btnClose.Size = new System.Drawing.Size(83, 32);
+			this.btnClose.Text = "Close";
+			this.btnClose.Click += new System.EventHandler(this.toolStripButton3_Click);
 			// 
 			// previewImage
 			// 
