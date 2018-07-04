@@ -6,7 +6,19 @@ namespace CoreAPIDemo
 	[Description("5. Form Fields")]
 	class FormFields
 	{
-		[Description("5.1. Add Button form field with icon and an URI Action link")]
+		[Description("5.1. Add Text Fields on page")]
+		static public void AddTextFieldsOnPage(Form1 Parent)
+		{
+			//Ordinary text field
+
+			//Read-only and locked text field with custom style
+
+			//90 degree orientation text field with multiline option enabled
+
+			//Time formatted text field with custom JS that gives current time
+		}
+
+		[Description("5.2. Add Button form field with icon and an URI Action link")]
 		static public void AddButtonWithIconAndURI(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
