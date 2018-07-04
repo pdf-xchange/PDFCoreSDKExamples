@@ -48,20 +48,21 @@ namespace CoreAPIDemo
 			border.nWidth = 5.0f;
 			WData.set_Border(ref border);
 			annot.Data = WData;
-			annot.Flags = (uint)PXC_AnnotFlag.AF_Locked;
-			secondTextBOX.SetFlags((uint)PXC_FormFieldFlag.FFF_ReadOnly, 1);
+			annot.Flags |= (uint)PXC_AnnotFlag.AF_Locked;
+			secondTextBOX.SetFlags((uint)PXC_FormFieldFlag.FFF_ReadOnly, (uint)PXC_FormFieldFlag.FFF_ReadOnly);
 
 			//90 degree orientation text field with multiline option enabled
+
 			textRC.top = rc.top - 5.0 * 72.0;
 			textRC.bottom = rc.top - 7.0 * 72.0;
 			IPXC_FormField thirdTextBOX = Parent.m_CurDoc.AcroForm.CreateField("Text3", PXC_FormFieldType.FFT_Text, 0, textRC);
-			thirdTextBOX.SetFlags((uint)PXC_FormFieldFlag.TFF_MultiLine, 4096);
+			thirdTextBOX.SetFlags((uint)PXC_FormFieldFlag.TFF_MultiLine, (uint)PXC_FormFieldFlag.TFF_MultiLine);
 			thirdTextBOX.SetValueText("90 degree orientation text field with multiline option enabled");
 			annot = thirdTextBOX.Widget[0];
 			WData = (IPXC_AnnotData_Widget)annot.Data;
 			WData.ContentRotation = 90;
 			annot.Data = WData;
-			
+
 			//Time formatted text field with custom JS that gives current time
 			textRC.top = rc.top - 8.0 * 72.0;
 			textRC.bottom = rc.top - 9.0 * 72.0;
