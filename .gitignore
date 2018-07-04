@@ -164,3 +164,9 @@ $RECYCLE.BIN/
 /CSharp/CoreAPIDemo/packages/
 /cpp/MFCSample/.vs/MFCSample/v15
 /cpp/MFCSample/Debug.x86
+/cpp/MFCSample/Release.x86
+/PDFCoreSDKExamples.x64
+/PDFCoreSDKExamples.x86
+/PDFCoreSDKExamples.x64.7z
+/PDFCoreSDKExamples.x86.7z
+/cpp/MFCSample/Release.x64
