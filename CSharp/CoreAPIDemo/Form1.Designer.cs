@@ -57,10 +57,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandAll = new System.Windows.Forms.ToolStripButton();
 			this.collapseAll = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.btnClose = new System.Windows.Forms.ToolStripButton();
-			this.btnSave = new System.Windows.Forms.ToolStripButton();
-			this.btnOpen = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -261,6 +257,7 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -364,38 +361,6 @@
 			this.collapseAll.Size = new System.Drawing.Size(28, 32);
 			this.collapseAll.Text = "Collapse All";
 			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
-			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 35);
-			// 
-			// btnClose
-			// 
-			this.btnClose.Image = ((System.Drawing.Image)(resources.GetObject("btnClose.Image")));
-			this.btnClose.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnClose.Name = "btnClose";
-			this.btnClose.Size = new System.Drawing.Size(83, 32);
-			this.btnClose.Text = "Close";
-			this.btnClose.Click += new System.EventHandler(this.toolStripButton3_Click);
-			// 
-			// btnSave
-			// 
-			this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
-			this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(77, 32);
-			this.btnSave.Text = "Save";
-			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-			// 
-			// btnOpen
-			// 
-			this.btnOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnOpen.Image")));
-			this.btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnOpen.Name = "btnOpen";
-			this.btnOpen.Size = new System.Drawing.Size(122, 32);
-			this.btnOpen.Text = "Open with";
-			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
 			// 
 			// Form1
 			// 

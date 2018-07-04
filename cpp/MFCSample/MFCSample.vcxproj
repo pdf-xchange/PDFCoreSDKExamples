@@ -22,7 +22,7 @@
     <ProjectGuid>{0B366A69-EA35-43AA-8102-37935F7138E5}</ProjectGuid>
     <RootNamespace>MFCSample</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,22 +73,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <OutDir>$(SolutionDir)..\..\PDFCoreSDKExamples.$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <OutDir>$(SolutionDir)..\..\PDFCoreSDKExamples.$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <OutDir>$(SolutionDir)..\..\PDFCoreSDKExamples.$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration).$(PlatformTarget)\</OutDir>
+    <OutDir>$(SolutionDir)..\..\PDFCoreSDKExamples.$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)_tempbuild\$(ConfigurationName).$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
