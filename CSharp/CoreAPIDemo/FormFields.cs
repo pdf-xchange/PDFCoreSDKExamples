@@ -69,32 +69,37 @@ namespace CoreAPIDemo
 			annot = fourthTextBOX.Widget[0];
 			annot.Flags |= (uint)PXC_SignDocumentFlags.Sign_TX_Date;
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
+			//Set script to ActionList
 			actionsList.AddJavaScript("var now = new Date();\n" +
 						"this.getField(\"Text4\").value = now.getHours() + \":\" + now.getMinutes(); ");
-			fourthTextBOX.Actions[PXC_TriggerType.Trigger_Calculate] = actionsList;
+			fourthTextBOX.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
 		}
 
-		[Description("5.2. Add Button form field with icon and an URI Action link")]
+		[Description("5.2. Add Button form field with icon and an Action link")]
 		static public void AddButtonWithIconAndURI(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
-			PXC_Rect rcPB = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
-			rcPB.left += 100;
-			rcPB.right = rcPB.left + 200;
-			rcPB.bottom += 200;
-			rcPB.top = rcPB.bottom + 200; //top is greater then bottom (PDF Coordinate System)
-			IPXC_FormField ff = Parent.m_CurDoc.AcroForm.CreateField("Button1", PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 1.0 * 72.0;
+			rcPB.right = rcPB.left + 2.0 * 72.0;
+			rcPB.top = rc.top - 1.0 * 72.0;
+			rcPB.bottom = rcPB.top - 2.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
+			IPXC_FormField googleButton = Parent.m_CurDoc.AcroForm.CreateField("Button1", PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
 			//Now we'll need to add the icon
-			IPXC_Annotation annot = ff.Widget[0];
+			IPXC_Annotation annot = googleButton.Widget[0];
 			IPXC_AnnotData_Widget WData = (IPXC_AnnotData_Widget)annot.Data;
 			string sPath = System.Environment.CurrentDirectory + "\\Images\\gotoSource_24.png";
 			IPXC_Image img = Parent.m_CurDoc.AddImageFromFile(sPath);
-
 			float imgw = img.Width;
 			float imgh = img.Height;
-
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
 			CC.SaveState();
 			CC.ScaleCS(imgw, imgh); //the image will be scaled to the button's size
@@ -109,16 +114,84 @@ namespace CoreAPIDemo
 			content.set_BBox(rcBBox);
 			IPXC_XForm xForm = Parent.m_CurDoc.CreateNewXForm(ref rcPB);
 			xForm.SetContent(content);
-
 			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconOnly;
 			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
-
 			WData.Contents = "http://www.google.com"; //tooltip
 			annot.Data = WData;
-
 			//Setting the annotation's URI action
 			IPXC_ActionsList AL = Parent.m_CurDoc.CreateActionsList();
 			AL.AddURI("https://www.google.com");
+			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
+
+
+			rcPB.left +=  4.0 * 72.0;
+			rcPB.right = rcPB.left + 2.0 * 72.0;
+			IPXC_FormField nextButton = Parent.m_CurDoc.AcroForm.CreateField("Button2", PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+			//Now we'll need to add the icon
+			annot = nextButton.Widget[0];
+			WData = (IPXC_AnnotData_Widget)annot.Data;
+			sPath = System.Environment.CurrentDirectory + "\\Images\\next_24.png";
+			img = Parent.m_CurDoc.AddImageFromFile(sPath);
+			imgw = img.Width;
+			imgh = img.Height;
+			CC.SaveState();
+			CC.ScaleCS(imgw, imgh); //the image will be scaled to the button's size
+			CC.PlaceImage(img);
+			CC.RestoreState();
+			content = CC.Detach();
+			rcBBox.left = 0;
+			rcBBox.top = imgh;
+			rcBBox.right = imgw;
+			rcBBox.bottom = 0;
+			content.set_BBox(rcBBox);
+			xForm = Parent.m_CurDoc.CreateNewXForm(ref rcPB);
+			xForm.SetContent(content);
+			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconOnly;
+			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
+			WData.Contents = "Next Page"; //tooltip
+			annot.Data = WData;
+			//Setting the annotation's Goto action
+			PXC_Destination dest = new PXC_Destination();
+			dest.nPageNum = Page.Number + 1;
+			dest.nType = PXC_DestType.Dest_XYZ;
+			dest.nNullFlags = 15;
+			AL = Parent.m_CurDoc.CreateActionsList();
+			AL.AddGoto(dest);
+			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
+
+
+			rcPB.top = rc.top - 4.0 * 72.0;
+			rcPB.bottom = rcPB.top - 2.0 * 72.0;
+			rcPB.left -= 4.0 * 72.0;
+			rcPB.right = rcPB.left + 2.0 * 72.0;
+			IPXC_FormField openButton = Parent.m_CurDoc.AcroForm.CreateField("Button3", PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+			//Now we'll need to add the icon
+			annot = openButton.Widget[0];
+			WData = (IPXC_AnnotData_Widget)annot.Data;
+			sPath = System.Environment.CurrentDirectory + "\\Images\\openWith_24.png";
+			img = Parent.m_CurDoc.AddImageFromFile(sPath);
+			imgw = img.Width;
+			imgh = img.Height;
+			CC.SaveState();
+			CC.ScaleCS(imgw, imgh); //the image will be scaled to the button's size
+			CC.PlaceImage(img);
+			CC.RestoreState();
+			content = CC.Detach();
+			rcBBox.left = 0;
+			rcBBox.top = imgh;
+			rcBBox.right = imgw;
+			rcBBox.bottom = 0;
+			content.set_BBox(rcBBox);
+			xForm = Parent.m_CurDoc.CreateNewXForm(ref rcPB);
+			xForm.SetContent(content);
+			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconOnly;
+			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
+			WData.Contents = "Next Page"; //tooltip
+			annot.Data = WData;
+			//Setting the annotation's Launch action
+			AL = Parent.m_CurDoc.CreateActionsList();
+			sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
+			AL.AddLaunch(sPath);
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 		}
 	}
