@@ -52,7 +52,6 @@ namespace CoreAPIDemo
 			secondTextBOX.SetFlags((uint)PXC_FormFieldFlag.FFF_ReadOnly, (uint)PXC_FormFieldFlag.FFF_ReadOnly);
 
 			//90 degree orientation text field with multiline option enabled
-
 			textRC.top = rc.top - 5.0 * 72.0;
 			textRC.bottom = rc.top - 7.0 * 72.0;
 			IPXC_FormField thirdTextBOX = Parent.m_CurDoc.AcroForm.CreateField("Text3", PXC_FormFieldType.FFT_Text, 0, textRC);
@@ -62,6 +61,17 @@ namespace CoreAPIDemo
 			WData = (IPXC_AnnotData_Widget)annot.Data;
 			WData.ContentRotation = 90;
 			annot.Data = WData;
+			
+			//Time formatted text field with custom JS that gives current time
+			textRC.top = rc.top - 8.0 * 72.0;
+			textRC.bottom = rc.top - 9.0 * 72.0;
+			IPXC_FormField fourthTextBOX = Parent.m_CurDoc.AcroForm.CreateField("Text4", PXC_FormFieldType.FFT_Text, 0, textRC);
+			annot = fourthTextBOX.Widget[0];
+			annot.Flags |= (uint)PXC_SignDocumentFlags.Sign_TX_Date;
+			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
+			actionsList.AddJavaScript("var now = new Date();\n" +
+						"this.getField(\"Text4\").value = now.getHours() + \":\" + now.getMinutes(); ");
+			fourthTextBOX.Actions[PXC_TriggerType.Trigger_Calculate] = actionsList;
 		}
 
 		[Description("5.2. Add Button form field with icon and an URI Action link")]
