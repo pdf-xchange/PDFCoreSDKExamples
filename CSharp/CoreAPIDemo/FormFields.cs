@@ -69,8 +69,7 @@ namespace CoreAPIDemo
 			IPXC_FormField fourthTextBOX = Parent.m_CurDoc.AcroForm.CreateField("Text4", PXC_FormFieldType.FFT_Text, 0, textRC);
 			annot = fourthTextBOX.Widget[0];
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
-			actionsList.AddJavaScript("var textBOX = this.getField(\"Text4\");" + 
-				"textBOX.value = new Date();");
+			actionsList.AddJavaScript("this.getField(\"Text4\").value = new Date();");
 			annot.Actions[PXC_TriggerType.Trigger_GotInputFocus] = actionsList;
 		}
 
