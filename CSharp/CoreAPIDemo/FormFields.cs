@@ -1,5 +1,4 @@
 ﻿using PDFXCoreAPI;
-using System;
 using System.ComponentModel;
 
 namespace CoreAPIDemo
@@ -7,38 +6,27 @@ namespace CoreAPIDemo
 	[Description("5. Form Fields")]
 	class FormFields
 	{
-		delegate string CheckNamesFields(IPXC_Document Doc, string fieldName);
+		delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
 
 		[Description("5.1. Add Text Fields on page")]
 		static public void AddTextFieldsOnPage(Form1 Parent)
 		{
-			//delegate string CheckNamesFields(IPXC_Document Doc, PXC_FormFieldType formType);
-			CheckNamesFields checkNamesFields = (Doc, fName) =>
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
 			{
-				int index = 0;
-				bool find = true;
 				string sFieldName = "";
-				if (Doc.AcroForm.FieldsCount == 0)
-				{
-					return fName + 1.ToString();
-				}
+				bool find = true;
 				do
 				{
-					sFieldName = fName + (index + 1).ToString();
-					for (uint i = 0; i < Doc.AcroForm.FieldsCount; i++)
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
 					{
-						if ((i == Doc.AcroForm.FieldsCount - 1) && (sFieldName != Doc.AcroForm.Field[i].FullName))
-						{
-							find = false;
-							break;
-						}
-						else if (sFieldName == Doc.AcroForm.Field[i].FullName)
-						{
-							break;
-						}
-
+						inx++;
+						break;
 					}
-					index++;
+					inx++;
 				}
 				while (find);
 				return sFieldName;
@@ -59,13 +47,13 @@ namespace CoreAPIDemo
 			textRC.right = rc.right - 1.0 * 72.0;
 
 			//Ordinary text field
-			IPXC_FormField firstTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text"), PXC_FormFieldType.FFT_Text, 0, textRC);
+			IPXC_FormField firstTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text", ref index), PXC_FormFieldType.FFT_Text, 0, textRC);
 			firstTextBOX.SetValueText("Ordinary text field");
 
 			//Read-only and locked text field with custom style
 			textRC.top = rc.top - 3.0 * 72.0;
 			textRC.bottom = rc.top - 4.0 * 72.0;
-			IPXC_FormField secondTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text"), PXC_FormFieldType.FFT_Text, 0, textRC);
+			IPXC_FormField secondTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text", ref index), PXC_FormFieldType.FFT_Text, 0, textRC);
 			secondTextBOX.SetValueText("Read-only and locked text field with custom style");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_Annotation annot = secondTextBOX.Widget[0];
@@ -89,7 +77,7 @@ namespace CoreAPIDemo
 			//90 degree orientation text field with multiline option enabled
 			textRC.top = rc.top - 5.0 * 72.0;
 			textRC.bottom = rc.top - 7.0 * 72.0;
-			IPXC_FormField thirdTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text"), PXC_FormFieldType.FFT_Text, 0, textRC);
+			IPXC_FormField thirdTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text", ref index), PXC_FormFieldType.FFT_Text, 0, textRC);
 			thirdTextBOX.SetFlags((uint)PXC_FormFieldFlag.TFF_MultiLine, (uint)PXC_FormFieldFlag.TFF_MultiLine);
 			thirdTextBOX.SetValueText("90 degree orientation text field with multiline option enabled");
 			annot = thirdTextBOX.Widget[0];
@@ -100,7 +88,7 @@ namespace CoreAPIDemo
 			//Time formatted text field with custom JS that gives current time
 			textRC.top = rc.top - 8.0 * 72.0;
 			textRC.bottom = rc.top - 9.0 * 72.0;
-			IPXC_FormField fourthTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text"), PXC_FormFieldType.FFT_Text, 0, textRC);
+			IPXC_FormField fourthTextBOX = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Text", ref index), PXC_FormFieldType.FFT_Text, 0, textRC);
 			annot = fourthTextBOX.Widget[0];
 			annot.Flags |= (uint)PXC_SignDocumentFlags.Sign_TX_Date;
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
@@ -113,35 +101,24 @@ namespace CoreAPIDemo
 		[Description("5.2. Add Button form field with icon and an Action link")]
 		static public void AddButtonWithIconAndURI(Form1 Parent)
 		{
-			//delegate string CheckNamesFields(IPXC_Document Doc, PXC_FormFieldType formType);
-			CheckNamesFields checkNamesFields = (Doc, fName) =>
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
 			{
-				int index = 0;
-				bool find = true;
 				string sFieldName = "";
-				if (Doc.AcroForm.FieldsCount == 0)
-				{
-					return fName + 1.ToString();
-				}
+				bool find = true;
 				do
 				{
-					sFieldName = fName + (index + 1).ToString();
-					for (uint i = 0; i < Doc.AcroForm.FieldsCount; i++)
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
 					{
-						if ((i == Doc.AcroForm.FieldsCount - 1) && (sFieldName != Doc.AcroForm.Field[i].FullName))
-						{
-							find = false;
-							break;
-						}
-						else if (sFieldName == Doc.AcroForm.Field[i].FullName)
-						{
-							break;
-						}
-
+						break;
 					}
-					index++;
+					inx++;
 				}
 				while (find);
+				inx++;
 				return sFieldName;
 			};
 
@@ -156,11 +133,10 @@ namespace CoreAPIDemo
 			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
-			rcPB.right = rcPB.left + 0.36 * 72.0;
+			rcPB.right = rcPB.left + 0.5 * 72.0;
 			rcPB.top = rc.top - 0.14 * 72.0;
-			rcPB.bottom = rcPB.top - 0.36 * 72.0; //top is greater then bottom (PDF Coordinate System)
-			IPXC_FormField googleButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button"), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
-			//Parent.m_CurDoc.AcroForm.Field
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+			IPXC_FormField googleButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button", ref index), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
 			//Now we'll need to add the icon
 			IPXC_Annotation annot = googleButton.Widget[0];
 			IPXC_AnnotData_Widget WData = (IPXC_AnnotData_Widget)annot.Data;
@@ -192,9 +168,9 @@ namespace CoreAPIDemo
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 
 			
-			rcPB.left +=  0.5 * 72.0;
-			rcPB.right = rcPB.left + 2.0 * 72.0;
-			IPXC_FormField nextButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button"), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+			rcPB.left +=  1.2 * 72.0;
+			rcPB.right = rcPB.left + 0.6 * 72.0;
+			IPXC_FormField nextButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button", ref index), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
 			//Now we'll need to add the icon
 			annot = nextButton.Widget[0];
 			WData = (IPXC_AnnotData_Widget)annot.Data;
@@ -215,8 +191,9 @@ namespace CoreAPIDemo
 			xForm = Parent.m_CurDoc.CreateNewXForm(ref rcPB);
 			xForm.SetContent(content);
 			WData.SetCaption(PXC_AnnotAppType.AAT_Normal, "Next Page");
-			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconTextH;
+			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconTextV;
 			PXC_Point p = new PXC_Point();
+			p.x = 0.5;
 			p.y = 0.5;
 			WData.set_IconOffset(p);
 			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
@@ -232,9 +209,9 @@ namespace CoreAPIDemo
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 
 
-			rcPB.left += rcPB.left + 0.2 * 72.0;
+			rcPB.left += 1.5 * 72.0;
 			rcPB.right = rcPB.left + 2.0 * 72.0;
-			IPXC_FormField openButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button"), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+			IPXC_FormField openButton = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Button", ref index), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
 			//Now we'll need to add the icon
 			annot = openButton.Widget[0];
 			WData = (IPXC_AnnotData_Widget)annot.Data;
