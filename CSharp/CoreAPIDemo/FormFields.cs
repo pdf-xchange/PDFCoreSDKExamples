@@ -71,7 +71,7 @@ namespace CoreAPIDemo
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
 			actionsList.AddJavaScript("var textBOX = this.getField(\"Text4\");" + 
 				"textBOX.value = new Date();");
-			Parent.m_CurDoc.Pages[0].Actions[PXC_TriggerType.Trigger_PageOpened] = actionsList;
+			annot.Actions[PXC_TriggerType.Trigger_GotInputFocus] = actionsList;
 		}
 
 		[Description("5.2. Add Button form field with icon and an URI Action link")]
