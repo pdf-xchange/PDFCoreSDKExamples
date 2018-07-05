@@ -9,7 +9,7 @@ namespace CoreAPIDemo
 	{
 		delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
 
-		[Description("5.1. Add Text Fields on page")]
+		[Description("5.1. Add Text form fields")]
 		static public void AddTextFieldsOnPage(Form1 Parent)
 		{
 			int index = 1;
@@ -98,13 +98,13 @@ namespace CoreAPIDemo
 			annot.Flags |= (uint)PXC_SignDocumentFlags.Sign_TX_Date;
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
 			//Set script to ActionList
-			actionsList.AddJavaScript("var now = new Date();\n" +
-						"this.getField(\"Text4\").value = now.getHours() + \":\" + now.getMinutes(); ");
+			actionsList.AddJavaScript("var now = new Date()\n" +
+						"this.getField(\"Text4\").value = now.getHours() + \":\" + now.getMinutes() ");
 			fourthTextBOX.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
 			Marshal.ReleaseComObject(fourthTextBOX);
 		}
 
-		[Description("5.2. Add Button form fields on page")]
+		[Description("5.2. Add Button form fields")]
 		static public void AddButtonWithIconAndURI(Form1 Parent)
 		{
 			int index = 1;
@@ -236,7 +236,54 @@ namespace CoreAPIDemo
 			AL.AddLaunch(sPath);
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 			Marshal.ReleaseComObject(openButton);
+		}
 
+		[Description("5.3. Add Check Box form fields")]
+		static public void AddCheckBoxFormFields(Form1 Parent)
+		{
+#warning Add a couple of checkboxes with checked/unchecked state
+		}
+
+		[Description("5.4. Add Radio Buttons form fields")]
+		static public void AddRadioButtonsFormFields(Form1 Parent)
+		{
+#warning Add a couple of radio button groups with checked/unchecked state
+		}
+
+		[Description("5.5. Add List form fields")]
+		static public void AddListFormFields(Form1 Parent)
+		{
+#warning Add a couple of list fields with different flags enabled such as multi selection, sorting etc. and different selections
+		}
+
+		[Description("5.6. Add Combo Box form fields")]
+		static public void AddComboBoxFormFields(Form1 Parent)
+		{
+#warning Add a couple of combo box fields with different flags enabled such as allow edit, sorting etc.
+		}
+
+		[Description("5.7. Add Signature form fields")]
+		static public void AddSignatureFormFields(Form1 Parent)
+		{
+#warning Add a signature form field
+		}
+
+		[Description("5.8. Add Barcode form fields")]
+		static public void AddBarcodeFormFields(Form1 Parent)
+		{
+#warning Add different barcode field types (QR, DataMatrix, PDF417) with different settings
+		}
+
+		[Description("5.9. Add Date form fields")]
+		static public void AddDateFormFields(Form1 Parent)
+		{
+#warning Add date form fields with different formatting and styles
+		}
+
+		[Description("5.10. Add Image form fields")]
+		static public void AddImageFormFields(Form1 Parent)
+		{
+#warning Add image form fields with different scalings and positions
 		}
 	}
 }
