@@ -33,7 +33,7 @@ namespace CoreAPIDemo
 			//Now we'll need to add the icon
 			IPXC_Annotation annot = ff.Widget[0];
 			IPXC_AnnotData_Widget WData = (IPXC_AnnotData_Widget)annot.Data;
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\gotoSource_24.png";
+			string sPath = System.Environment.CurrentDirectory + "\\Images\\gotoSource_24.png";
 			IPXC_Image img = Parent.m_CurDoc.AddImageFromFile(sPath);
 
 			float imgw = img.Width;

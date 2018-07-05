@@ -17,6 +17,11 @@ namespace CoreAPIDemo
 	{
 		public IPXC_Inst		m_pxcInst = null;
 		public IPXC_Document	m_CurDoc = null;
+#if DEBUG
+		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\CSharp\\CoreAPIDemo\\";
+#else
+		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).FullName + "\\CSharp\\CoreAPIDemo\\";
+#endif
 
 		public Form1()
 		{
@@ -163,7 +168,7 @@ namespace CoreAPIDemo
 
 		private int GetMethodLine(string className, string methodName)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\" + className + ".cs";
+			string sPath = m_sDirPath + className + ".cs";
 			string sData = System.IO.File.ReadAllText(sPath);
 			int nIndex = sData.IndexOf(methodName);
 
@@ -173,48 +178,56 @@ namespace CoreAPIDemo
 
 		private string GetMethodCode(string className, string methodName)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\" + className + ".cs";
-			string sData = System.IO.File.ReadAllText(sPath);
-			int nIndex = sData.IndexOf(methodName);
-			while (nIndex >= 0)
+			try
 			{
-				if (sData[nIndex] == '\n')
+				string sPath = m_sDirPath + className + ".cs";
+				string sData = System.IO.File.ReadAllText(sPath);
+				int nIndex = sData.IndexOf(methodName);
+				while (nIndex >= 0)
 				{
-					nIndex++;
-					break;
+					if (sData[nIndex] == '\n')
+					{
+						nIndex++;
+						break;
+					}
+					nIndex--;
 				}
-				nIndex--;
-			}
 
-			if (nIndex < 0)
-				return "";
+				if (nIndex < 0)
+					return "";
 
-			string sWS = "";
-			for (int i = nIndex; i < sData.Length; i++)
-			{
-				if (!Char.IsWhiteSpace(sData[i]))
+				string sWS = "";
+				for (int i = nIndex; i < sData.Length; i++)
 				{
-					sWS = sData.Substring(nIndex, i - nIndex);
-					break;
+					if (!Char.IsWhiteSpace(sData[i]))
+					{
+						sWS = sData.Substring(nIndex, i - nIndex);
+						break;
+					}
 				}
+				int nEnd = sData.IndexOf("\n" + sWS + "}", nIndex);
+				if (nEnd < 0)
+					return "";
+				nEnd += sWS.Length + 2;
+				string sRes = sData.Substring(nIndex, nEnd - nIndex);
+				string[] aData = sRes.Split('\n');
+				sRes = "";
+				for (int i = 0; i < aData.Length; i++)
+				{
+					string sTmp = aData[i];
+					int nPos = sTmp.IndexOf(sWS);
+					if (nPos < 0)
+						sRes += sTmp;
+					else
+						sRes += sTmp.Substring(sWS.Length);
+				}
+				return sRes;
 			}
-			int nEnd = sData.IndexOf("\n" + sWS + "}", nIndex);
-			if (nEnd < 0)
-				return "";
-			nEnd += sWS.Length + 2;
-			string sRes = sData.Substring(nIndex, nEnd - nIndex);
-			string[] aData = sRes.Split('\n');
-			sRes = "";
-			for (int i = 0; i < aData.Length; i++)
+			catch (Exception)
 			{
-				string sTmp = aData[i];
-				int nPos = sTmp.IndexOf(sWS);
-				if (nPos < 0)
-					sRes += sTmp;
-				else
-					sRes += sTmp.Substring(sWS.Length);
+
 			}
-			return sRes;
+			return "";
 		}
 		private void UpdateCodeSample(TreeNode curNode)
 		{
@@ -463,8 +476,8 @@ namespace CoreAPIDemo
 					return;
 
 				int fileline = GetMethodLine(theMethod.DeclaringType.Name, theMethod.Name);
-				string filePath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\"
-					+ theMethod.DeclaringType.Name + ".cs";
+
+				string filePath = m_sDirPath + theMethod.DeclaringType.Name + ".cs";
 
 				EnvDTE.DTE dte = (EnvDTE.DTE)System.Runtime.InteropServices.Marshal.GetActiveObject("VisualStudio.DTE");
 				dte.MainWindow.Activate();

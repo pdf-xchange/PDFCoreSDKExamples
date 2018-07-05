@@ -25,7 +25,7 @@ namespace CoreAPIDemo
 		[Description("1.2. Open document from string path")]
 		static public void OpenDocumentFromStringPath(Form1 Parent)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
 		}

@@ -41,7 +41,7 @@ namespace CoreAPIDemo
 		[Description("2.3. Open document from string path")]
 		static public void OpenDocFromStringPath(Form1 Parent)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
 		}
@@ -49,7 +49,7 @@ namespace CoreAPIDemo
 		[Description("2.4. Open document from IStream")]
 		static public void OpenDocumentFromStream(Form1 Parent)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\FeatureChartEU.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			FileStream srcStream = new FileStream(sPath, FileMode.Open);
 			if (srcStream != null)
@@ -71,7 +71,7 @@ namespace CoreAPIDemo
 		[Description("2.5. Open password protected document from IAFS_Name")]
 		static public void OpenPasswordProtectedDocument(Form1 Parent)
 		{
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\PasswordProtected.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\PasswordProtected.pdf";
 			IAFS_Inst fsInst = (IAFS_Inst)Parent.m_pxcInst.GetExtension("AFS");
 			IAFS_Name destPath = fsInst.DefaultFileSys.StringToName(sPath); //Converting string to name
 			Parent.CloseDocument();

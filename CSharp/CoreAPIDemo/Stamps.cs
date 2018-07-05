@@ -76,7 +76,7 @@ namespace CoreAPIDemo
 
 			//Loading stamp collection from stamp file
 			IAFS_Inst afsInst = (IAFS_Inst)Parent.m_pxcInst.GetExtension("AFS");
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Documents\\MyStamps.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\MyStamps.pdf";
 			IAFS_Name name = afsInst.DefaultFileSys.StringToName(sPath);
 			int openFileFlags = (int)(AFS_OpenFileFlags.AFS_OpenFile_Read | AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
 			IAFS_File destFile = afsInst.DefaultFileSys.OpenFile(name, openFileFlags);
@@ -111,7 +111,7 @@ namespace CoreAPIDemo
 
 			//Loading image file
 			IAFS_Inst afsInst = (IAFS_Inst)Parent.m_pxcInst.GetExtension("AFS");
-			string sPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\run_24.png";
+			string sPath = System.Environment.CurrentDirectory + "\\Images\\run_24.png";
 			IAFS_Name name = afsInst.DefaultFileSys.StringToName(sPath);
 			int openFileFlags = (int)(AFS_OpenFileFlags.AFS_OpenFile_Read | AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
 			IAFS_File destFile = afsInst.DefaultFileSys.OpenFile(name, openFileFlags);

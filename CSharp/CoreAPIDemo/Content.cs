@@ -222,7 +222,7 @@ namespace CoreAPIDemo
 			IIXC_Inst Ixc_Inst = (IIXC_Inst)Parent.m_pxcInst.GetExtension("IXC");
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
-			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
+			Pat = crtImgPat(System.Environment.CurrentDirectory + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
 			CC.SetPatternRGB(Pat, true, argbDarkLime);
 			CC.SetCharSpace(2.0);
 			CC.SetTextScale(150.0);
@@ -1091,7 +1091,7 @@ namespace CoreAPIDemo
 			}
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
-			Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
+			Pat = crtImgPat(System.Environment.CurrentDirectory + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, Ixc_Inst, math);
 			CC.SetPatternRGB(Pat, true, argbDarkLime);
 			CC.Rect(X[k], Y, X[k] + w, Y + h);
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
@@ -1680,7 +1680,7 @@ namespace CoreAPIDemo
 			CC.SetLineWidth(15);
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
-			IPXC_Pattern Pat = crtImgPat(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, ixcInst, math);
+			IPXC_Pattern Pat = crtImgPat(System.Environment.CurrentDirectory + "\\Images\\CoreAPI_32.ico", Parent.m_CurDoc, ixcInst, math);
 			CC.SetPattern(Pat, false);
 			CC.Ellipse(rect.left, rect.bottom, rect.right, rect.top);
 			CC.StrokePath(true);
@@ -1720,7 +1720,7 @@ namespace CoreAPIDemo
 			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper mathHelper = Aux_Inst.MathHelper;
-			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\Images\\Editor_welcome.png");
+			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png");
 			PXC_Matrix contentMatrix = new PXC_Matrix();
 			PXC_Matrix globalMatrix = new PXC_Matrix();
 			
