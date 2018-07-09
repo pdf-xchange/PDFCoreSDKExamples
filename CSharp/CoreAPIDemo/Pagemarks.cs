@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-
+using PDFXCoreAPI;
 namespace CoreAPIDemo
 {
 	[Description("7. Pagemarks")]
@@ -8,7 +8,11 @@ namespace CoreAPIDemo
 		[Description("7.1. Add Headers and Footers on pages")]
 		static public void AddHeadersAndFootersOnPages(Form1 Parent)
 		{
-#warning Add headers and footers with different macroses on pages
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
+			IPXC_HeaderAndFooterParams HeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
+			HeaderFooter.RightFooterText = "%[Page]";
+			IBitSet bitSet = auxInst.CreateBitSet(8192);
+			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, HeaderFooter);
 		}
 
 		[Description("7.2. Add Watermarks on page")]

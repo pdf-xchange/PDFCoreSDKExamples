@@ -656,7 +656,6 @@ namespace CoreAPIDemo
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
 			//Remove all fields from page
 			Page.RemoveAnnots(0, Page.GetAnnotsCount());
-
 		}
 
 		//[Description("5.12. Flatten Fields on page")]
