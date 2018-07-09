@@ -676,5 +676,31 @@ namespace CoreAPIDemo
 			annot.Data = WData;
 			Marshal.ReleaseComObject(Image);
 		}
+
+		[Description("5.11. Remove fields from page")]
+		static public void RemoveFieldsFromPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				return;
+
+			//Get current page
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			//Remove all fields from page
+			Page.RemoveAnnots(0, Page.GetAnnotsCount());
+		}
+
+		[Description("5.12. Flatten Fields on page")]
+		static public void FlattenFieldsOnPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				return;
+
+			//Get current page
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			//Get AcroForm from Document
+			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+			//Flatten all fields
+			//acroForm.FlattenField("Text1");
+		}
 	}
 }
