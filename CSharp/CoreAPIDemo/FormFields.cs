@@ -295,28 +295,6 @@ namespace CoreAPIDemo
 		[Description("5.4. Add Radio Buttons form fields")]
 		static public void AddRadioButtonsFormFields(Form1 Parent)
 		{
-			int index = 1;
-			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
-			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
-			{
-				string sFieldName = "";
-				uint i = 0;
-				do
-				{
-					sFieldName = fName + inx;
-					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
-					if (ff == null)
-					{
-						break;
-					}
-					inx++;
-					i++;
-				}
-				while (i <= Doc.AcroForm.FieldsCount);
-				inx++;
-				return sFieldName;
-			};
-
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
 
@@ -333,29 +311,25 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
 			rcPB.left = 1.7 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField firstRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			IPXC_FormField firstGroup = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 			rcPB.left = 2.3 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField secondRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 			rcPB.left = 2.9 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField thirdRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 
 			rcPB.right = rc.right - 1.5 * 72.0;
 			rcPB.left = rcPB.right - 0.5 * 72.0;
-			IPXC_FormField fourthRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			IPXC_FormField secondGroup = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 			rcPB.top = rcPB.top - 0.6 * 72.0;
 			rcPB.bottom = rcPB.top - 0.5 * 72.0;
-			IPXC_FormField fifthRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
-			firstRadioBut.CheckWidget(1, true);
-			fourthRadioBut.CheckWidget(1, true);
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			firstGroup.CheckWidget(1, true);
+			secondGroup.CheckWidget(1, true);
 
-			Marshal.ReleaseComObject(firstRadioBut);
-			Marshal.ReleaseComObject(secondRadioBut);
-			Marshal.ReleaseComObject(thirdRadioBut);
-			Marshal.ReleaseComObject(fourthRadioBut);
-			Marshal.ReleaseComObject(fifthRadioBut);
-
+			Marshal.ReleaseComObject(firstGroup);
+			Marshal.ReleaseComObject(secondGroup);
 		}
 
 		[Description("5.5. Add ListBox form fields")]
@@ -400,10 +374,11 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 5.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
 
 			IPXC_FormField listBox = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "ListBox", ref index), PXC_FormFieldType.FFT_ListBox, 0, ref rcPB);
-			listBox.InsertOptRecord("lable1", "First Item");
-			listBox.InsertOptRecord("lable2", "Second Item");
-			listBox.InsertOptRecord("lable3", "Third Item");
-			listBox.InsertOptRecord("lable4", "Forth Item");
+			listBox.InsertOptRecord("label1", "First Item");
+			listBox.InsertOptRecord("label2", "Second Item");
+			listBox.InsertOptRecord("label3", "Third Item");
+			listBox.InsertOptRecord("label4", "Forth Item");
+			listBox.SelectItem(1, true);
 			Marshal.ReleaseComObject(listBox);
 		}
 
@@ -455,9 +430,6 @@ namespace CoreAPIDemo
 			comboBox.InsertOptRecord("lable4", "Forth Item");
 			comboBox.SelectItem(1, true);
 			Marshal.ReleaseComObject(comboBox);
-
-
-#warning Add a couple of combo box fields with different flags enabled such as allow edit, sorting etc.
 		}
 
 		[Description("5.7. Add Signature form fields")]
@@ -502,9 +474,6 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
 
 			IPXC_FormField signature = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Signature", ref index), PXC_FormFieldType.FFT_Signature, 0, ref rcPB);
-			IPXC_Annotation annot = signature.Widget[0];
-			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
-
 			Marshal.ReleaseComObject(signature);
 		}
 
@@ -550,9 +519,6 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 1.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
 
 			IPXC_FormField Barcode = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Barcode", ref index), PXC_FormFieldType.FFT_Barcode, 0, ref rcPB);
-			IPXC_Annotation annot = Barcode.Widget[0];
-			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
-
 			Marshal.ReleaseComObject(Barcode);
 		}
 
@@ -600,7 +566,6 @@ namespace CoreAPIDemo
 			IPXC_FormField Date = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Date", ref index), PXC_FormFieldType.FFT_Text, 0, ref rcPB);
 			IPXC_Annotation annot = Date.Widget[0];
 			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
-			annot.Flags |= (uint)PXC_SignDocumentFlags.Sign_TX_Date;
 			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
 			//Set script to ActionList
 			actionsList.AddJavaScript("var now = new Date()\n" +
@@ -685,23 +650,27 @@ namespace CoreAPIDemo
 				return;
 
 			//Get current page
+			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
+				return;
+
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
 			//Remove all fields from page
 			Page.RemoveAnnots(0, Page.GetAnnotsCount());
+
 		}
 
-		[Description("5.12. Flatten Fields on page")]
-		static public void FlattenFieldsOnPage(Form1 Parent)
-		{
-			if (Parent.m_CurDoc == null)
-				return;
+		//[Description("5.12. Flatten Fields on page")]
+		//static public void FlattenFieldsOnPage(Form1 Parent)
+		//{
+		//	if (Parent.m_CurDoc == null)
+		//		return;
 
-			//Get current page
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
-			//Get AcroForm from Document
-			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
-			//Flatten all fields
-			//acroForm.FlattenField("Text1");  //Not implemented yet
-		} 
+		//	//Get current page
+		//	IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+		//	//Get AcroForm from Document
+		//	IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+		//	//Flatten all fields
+		//	//acroForm.FlattenField("Text1");
+		//}
 	}
 }
