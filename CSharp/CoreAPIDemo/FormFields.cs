@@ -328,38 +328,33 @@ namespace CoreAPIDemo
 			IPXC_UndoRedoData urD = null;
 			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
-			rcPB.left = 1.5 * 72.0;
-			rcPB.right = rc.right - 1.5 * 72.0;
-			rcPB.top = rc.top - 0.2 * 72.0;
-			rcPB.bottom = rcPB.top - 1.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
-
-			uint Rect = pxsInst.StrToAtom("Square");
-			IPXC_Annotation groupAnnot = Page.InsertNewAnnot(Rect, ref rcPB);
-
-			Page.GetAnnotGroupMembers(groupAnnot);
 			rcPB.top = rc.top - 0.35 * 72.0;
-			rcPB.bottom = rcPB.top - 0.5 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
 			rcPB.left = 1.7 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField firstRadioBut = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "RadioButton", ref index), PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
-			IPXC_Annotation firstAnnot = firstRadioBut.Widget[0];
+			IPXC_FormField firstRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 			rcPB.left = 2.3 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField secondRadioBut = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "RadioButton", ref index), PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
-			IPXC_Annotation secondAnnot = secondRadioBut.Widget[0];
+			IPXC_FormField secondRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
 			rcPB.left = 2.9 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
-			IPXC_FormField thirdRadioBut = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "RadioButton", ref index), PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
-			IPXC_Annotation thirdAnnot = thirdRadioBut.Widget[0];
-			//Page.AddAnnotToGroup(firstAnnot, groupAnnot, false);
-			//Page.AddAnnotToGroup(thirdAnnot, groupAnnot, false);
-			//Page.AddAnnotToGroup(secondAnnot, groupAnnot, false);
+			IPXC_FormField thirdRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+
+			rcPB.right = rc.right - 1.5 * 72.0;
+			rcPB.left = rcPB.right - 0.5 * 72.0;
+			IPXC_FormField fourthRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			rcPB.top = rcPB.top - 0.6 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0;
+			IPXC_FormField fifthRadioBut = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			firstRadioBut.CheckWidget(1, true);
+			fourthRadioBut.CheckWidget(1, true);
 
 			Marshal.ReleaseComObject(firstRadioBut);
 			Marshal.ReleaseComObject(secondRadioBut);
 			Marshal.ReleaseComObject(thirdRadioBut);
+			Marshal.ReleaseComObject(fourthRadioBut);
+			Marshal.ReleaseComObject(fifthRadioBut);
 
-#warning Add a couple of radio button groups with checked/unchecked state
 		}
 
 		[Description("5.5. Add ListBox form fields")]
@@ -404,11 +399,11 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 5.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
 
 			IPXC_FormField listBox = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "ListBox", ref index), PXC_FormFieldType.FFT_ListBox, 0, ref rcPB);
-			IPXC_Annotation annot = listBox.Widget[0];
-			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
+			listBox.InsertOptRecord("lable1", "First Item");
+			listBox.InsertOptRecord("lable2", "Second Item");
+			listBox.InsertOptRecord("lable3", "Third Item");
+			listBox.InsertOptRecord("lable4", "Forth Item");
 			Marshal.ReleaseComObject(listBox);
-
-#warning Add a couple of list fields with different flags enabled such as multi selection, sorting etc. and different selections
 		}
 
 		[Description("5.6. Add Combo Box form fields")]
@@ -453,8 +448,11 @@ namespace CoreAPIDemo
 			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
 
 			IPXC_FormField comboBox = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "ComboBox", ref index), PXC_FormFieldType.FFT_ComboBox, 0, ref rcPB);
-			IPXC_Annotation annot = comboBox.Widget[0];
-			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
+			comboBox.InsertOptRecord("lable1", "First Item");
+			comboBox.InsertOptRecord("lable2", "Second Item");
+			comboBox.InsertOptRecord("lable3", "Third Item");
+			comboBox.InsertOptRecord("lable4", "Forth Item");
+			comboBox.SelectItem(1, true);
 			Marshal.ReleaseComObject(comboBox);
 
 
@@ -507,8 +505,6 @@ namespace CoreAPIDemo
 			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
 
 			Marshal.ReleaseComObject(signature);
-
-#warning Add a signature form field
 		}
 
 		[Description("5.8. Add Barcode form fields")]
@@ -557,8 +553,6 @@ namespace CoreAPIDemo
 			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
 
 			Marshal.ReleaseComObject(Barcode);
-
-#warning Add different barcode field types (QR, DataMatrix, PDF417) with different settings
 		}
 
 		[Description("5.9. Add Date form fields")]
@@ -613,8 +607,6 @@ namespace CoreAPIDemo
 			Date.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
 			Marshal.ReleaseComObject(Date);
 
-
-#warning Add date form fields with different formatting and styles
 		}
 
 		[Description("5.10. Add Image form fields")]
@@ -683,8 +675,6 @@ namespace CoreAPIDemo
 			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
 			annot.Data = WData;
 			Marshal.ReleaseComObject(Image);
-
-#warning Add image form fields with different scalings and positions
 		}
 	}
 }
