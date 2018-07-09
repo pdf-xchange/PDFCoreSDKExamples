@@ -241,49 +241,435 @@ namespace CoreAPIDemo
 		[Description("5.3. Add Check Box form fields")]
 		static public void AddCheckBoxFormFields(Form1 Parent)
 		{
-#warning Add a couple of checkboxes with checked/unchecked state
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding uncheked checkbox
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 3.2 * 72.0;
+			rcPB.right = rcPB.left + 0.5 * 72.0;
+			rcPB.top = rc.top - 0.2 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+			IPXC_FormField checkBoxUnch = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "CheckBox", ref index), PXC_FormFieldType.FFT_CheckBox, 0, ref rcPB);
+			Marshal.ReleaseComObject(checkBoxUnch);
+
+			//Adding cheked checkbox
+			rcPB.right = rc.right - 3.2 * 72.0;
+			rcPB.left = rcPB.right - 0.5 * 72.0;
+			IPXC_FormField checkBoxCh = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "CheckBox", ref index), PXC_FormFieldType.FFT_CheckBox, 0, ref rcPB);
+			IPXC_Annotation annot = checkBoxCh.Widget[0];
+			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
+			checkBoxCh.CheckWidget((uint)checkBoxCh.GetWidgetIndex(annot), true);
+			Marshal.ReleaseComObject(checkBoxCh);
 		}
 
 		[Description("5.4. Add Radio Buttons form fields")]
 		static public void AddRadioButtonsFormFields(Form1 Parent)
 		{
-#warning Add a couple of radio button groups with checked/unchecked state
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding group with RadioButtons
+			IPXS_Inst pxsInst = (IPXS_Inst)Parent.m_pxcInst.GetExtension("PXS");
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.top = rc.top - 0.35 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+			rcPB.left = 1.7 * 72.0;
+			rcPB.right = rcPB.left + 0.5 * 72.0;
+			IPXC_FormField firstGroup = Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			rcPB.left = 2.3 * 72.0;
+			rcPB.right = rcPB.left + 0.5 * 72.0;
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			rcPB.left = 2.9 * 72.0;
+			rcPB.right = rcPB.left + 0.5 * 72.0;
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+
+			rcPB.right = rc.right - 1.5 * 72.0;
+			rcPB.left = rcPB.right - 0.5 * 72.0;
+			IPXC_FormField secondGroup = Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			rcPB.top = rcPB.top - 0.6 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0;
+			Parent.m_CurDoc.AcroForm.CreateField("RadioButton1", PXC_FormFieldType.FFT_RadioButton, 0, ref rcPB);
+			firstGroup.CheckWidget(1, true);
+			secondGroup.CheckWidget(1, true);
+
+			Marshal.ReleaseComObject(firstGroup);
+			Marshal.ReleaseComObject(secondGroup);
 		}
 
-		[Description("5.5. Add List form fields")]
+		[Description("5.5. Add ListBox form fields")]
 		static public void AddListFormFields(Form1 Parent)
 		{
-#warning Add a couple of list fields with different flags enabled such as multi selection, sorting etc. and different selections
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding ListBox with items
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 1.5 * 72.0;
+			rcPB.right = rc.right - 1.5 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 5.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
+
+			IPXC_FormField listBox = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "ListBox", ref index), PXC_FormFieldType.FFT_ListBox, 0, ref rcPB);
+			listBox.InsertOptRecord("label1", "First Item");
+			listBox.InsertOptRecord("label2", "Second Item");
+			listBox.InsertOptRecord("label3", "Third Item");
+			listBox.InsertOptRecord("label4", "Forth Item");
+			listBox.SelectItem(1, true);
+			Marshal.ReleaseComObject(listBox);
 		}
 
 		[Description("5.6. Add Combo Box form fields")]
 		static public void AddComboBoxFormFields(Form1 Parent)
 		{
-#warning Add a couple of combo box fields with different flags enabled such as allow edit, sorting etc.
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding ComboBox with items
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 1.5 * 72.0;
+			rcPB.right = rc.right - 1.5 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+
+			IPXC_FormField comboBox = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "ComboBox", ref index), PXC_FormFieldType.FFT_ComboBox, 0, ref rcPB);
+			comboBox.InsertOptRecord("lable1", "First Item");
+			comboBox.InsertOptRecord("lable2", "Second Item");
+			comboBox.InsertOptRecord("lable3", "Third Item");
+			comboBox.InsertOptRecord("lable4", "Forth Item");
+			comboBox.SelectItem(1, true);
+			Marshal.ReleaseComObject(comboBox);
 		}
 
 		[Description("5.7. Add Signature form fields")]
 		static public void AddSignatureFormFields(Form1 Parent)
 		{
-#warning Add a signature form field
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding Signature
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 1.5 * 72.0;
+			rcPB.right = rc.right - 1.5 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+
+			IPXC_FormField signature = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Signature", ref index), PXC_FormFieldType.FFT_Signature, 0, ref rcPB);
+			Marshal.ReleaseComObject(signature);
 		}
 
 		[Description("5.8. Add Barcode form fields")]
 		static public void AddBarcodeFormFields(Form1 Parent)
 		{
-#warning Add different barcode field types (QR, DataMatrix, PDF417) with different settings
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding Barcode
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 2.5 * 72.0;
+			rcPB.right = rc.right - 2.5 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 1.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+
+			IPXC_FormField Barcode = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Barcode", ref index), PXC_FormFieldType.FFT_Barcode, 0, ref rcPB);
+			Marshal.ReleaseComObject(Barcode);
 		}
 
 		[Description("5.9. Add Date form fields")]
 		static public void AddDateFormFields(Form1 Parent)
 		{
-#warning Add date form fields with different formatting and styles
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding Date 
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 2.5 * 72.0;
+			rcPB.right = rc.right - 2.5 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
+
+			IPXC_FormField Date = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Date", ref index), PXC_FormFieldType.FFT_Text, 0, ref rcPB);
+			IPXC_Annotation annot = Date.Widget[0];
+			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
+			IPXC_ActionsList actionsList = Parent.m_CurDoc.CreateActionsList();
+			//Set script to ActionList
+			actionsList.AddJavaScript("var now = new Date()\n" +
+						"this.getField(\"Date1\").value = (now.getMonth() + 1) + \"/\" + now.getDate() + \"/\" + now.getFullYear(); ");
+			Date.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
+			Marshal.ReleaseComObject(Date);
+
 		}
 
 		[Description("5.10. Add Image form fields")]
 		static public void AddImageFormFields(Form1 Parent)
 		{
-#warning Add image form fields with different scalings and positions
+			int index = 1;
+			//delegate string CheckNamesFields(IPXC_Document Doc, string fieldName, ref int x);
+			CheckNamesFields checkNamesFields = (IPXC_Document Doc, string fName, ref int inx) =>
+			{
+				string sFieldName = "";
+				uint i = 0;
+				do
+				{
+					sFieldName = fName + inx;
+					IPXC_FormField ff = Doc.AcroForm.GetFieldByName(sFieldName);
+					if (ff == null)
+					{
+						break;
+					}
+					inx++;
+					i++;
+				}
+				while (i <= Doc.AcroForm.FieldsCount);
+				inx++;
+				return sFieldName;
+			};
+
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = new PXC_Rect();
+			rc.top = 800;
+			rc.right = 600;
+
+			//Adding button with icon as Image
+			IPXC_UndoRedoData urD = null;
+			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			PXC_Rect rcPB = new PXC_Rect();
+			rcPB.left = 1.5 * 72.0;
+			rcPB.right = rcPB.left + 1.0 * 72.0;
+			rcPB.top = rc.top - 1.5 * 72.0;
+			rcPB.bottom = rcPB.top - 2.0 * 72.0; //top is greater then bottom (PDF Coordinate System)
+			IPXC_FormField Image = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Image", ref index), PXC_FormFieldType.FFT_PushButton, 0, ref rcPB);
+			//Now we'll need to add the icon
+			IPXC_Annotation annot = Image.Widget[0];
+			IPXC_AnnotData_Widget WData = (IPXC_AnnotData_Widget)annot.Data;
+			string sPath = System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png";
+			IPXC_Image img = Parent.m_CurDoc.AddImageFromFile(sPath);
+			float imgw = img.Width;
+			float imgh = img.Height;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			CC.SaveState();
+			CC.ScaleCS(imgw, imgh); //the image will be scaled to the button's size
+			CC.PlaceImage(img);
+			CC.RestoreState();
+			IPXC_Content content = CC.Detach();
+			PXC_Rect rcBBox;
+			rcBBox.left = 0;
+			rcBBox.top = imgh;
+			rcBBox.right = imgw;
+			rcBBox.bottom = 0;
+			content.set_BBox(rcBBox);
+			IPXC_XForm xForm = Parent.m_CurDoc.CreateNewXForm(ref rcPB);
+			xForm.SetContent(content);
+			WData.ButtonTextPosition = PXC_WidgetButtonTextPosition.WidgetText_IconOnly;
+			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
+			annot.Data = WData;
+			Marshal.ReleaseComObject(Image);
 		}
+
+		[Description("5.11. Remove fields from page")]
+		static public void RemoveFieldsFromPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				return;
+
+			//Get current page
+			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
+				return;
+
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			//Remove all fields from page
+			Page.RemoveAnnots(0, Page.GetAnnotsCount());
+
+		}
+
+		//[Description("5.12. Flatten Fields on page")]
+		//static public void FlattenFieldsOnPage(Form1 Parent)
+		//{
+		//	if (Parent.m_CurDoc == null)
+		//		return;
+
+		//	//Get current page
+		//	IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+		//	//Get AcroForm from Document
+		//	IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+		//	//Flatten all fields
+		//	//acroForm.FlattenField("Text1");
+		//}
 	}
 }

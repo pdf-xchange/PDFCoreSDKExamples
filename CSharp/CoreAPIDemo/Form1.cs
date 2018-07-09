@@ -22,6 +22,11 @@ namespace CoreAPIDemo
 #else
 		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).FullName + "\\CSharp\\CoreAPIDemo\\";
 #endif
+		public uint CurrentPage
+		{
+			get { return uint.Parse(currentPage.Text) - 1; }
+		}
+
 
 		public Form1()
 		{
