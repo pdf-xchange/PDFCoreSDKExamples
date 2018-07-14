@@ -22,8 +22,8 @@ namespace CoreAPIDemo
 			double nHeight = 0.0;
 			double nWidth = 0.0;
 			Page.GetDimension(out nWidth, out nHeight);
-			uint cx = (uint)(nWidth * 300 / 72.0);
-			uint cy = (uint)(nHeight * 300 / 72.0);
+			uint cx = (uint)(nWidth * 150 / 72.0);
+			uint cy = (uint)(nHeight * 150 / 72.0);
 			IIXC_Page ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8ARGB, 0);
 			IPXC_PageRenderParams param = Parent.m_pxcInst.CreateRenderParams();
 			if (param != null)
@@ -54,7 +54,7 @@ namespace CoreAPIDemo
 			param = Parent.m_pxcInst.CreateRenderParams();
 			if (param != null)
 			{
-				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_OverrideBackgroundColor | (uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
+				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
 				param.TextSmoothMode |= PXC_TextSmoothMode.TSM_Antialias;
 			}
 			Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
@@ -72,23 +72,23 @@ namespace CoreAPIDemo
 			param = Parent.m_pxcInst.CreateRenderParams();
 			if (param != null)
 			{
-				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_OverrideBackgroundColor | (uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
+				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
 				param.TextSmoothMode |= PXC_TextSmoothMode.TSM_Antialias;
 			}
-			Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 300;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 300;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_BPC] = 1;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_BPP] = 1;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_DITHER] = 1;
-			ixcPage.FmtInt[(uint)IXC_FormatFlags.FMTF_CAN_Encode] = 1;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FORMAT] = (uint)IXC_ImageFileFormatIDs.FMT_TIFF_ID;
-			ixcImg.InsertPage(ixcPage, 0);
+			for (int i = 0; i < Parent.m_CurDoc.Pages.Count; i++)
+			{
+				Page = Parent.m_CurDoc.Pages[(uint)i];
+				Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 300;
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 300;
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_ITYPE] = 1;
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FORMAT] = (uint)IXC_ImageFileFormatIDs.FMT_TIFF_ID;
+				ixcImg.InsertPage(ixcPage);
+				ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8Gray, 0);
+			}
 			sPath = sPath.Replace(".jpg", ".tiff");
 			ixcImg.Save(sPath, IXC_CreationDisposition.CreationDisposition_Overwrite);
 			pr = Process.Start(sPath);
-
-#warning Not implemented
 		}
 
 		[Description("8.2. Convert from image to PDF")]
@@ -96,7 +96,27 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-#warning Not implemented
+
+			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
+			IPXC_Page Page = Parent.m_CurDoc.Pages[0];
+			double nHeight = 0.0;
+			double nWidth = 0.0;
+			Page.GetDimension(out nWidth, out nHeight);
+			IIXC_Image img = ixcInst.CreateEmptyImage();
+			img.Load(System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png");
+			IIXC_Page ixcPage = img.GetPage(0);
+			IPXC_Image pxcImg = Parent.m_CurDoc.AddImageFromIXCPage(ixcPage);
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			CC.SaveState();
+			{
+				PXC_Matrix matrix = Page.GetMatrix(PXC_BoxType.PBox_PageBox);
+				matrix = auxInst.MathHelper.Matrix_Scale(ref matrix, nWidth, nHeight);
+				CC.ConcatCS(ref matrix);
+				CC.PlaceImage(pxcImg);
+			}
+			CC.RestoreState();
+			Page.PlaceContent(CC.Detach());
 		}
 
 		[Description("8.3. Convert from PDF to txt file")]

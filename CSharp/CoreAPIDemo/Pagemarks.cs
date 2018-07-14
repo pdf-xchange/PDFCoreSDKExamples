@@ -16,12 +16,16 @@ namespace CoreAPIDemo
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_HeaderAndFooterParams HeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
 			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", 0, 400);
+			IColor color = auxInst.CreateColor(ColorType.ColorType_Gray);
+			color.SetRGB(0, 0, 0);
+			HeaderFooter.FillColor = color;
 			HeaderFooter.Font = font;
 			HeaderFooter.RightFooterText = "%[Page]";
 			HeaderFooter.BottomMargin = 36.0f;
 			HeaderFooter.TopMargin = 36.0f;
 			HeaderFooter.RightMargin = 36.0f;
 			HeaderFooter.LeftMargin = 36.0f;
+			HeaderFooter.FontSize = 14.0f;
 			IBitSet bitSet = auxInst.CreateBitSet(8);
 			bitSet.SetSize(Parent.m_CurDoc.Pages.Count);
 			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
@@ -72,20 +76,21 @@ namespace CoreAPIDemo
 		[Description("7.4. Remove Headers and Footers from page")]
 		static public void RemoveHeadersAndFooters(Form1 Parent)
 		{
-			//if (Parent.m_CurDoc == null)
-			//	return;
-			//
-			////Get current page
-			//if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
-			//	return;
-			//
-			//IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
-			//IPXC_DocumentProps docProps = Parent.m_CurDoc.Props;
-			////docProps
+			if (Parent.m_CurDoc == null)
+				return;
+			
+			//Get current page
+			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
+				return;
+			
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_DocumentProps docProps = Parent.m_CurDoc.Props;
+			//docProps
 			//Parent.m_CurDoc.
-			////Remove all fields from page
-			//IPXC_Content content = Page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
-			////content.
+			//Remove all fields from page
+			IPXC_Content content = Page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+			IPXC_ContentItems ContentItems = content.Items;
+			ContentItems.DeleteItems(0);
 #warning Remove all of the header and footer from page
 		}
 
