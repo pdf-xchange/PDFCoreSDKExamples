@@ -54,8 +54,7 @@ namespace CoreAPIDemo
 			watermark.Rotation = -30;
 			watermark.FontSize = 200;
 			watermark.StrokeWidth = 5.0f;
-			IBitSet bitSet = auxInst.CreateBitSet(8);
-			bitSet.SetSize(Parent.m_CurDoc.Pages.Count);
+			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
 			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
 			Parent.m_CurDoc.PlaceWatermark(bitSet, watermark);
 			watermark.Text = "";
@@ -82,51 +81,58 @@ namespace CoreAPIDemo
 			IPXC_BackgroundParams backgroundParams = Parent.m_pxcInst.CreateBackgroundParams();
 			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_Gray);
 			fillColor.SetRGB(0.5f, 1.0f, 0.5f);
-			IBitSet firstBitSet = auxInst.CreateBitSet(8);
-			firstBitSet.SetSize(Parent.m_CurDoc.Pages.Count);
-			firstBitSet.Set(0, Parent.m_CurDoc.Pages.Count - Parent.m_CurDoc.Pages.Count / 2, true);
+			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
+			bitSet.Set(0, Parent.m_CurDoc.Pages.Count - Parent.m_CurDoc.Pages.Count, true);
 			backgroundParams.FillColor = fillColor;
-			Parent.m_CurDoc.PlaceBackgrounds(firstBitSet, backgroundParams);
+			backgroundParams.VAlign = 0;
+			backgroundParams.HAlign = 2;
+			backgroundParams.Scale = 60;
+			backgroundParams.Rotation = 45;
+			Parent.m_CurDoc.PlaceBackgrounds(bitSet, backgroundParams);
+
 			backgroundParams.BackgroundFile = System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png";
-			IBitSet secondBitSet = auxInst.CreateBitSet(8);
-			secondBitSet.SetSize(Parent.m_CurDoc.Pages.Count);
-			secondBitSet.Set(Parent.m_CurDoc.Pages.Count / 2, Parent.m_CurDoc.Pages.Count - 1, true);
+			backgroundParams.BackgroundPage = 0;
+			backgroundParams.VAlign = 2;
+			backgroundParams.HAlign = 0;
+			backgroundParams.Scale = 60;
+			backgroundParams.Rotation = 45;
+			backgroundParams.Opacity = 50;
 			backgroundParams.BackgroundType = PXC_BackgroundType.Background_Image;
 			backgroundParams.Flags |= (uint)PXC_BackgroundFlags.BackgroundFlag_ScaleToPage;
-			Parent.m_CurDoc.PlaceBackgrounds(secondBitSet, backgroundParams);
+			Parent.m_CurDoc.PlaceBackgrounds(bitSet, backgroundParams);
 		}
 
-		[Description("7.4. Remove Headers and Footers from page")]
-		static public void RemoveHeadersAndFooters(Form1 Parent)
-		{
-			if (Parent.m_CurDoc == null)
-				return;
-			
-			//Get current page
-			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
-				return;
-			
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
-			IPXC_DocumentProps docProps = Parent.m_CurDoc.Props;
-			//docProps
-			//Parent.m_CurDoc.
-			//Remove all fields from page
-			IPXC_Content content = Page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
-			IPXC_ContentItems ContentItems = content.Items;
-			ContentItems.DeleteItems(0);
-#warning Remove all of the header and footer from page
-		}
-
-		[Description("7.5. Remove Watermarks from page")]
-		static public void RemoveWatermarks(Form1 Parent)
-		{
-#warning Remove all of the watermarks from page
-		}
-
-		[Description("7.6. Remove Background from page")]
-		static public void RemoveBackgroundOnPage(Form1 Parent)
-		{
-#warning Remove all of the background from page
-		}
+//		[Description("7.4. Remove Headers and Footers from page")]
+//		static public void RemoveHeadersAndFooters(Form1 Parent)
+//		{
+//			if (Parent.m_CurDoc == null)
+//				return;
+//			
+//			//Get current page
+//			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
+//				return;
+//			
+//			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+//			IPXC_DocumentProps docProps = Parent.m_CurDoc.Props;
+//			//docProps
+//			//Parent.m_CurDoc.
+//			//Remove all fields from page
+//			IPXC_Content content = Page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+//			IPXC_ContentItems ContentItems = content.Items;
+//			ContentItems.DeleteItems(0);
+//#warning Remove all of the header and footer from page
+//		}
+//
+//		[Description("7.5. Remove Watermarks from page")]
+//		static public void RemoveWatermarks(Form1 Parent)
+//		{
+//#warning Remove all of the watermarks from page
+//		}
+//
+//		[Description("7.6. Remove Background from page")]
+//		static public void RemoveBackgroundOnPage(Form1 Parent)
+//		{
+//#warning Remove all of the background from page
+//		}
 	}
 }
