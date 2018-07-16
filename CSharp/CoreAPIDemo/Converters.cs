@@ -15,7 +15,7 @@ namespace CoreAPIDemo
 		static public void ConvertToImage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
+				Document.OpenDocFromStringPath(Parent);
 
 			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
@@ -40,8 +40,8 @@ namespace CoreAPIDemo
 			matrix = auxInst.MathHelper.Matrix_Scale(ref matrix, cx / nWidth, -cy / nHeight);
 			matrix = auxInst.MathHelper.Matrix_Translate(ref matrix, 0, cy);
 			Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 300;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 300;
+			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 150;
+			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 150;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_INTERLACE] = 1;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FILTER] = 5;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_COMP_LEVEL] = 5;
@@ -55,15 +55,11 @@ namespace CoreAPIDemo
 
 			ixcImg.RemovePageByIndex(0);
 			ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8Gray, 0);
-			param = Parent.m_pxcInst.CreateRenderParams();
 			if (param != null)
-			{
-				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
-				param.TextSmoothMode |= PXC_TextSmoothMode.TSM_Antialias;
-			}
+				param.SetColor(PXC_RenderColor.RC_PageColor1, 255, 255, 255, 255);
 			Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 300;
-			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 300;
+			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 150;
+			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 150;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YSUBSAMPLING] = 20;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FORMAT] = (uint)IXC_ImageFileFormatIDs.FMT_JPEG_ID;
 			ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_JPEG_QUALITY] = 100;
@@ -74,18 +70,12 @@ namespace CoreAPIDemo
 
 			ixcImg.RemovePageByIndex(0);
 			ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8RGB, 0);
-			param = Parent.m_pxcInst.CreateRenderParams();
-			if (param != null)
-			{
-				param.RenderFlags |= ((uint)PXC_RenderFlags.RF_SmoothImages | (uint)PXC_RenderFlags.RF_SmoothLineArts);
-				param.TextSmoothMode |= PXC_TextSmoothMode.TSM_Antialias;
-			}
 			for (int i = 0; i < Parent.m_CurDoc.Pages.Count; i++)
 			{
 				Page = Parent.m_CurDoc.Pages[(uint)i];
 				Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
-				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 300;
-				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 300;
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 150;
+				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 150;
 				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_ITYPE] = 1;
 				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FORMAT] = (uint)IXC_ImageFileFormatIDs.FMT_TIFF_ID;
 				ixcImg.InsertPage(ixcPage);
@@ -138,7 +128,7 @@ namespace CoreAPIDemo
 			writePath = writePath.Replace(".tmp", ".txt");
 			StreamWriter stream = new StreamWriter(writePath);
 
-
+#warning implement sorting by using the rcBBox
 			List<PXC_TextLineInfo> textsLineInfo = new List<PXC_TextLineInfo>();
 
 			int index = 0;
