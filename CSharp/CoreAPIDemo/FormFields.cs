@@ -74,9 +74,10 @@ namespace CoreAPIDemo
 			border.nWidth = 5.0f;
 			WData.set_Border(ref border);
 			annot.Data = WData;
-			annot.Flags |= (uint)PXC_AnnotFlag.AF_Locked;
 			secondTextBOX.SetFlags((uint)PXC_FormFieldFlag.FFF_ReadOnly, (uint)PXC_FormFieldFlag.FFF_ReadOnly);
 			Marshal.ReleaseComObject(secondTextBOX);
+
+
 
 			//90 degree orientation text field with multiline option enabled
 			textRC.top = rc.top - 5.0 * 72.0;
@@ -655,7 +656,6 @@ namespace CoreAPIDemo
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
 			//Remove all fields from page
 			Page.RemoveAnnots(0, Page.GetAnnotsCount());
-
 		}
 
 		//[Description("5.12. Flatten Fields on page")]
