@@ -165,21 +165,25 @@ namespace CoreAPIDemo
 			{
 				if (firstTLI.rcBBox.top < secontTLI.rcBBox.top)
 					return 1;
-				else if (firstTLI.rcBBox.top == secontTLI.rcBBox.top)
-					return 0;
-				else
+				else if (firstTLI.rcBBox.top > secontTLI.rcBBox.top)
 					return -1;
+				else
+				{
+					if (firstTLI.rcBBox.left < secontTLI.rcBBox.left)
+						return -1;
+					else if (firstTLI.rcBBox.left > secontTLI.rcBBox.left)
+						return 1;
+					else
+						return 0;
+				}
 			});
 
-			stream.Write(Text.GetChars(textsLineInfo[0].nFirstCharIndex, textsLineInfo[0].nCharsCount));
-			for (int i = 1; i < Text.LinesCount; i++)
+			for (int i = 0; i < Text.LinesCount - 1; i++)
 			{
-				if (textsLineInfo[i - 1].rcBBox.top == textsLineInfo[i].rcBBox.top)
-					stream.Write(" " + Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
-				else
-					stream.Write("\r\n" + Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
+				stream.Write(Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
+				stream.Write((textsLineInfo[i].rcBBox.top == textsLineInfo[i + 1].rcBBox.top) ? " ": "\r\n");
 			}
-
+			stream.Write(Text.GetChars(textsLineInfo[(int)Text.LinesCount - 1].nFirstCharIndex, textsLineInfo[(int)Text.LinesCount - 1].nCharsCount));
 			stream.Close();
 			Process.Start(writePath);
 		}

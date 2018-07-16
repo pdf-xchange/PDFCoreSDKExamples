@@ -15,12 +15,12 @@ namespace CoreAPIDemo
 
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_HeaderAndFooterParams firstHeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
-			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", 0, 400);
-			IColor color = auxInst.CreateColor(ColorType.ColorType_Gray);
+			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", (uint)PXC_CreateFontFlags.CreateFont_Serif, 400);
+			IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
 			color.SetRGB(0, 0, 0);
 			firstHeaderFooter.Font = font;
 			firstHeaderFooter.FillColor = color;
-			firstHeaderFooter.RightFooterText = "%[Page]";
+			firstHeaderFooter.LeftHeaderText = "%[Page]";
 			firstHeaderFooter.LeftFooterText = "%[Page] from %[Pages]";
 			firstHeaderFooter.BottomMargin = 36.0f;
 			firstHeaderFooter.TopMargin = 36.0f;
@@ -32,27 +32,31 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, firstHeaderFooter);
 
 			IPXC_HeaderAndFooterParams secondHeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
+			font = Parent.m_CurDoc.CreateNewFont("Comic Sans MS", (uint)PXC_CreateFontFlags.CreateFont_Italic, 1000);
+			color.SetRGB(0.35f, 0.48f, 0.35f);
 			secondHeaderFooter.Font = font;
 			secondHeaderFooter.FillColor = color;
-			secondHeaderFooter.CenterFooterText = "%[Date:MM.dd.yyyy] %[Time]";
-			secondHeaderFooter.LeftHeaderText = "Version %[AppVersion]";
-			secondHeaderFooter.BottomMargin = 36.0f;
-			secondHeaderFooter.TopMargin = 36.0f;
-			secondHeaderFooter.RightMargin = 36.0f;
-			secondHeaderFooter.LeftMargin = 36.0f;
-			secondHeaderFooter.FontSize = 10.0f;
+			secondHeaderFooter.CenterHeaderText = "%[Date:MM.dd.yyyy] %[Time]";
+			secondHeaderFooter.CenterFooterText = "Version %[AppVersion]";
+			secondHeaderFooter.BottomMargin = 20.0f;
+			secondHeaderFooter.TopMargin = 20.0f;
+			secondHeaderFooter.RightMargin = 40.0f;
+			secondHeaderFooter.LeftMargin = 40.0f;
+			secondHeaderFooter.FontSize = 15.0f;
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, secondHeaderFooter);
 
-			IPXC_HeaderAndFooterParams thirdHeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
+			IPXC_HeaderAndFooterParams thirdHeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams(); 
+			font = Parent.m_CurDoc.CreateNewFont("Symbol", (uint)PXC_CreateFontFlags.CreateFont_Monospaced, 700);
+			color.SetRGB(0.67f, 0.23f, 0.8f);
 			thirdHeaderFooter.Font = font;
 			thirdHeaderFooter.FillColor = color;
-			thirdHeaderFooter.CenterHeaderText = "%[Computer]";
-			thirdHeaderFooter.RightHeaderText = "%[User]";
-			thirdHeaderFooter.BottomMargin = 36.0f;
-			thirdHeaderFooter.TopMargin = 36.0f;
-			thirdHeaderFooter.RightMargin = 36.0f;
-			thirdHeaderFooter.LeftMargin = 36.0f;
-			thirdHeaderFooter.FontSize = 10.0f;
+			thirdHeaderFooter.RightHeaderText = "%[Computer]";
+			thirdHeaderFooter.RightFooterText = "%[User]";
+			thirdHeaderFooter.BottomMargin = 40.0f;
+			thirdHeaderFooter.TopMargin = 40.0f;
+			thirdHeaderFooter.RightMargin = 20.0f;
+			thirdHeaderFooter.LeftMargin = 20.0f;
+			thirdHeaderFooter.FontSize = 20.0f;
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, thirdHeaderFooter);
 		}
 
