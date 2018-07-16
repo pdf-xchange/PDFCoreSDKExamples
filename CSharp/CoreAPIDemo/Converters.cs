@@ -103,10 +103,34 @@ namespace CoreAPIDemo
 			IIXC_Page ixcPage = img.GetPage(0);
 			IPXC_Image pxcImg = Parent.m_CurDoc.AddImageFromIXCPage(ixcPage);
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			PXC_Rect rcImg = new PXC_Rect();
+
 			CC.SaveState();
 			{
+				//Proportional resize rectangle calculation
+				{
+					double k1 = nWidth / nHeight;
+					double k2 = (double)pxcImg.Width / pxcImg.Height;
+					if (k1 >= k2)
+					{
+						rcImg.top = nHeight;
+						rcImg.right = nWidth / 2.0 + rcImg.top * k2 / 2.0;
+						rcImg.left = nWidth / 2.0 - rcImg.top * k2 / 2.0;
+					}
+					else
+					{
+						rcImg.right = nWidth;
+						rcImg.top = nHeight / 2.0 + rcImg.right / k2 / 2.0;
+						rcImg.bottom = nHeight / 2.0 - rcImg.right / k2 / 2.0;
+					}
+				}
+				//Moving the image rectangle to the center
+
+				PXC_Rect rcImage = new PXC_Rect();
+				rcImage.right = 1;
+				rcImage.top = 1;
 				PXC_Matrix matrix = Page.GetMatrix(PXC_BoxType.PBox_PageBox);
-				matrix = auxInst.MathHelper.Matrix_Scale(ref matrix, nWidth, nHeight);
+				matrix = auxInst.MathHelper.Matrix_RectToRect(ref rcImage, ref rcImg);
 				CC.ConcatCS(ref matrix);
 				CC.PlaceImage(pxcImg);
 			}
@@ -118,7 +142,7 @@ namespace CoreAPIDemo
 		static public void ConvertToTXT(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
+				Document.OpenDocFromStringPath(Parent);
 
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
@@ -128,48 +152,37 @@ namespace CoreAPIDemo
 			writePath = writePath.Replace(".tmp", ".txt");
 			StreamWriter stream = new StreamWriter(writePath);
 
-#warning implement sorting by using the rcBBox
 			List<PXC_TextLineInfo> textsLineInfo = new List<PXC_TextLineInfo>();
-
-			int index = 0;
 
 			for (int i = 0; i < Text.LinesCount; i++)
 			{
 				PXC_TextLineInfo pxcTLI = Text.LineInfo[(uint)i];
 				auxInst.MathHelper.Rect_TransformDF(ref pxcTLI.Matrix, ref pxcTLI.rcBBox);
-				textsLineInfo.Add(pxcTLI);
-			}
-			double BeforeY = 0;
-			for (int i = 0; i < Text.LinesCount; i++)
-			{
-				double cx = textsLineInfo[0].Matrix.e;
-				double cy = textsLineInfo[0].Matrix.f;
-				for (int j = 0; j < Text.LinesCount - i; j++)
+				if (textsLineInfo.FindIndex(top => top.rcBBox.top == pxcTLI.rcBBox.top) != -1)
 				{
-					if (cy < textsLineInfo[j].Matrix.f)
-					{
-						cy = textsLineInfo[j].Matrix.f;
-						if (cx > textsLineInfo[j].Matrix.e)
-							cx = textsLineInfo[j].Matrix.e;
-						index = j;
-					}
-					else if (cy == textsLineInfo[j].Matrix.f)
-					{
-						if (cx > textsLineInfo[j].Matrix.e)
-							cx = textsLineInfo[j].Matrix.e;
-						index = j;
-					}
+					var TLIs = textsLineInfo.FindAll(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top);
+					if (TLIs.FindIndex(TLIleft => TLIleft.rcBBox.left > pxcTLI.rcBBox.left) != -1)
+						textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top) + TLIs.FindIndex(TLIleft => TLIleft.rcBBox.left > pxcTLI.rcBBox.left), pxcTLI);
+					else
+						textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top) + TLIs.Count, pxcTLI);
 				}
-				if (i == 0)
-					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
-				else if (BeforeY == textsLineInfo[index].Matrix.f)
-					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
+				else if(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top < pxcTLI.rcBBox.top) != -1)
+				{
+					textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top < pxcTLI.rcBBox.top), pxcTLI);
+				}
 				else
-					stream.Write("\r\n" + Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount));
-				textsLineInfo.RemoveAt(index);
-				index = 0;
-				BeforeY = cy;
+					textsLineInfo.Add(pxcTLI);
 			}
+
+			stream.Write(Text.GetChars(textsLineInfo[0].nFirstCharIndex, textsLineInfo[0].nCharsCount));
+			for (int i = 1; i < Text.LinesCount; i++)
+			{
+				if (textsLineInfo[i - 1].rcBBox.top == textsLineInfo[i].rcBBox.top)
+					stream.Write(" " + Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
+				else
+					stream.Write("\r\n" + Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
+			}
+
 			stream.Close();
 			Process.Start(writePath);
 		}
