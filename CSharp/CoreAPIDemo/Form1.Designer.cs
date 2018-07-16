@@ -57,6 +57,10 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandAll = new System.Windows.Forms.ToolStripButton();
 			this.collapseAll = new System.Windows.Forms.ToolStripButton();
+			this.viewControl = new System.Windows.Forms.TabControl();
+			this.bookmarksTab = new System.Windows.Forms.TabPage();
+			this.splitter3 = new System.Windows.Forms.Splitter();
+			this.bookmarksTree = new System.Windows.Forms.TreeView();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -65,6 +69,8 @@
 			this.panel2.SuspendLayout();
 			this.panel3.SuspendLayout();
 			this.toolStrip3.SuspendLayout();
+			this.viewControl.SuspendLayout();
+			this.bookmarksTab.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sampleTree
@@ -100,7 +106,7 @@
             this.toolStripButton2});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(1042, 35);
+			this.toolStrip1.Size = new System.Drawing.Size(826, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -142,7 +148,7 @@
             this.btnClose});
 			this.toolStrip2.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(1042, 35);
+			this.toolStrip2.Size = new System.Drawing.Size(826, 35);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -220,7 +226,7 @@
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(0, 35);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(1042, 650);
+			this.previewImage.Size = new System.Drawing.Size(826, 650);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
@@ -229,7 +235,7 @@
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitter2.Location = new System.Drawing.Point(768, 685);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(1042, 10);
+			this.splitter2.Size = new System.Drawing.Size(826, 10);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -257,7 +263,6 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -270,7 +275,7 @@
 			this.codeSource.RightBracket2 = '}';
 			this.codeSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
 			this.codeSource.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("codeSource.ServiceColors")));
-			this.codeSource.Size = new System.Drawing.Size(1042, 336);
+			this.codeSource.Size = new System.Drawing.Size(826, 336);
 			this.codeSource.TabIndex = 2;
 			this.codeSource.Zoom = 100;
 			// 
@@ -281,7 +286,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel1.Location = new System.Drawing.Point(768, 695);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(1042, 371);
+			this.panel1.Size = new System.Drawing.Size(826, 371);
 			this.panel1.TabIndex = 3;
 			// 
 			// panel2
@@ -291,7 +296,7 @@
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Location = new System.Drawing.Point(768, 0);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(1042, 685);
+			this.panel2.Size = new System.Drawing.Size(826, 685);
 			this.panel2.TabIndex = 4;
 			// 
 			// panel3
@@ -362,14 +367,54 @@
 			this.collapseAll.Text = "Collapse All";
 			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
 			// 
+			// viewControl
+			// 
+			this.viewControl.Controls.Add(this.bookmarksTab);
+			this.viewControl.Dock = System.Windows.Forms.DockStyle.Right;
+			this.viewControl.Location = new System.Drawing.Point(1597, 0);
+			this.viewControl.Name = "viewControl";
+			this.viewControl.SelectedIndex = 0;
+			this.viewControl.Size = new System.Drawing.Size(366, 1066);
+			this.viewControl.TabIndex = 2;
+			// 
+			// bookmarksTab
+			// 
+			this.bookmarksTab.Controls.Add(this.bookmarksTree);
+			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
+			this.bookmarksTab.Name = "bookmarksTab";
+			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(3);
+			this.bookmarksTab.Size = new System.Drawing.Size(358, 1033);
+			this.bookmarksTab.TabIndex = 0;
+			this.bookmarksTab.Text = "Bookmarks";
+			this.bookmarksTab.UseVisualStyleBackColor = true;
+			// 
+			// splitter3
+			// 
+			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
+			this.splitter3.Location = new System.Drawing.Point(1594, 0);
+			this.splitter3.Name = "splitter3";
+			this.splitter3.Size = new System.Drawing.Size(3, 1066);
+			this.splitter3.TabIndex = 0;
+			this.splitter3.TabStop = false;
+			// 
+			// bookmarksTree
+			// 
+			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.bookmarksTree.Location = new System.Drawing.Point(3, 3);
+			this.bookmarksTree.Name = "bookmarksTree";
+			this.bookmarksTree.Size = new System.Drawing.Size(352, 1027);
+			this.bookmarksTree.TabIndex = 0;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1810, 1066);
+			this.ClientSize = new System.Drawing.Size(1963, 1066);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.splitter2);
 			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.splitter3);
+			this.Controls.Add(this.viewControl);
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.panel3);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -394,6 +439,8 @@
 			this.panel3.PerformLayout();
 			this.toolStrip3.ResumeLayout(false);
 			this.toolStrip3.PerformLayout();
+			this.viewControl.ResumeLayout(false);
+			this.bookmarksTab.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -427,6 +474,10 @@
 		private System.Windows.Forms.ToolStripButton btnClose;
 		private System.Windows.Forms.ToolStripButton btnSave;
 		private System.Windows.Forms.ToolStripButton btnOpen;
+		private System.Windows.Forms.TabControl viewControl;
+		private System.Windows.Forms.TabPage bookmarksTab;
+		private System.Windows.Forms.Splitter splitter3;
+		private System.Windows.Forms.TreeView bookmarksTree;
 	}
 }
 
