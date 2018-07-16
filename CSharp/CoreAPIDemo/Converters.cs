@@ -130,6 +130,7 @@ namespace CoreAPIDemo
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
 
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
 			IPXC_PageText Text = Page.GetText(null, false);
 
@@ -144,7 +145,9 @@ namespace CoreAPIDemo
 
 			for (int i = 0; i < Text.LinesCount; i++)
 			{
-				textsLineInfo.Add(Text.LineInfo[(uint)i]);
+				PXC_TextLineInfo pxcTLI = Text.LineInfo[(uint)i];
+				auxInst.MathHelper.Rect_TransformDF(ref pxcTLI.Matrix, ref pxcTLI.rcBBox);
+				textsLineInfo.Add(pxcTLI);
 			}
 			double BeforeY = 0;
 			for (int i = 0; i < Text.LinesCount; i++)
