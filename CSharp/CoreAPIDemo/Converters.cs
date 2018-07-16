@@ -158,21 +158,18 @@ namespace CoreAPIDemo
 			{
 				PXC_TextLineInfo pxcTLI = Text.LineInfo[(uint)i];
 				auxInst.MathHelper.Rect_TransformDF(ref pxcTLI.Matrix, ref pxcTLI.rcBBox);
-				if (textsLineInfo.FindIndex(top => top.rcBBox.top == pxcTLI.rcBBox.top) != -1)
-				{
-					var TLIs = textsLineInfo.FindAll(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top);
-					if (TLIs.FindIndex(TLIleft => TLIleft.rcBBox.left > pxcTLI.rcBBox.left) != -1)
-						textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top) + TLIs.FindIndex(TLIleft => TLIleft.rcBBox.left > pxcTLI.rcBBox.left), pxcTLI);
-					else
-						textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top == pxcTLI.rcBBox.top) + TLIs.Count, pxcTLI);
-				}
-				else if(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top < pxcTLI.rcBBox.top) != -1)
-				{
-					textsLineInfo.Insert(textsLineInfo.FindIndex(TLItop => TLItop.rcBBox.top < pxcTLI.rcBBox.top), pxcTLI);
-				}
-				else
-					textsLineInfo.Add(pxcTLI);
+				textsLineInfo.Add(pxcTLI);
 			}
+
+			textsLineInfo.Sort(delegate (PXC_TextLineInfo firstTLI, PXC_TextLineInfo secontTLI)
+			{
+				if (firstTLI.rcBBox.top < secontTLI.rcBBox.top)
+					return 1;
+				else if (firstTLI.rcBBox.top == secontTLI.rcBBox.top)
+					return 0;
+				else
+					return -1;
+			});
 
 			stream.Write(Text.GetChars(textsLineInfo[0].nFirstCharIndex, textsLineInfo[0].nCharsCount));
 			for (int i = 1; i < Text.LinesCount; i++)

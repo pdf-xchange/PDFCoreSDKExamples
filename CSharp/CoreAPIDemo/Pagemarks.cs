@@ -98,10 +98,10 @@ namespace CoreAPIDemo
 
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_BackgroundParams backgroundParams = Parent.m_pxcInst.CreateBackgroundParams();
-			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_Gray);
+			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_RGB);
 			fillColor.SetRGB(0.5f, 1.0f, 0.5f);
 			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
-			bitSet.Set(0, Parent.m_CurDoc.Pages.Count - Parent.m_CurDoc.Pages.Count, true);
+			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
 			backgroundParams.FillColor = fillColor;
 			backgroundParams.VAlign = 0;
 			backgroundParams.HAlign = 2;
