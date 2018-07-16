@@ -103,10 +103,34 @@ namespace CoreAPIDemo
 			IIXC_Page ixcPage = img.GetPage(0);
 			IPXC_Image pxcImg = Parent.m_CurDoc.AddImageFromIXCPage(ixcPage);
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			PXC_Rect rcImg = new PXC_Rect();
+
 			CC.SaveState();
 			{
+				//Proportional resize rectangle calculation
+				{
+					double k1 = nWidth / nHeight;
+					double k2 = (double)pxcImg.Width / pxcImg.Height;
+					if (k1 >= k2)
+					{
+						rcImg.top = nHeight;
+						rcImg.right = nWidth / 2.0 + rcImg.top * k2 / 2.0;
+						rcImg.left = nWidth / 2.0 - rcImg.top * k2 / 2.0;
+					}
+					else
+					{
+						rcImg.right = nWidth;
+						rcImg.top = nHeight / 2.0 + rcImg.right / k2 / 2.0;
+						rcImg.bottom = nHeight / 2.0 - rcImg.right / k2 / 2.0;
+					}
+				}
+				//Moving the image rectangle to the center
+
+				PXC_Rect rcImage = new PXC_Rect();
+				rcImage.right = 1;
+				rcImage.top = 1;
 				PXC_Matrix matrix = Page.GetMatrix(PXC_BoxType.PBox_PageBox);
-				matrix = auxInst.MathHelper.Matrix_Scale(ref matrix, nWidth, nHeight);
+				matrix = auxInst.MathHelper.Matrix_RectToRect(ref rcImage, ref rcImg);
 				CC.ConcatCS(ref matrix);
 				CC.PlaceImage(pxcImg);
 			}
@@ -118,8 +142,9 @@ namespace CoreAPIDemo
 		static public void ConvertToTXT(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
+				Document.OpenDocFromStringPath(Parent);
 
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
 			IPXC_PageText Text = Page.GetText(null, false);
 
@@ -127,45 +152,38 @@ namespace CoreAPIDemo
 			writePath = writePath.Replace(".tmp", ".txt");
 			StreamWriter stream = new StreamWriter(writePath);
 
-#warning implement sorting by using the rcBBox
 			List<PXC_TextLineInfo> textsLineInfo = new List<PXC_TextLineInfo>();
 
-			int index = 0;
+			for (int i = 0; i < Text.LinesCount; i++)
+			{
+				PXC_TextLineInfo pxcTLI = Text.LineInfo[(uint)i];
+				textsLineInfo.Add(pxcTLI);
+			}
+
+			textsLineInfo.Sort(delegate (PXC_TextLineInfo firstTLI, PXC_TextLineInfo secondTLI)
+			{
+				PXC_RectF rcFirst = firstTLI.rcBBox;
+				PXC_RectF rcSecond = secondTLI.rcBBox;
+				auxInst.MathHelper.Rect_TransformDF(ref firstTLI.Matrix, ref rcFirst);
+				auxInst.MathHelper.Rect_TransformDF(ref secondTLI.Matrix, ref rcSecond);
+				if (rcFirst.top < rcSecond.top)
+					return 1;
+				if (rcFirst.top > rcSecond.top)
+					return -1;
+
+				if (rcFirst.left < rcSecond.left)
+					return -1;
+				if (rcFirst.left > rcSecond.left)
+					return 1;
+
+				return 0;
+			});
 
 			for (int i = 0; i < Text.LinesCount; i++)
 			{
-				textsLineInfo.Add(Text.LineInfo[(uint)i]);
-			}
-			double BeforeY = 0;
-			for (int i = 0; i < Text.LinesCount; i++)
-			{
-				double cx = textsLineInfo[0].Matrix.e;
-				double cy = textsLineInfo[0].Matrix.f;
-				for (int j = 0; j < Text.LinesCount - i; j++)
-				{
-					if (cy < textsLineInfo[j].Matrix.f)
-					{
-						cy = textsLineInfo[j].Matrix.f;
-						if (cx > textsLineInfo[j].Matrix.e)
-							cx = textsLineInfo[j].Matrix.e;
-						index = j;
-					}
-					else if (cy == textsLineInfo[j].Matrix.f)
-					{
-						if (cx > textsLineInfo[j].Matrix.e)
-							cx = textsLineInfo[j].Matrix.e;
-						index = j;
-					}
-				}
-				if (i == 0)
-					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
-				else if (BeforeY == textsLineInfo[index].Matrix.f)
-					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
-				else
-					stream.Write("\r\n" + Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount));
-				textsLineInfo.RemoveAt(index);
-				index = 0;
-				BeforeY = cy;
+				stream.Write(Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
+				if (i < Text.LinesCount - 1)
+					stream.Write((textsLineInfo[i].rcBBox.top == textsLineInfo[i + 1].rcBBox.top) ? " ": "\r\n");
 			}
 			stream.Close();
 			Process.Start(writePath);
