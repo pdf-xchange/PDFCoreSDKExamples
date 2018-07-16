@@ -4,6 +4,7 @@ using System.ComponentModel;
 using PDFXCoreAPI;
 using System.Diagnostics;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace CoreAPIDemo
 {
@@ -136,12 +137,45 @@ namespace CoreAPIDemo
 			writePath = writePath.Replace(".tmp", ".txt");
 			StreamWriter stream = new StreamWriter(writePath);
 
-			PXC_TextLineInfo textLineInfo = new PXC_TextLineInfo();
-			
+
+			List<PXC_TextLineInfo> textsLineInfo = new List<PXC_TextLineInfo>();
+
+			int index = 0;
+
 			for (int i = 0; i < Text.LinesCount; i++)
 			{
-				textLineInfo = Text.LineInfo[(uint)i];
-				stream.WriteLine(Text.GetChars(textLineInfo.nFirstCharIndex, textLineInfo.nCharsCount));
+				textsLineInfo.Add(Text.LineInfo[(uint)i]);
+			}
+			double BeforeY = 0;
+			for (int i = 0; i < Text.LinesCount; i++)
+			{
+				double cx = textsLineInfo[0].Matrix.e;
+				double cy = textsLineInfo[0].Matrix.f;
+				for (int j = 0; j < Text.LinesCount - i; j++)
+				{
+					if (cy < textsLineInfo[j].Matrix.f)
+					{
+						cy = textsLineInfo[j].Matrix.f;
+						if (cx > textsLineInfo[j].Matrix.e)
+							cx = textsLineInfo[j].Matrix.e;
+						index = j;
+					}
+					else if (cy == textsLineInfo[j].Matrix.f)
+					{
+						if (cx > textsLineInfo[j].Matrix.e)
+							cx = textsLineInfo[j].Matrix.e;
+						index = j;
+					}
+				}
+				if (i == 0)
+					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
+				else if (BeforeY == textsLineInfo[index].Matrix.f)
+					stream.Write(Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount) + "  ");
+				else
+					stream.Write("\r\n" + Text.GetChars(textsLineInfo[index].nFirstCharIndex, textsLineInfo[index].nCharsCount));
+				textsLineInfo.RemoveAt(index);
+				index = 0;
+				BeforeY = cy;
 			}
 			stream.Close();
 			Process.Start(writePath);
