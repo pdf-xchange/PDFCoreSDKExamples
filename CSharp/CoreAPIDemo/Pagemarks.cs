@@ -68,8 +68,8 @@ namespace CoreAPIDemo
 
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_WatermarkParams watermark = Parent.m_pxcInst.CreateWatermarkParams();
-			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_Gray);
-			fillColor.SetRGB(0.7f, 0.7f, 0.7f);
+			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_RGB);
+			fillColor.SetRGB(0.4f, 0.2f, 0.6f);
 			watermark.Text = "WATERMARK";
 			watermark.HAlign = 50;
 			watermark.VAlign = 0;
