@@ -404,6 +404,11 @@
 			this.bookmarksTree.Name = "bookmarksTree";
 			this.bookmarksTree.Size = new System.Drawing.Size(352, 1027);
 			this.bookmarksTree.TabIndex = 0;
+			this.bookmarksTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseDoubleClick);
+			System.Windows.Forms.ImageList il = new System.Windows.Forms.ImageList();
+			System.Drawing.Bitmap img = new System.Drawing.Bitmap(System.Environment.CurrentDirectory + "\\Images\\bookmark_24.png");
+			il.Images.Add(img);
+			this.bookmarksTree.ImageList = il;
 			// 
 			// Form1
 			// 
