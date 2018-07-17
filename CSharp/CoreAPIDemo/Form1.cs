@@ -144,22 +144,42 @@ namespace CoreAPIDemo
 		}
 		public void AddBookmarkToTree(TreeNode node, IPXC_Bookmark root)
 		{
+			IPXS_Inst pxcInst = m_pxcInst.GetExtension("PXS");
 			IPXC_Bookmark child = root.FirstChild;
+			uint typeGoTo = pxcInst.StrToAtom("GoTo");
+
 			for (int i = 0; i < root.ChildrenCount; i++)
 			{
+				IPXC_ActionsList aList = child.Actions;
+				IPXC_Action_Goto actGoTo = null;
+				for (uint j = aList.Count - 1; j >= 0; j--)
+				{
+					if (aList[j].Type == typeGoTo)
+					{
+						actGoTo = (IPXC_Action_Goto)aList[j];
+						break;
+					}
+				}
 				TreeNode childNode = new TreeNode();
+
+				if (actGoTo.IsNamedDest)
+					childNode.Name = (actGoTo.get_Dest().nPageNum + 1).ToString();
+				//childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
+				else
+					childNode.Name = (actGoTo.get_Dest().nPageNum + 1).ToString();
+				
 				childNode.ImageIndex = 0;
 				childNode.SelectedImageIndex = 0;
-				childNode.Name = ((node != null) ? node.Name : "Bookmark") + "." + (i + 1);
 				childNode.Text = child.Title;
+
 				if (child.ChildrenCount > 0)
-				{
 					AddBookmarkToTree(childNode, child);
-				}
+
 				if (node != null)
 					node.Nodes.Add(childNode);
 				else
 					bookmarksTree.Nodes.Add(childNode);
+
 				child = child.Next;
 			}
 		}
@@ -371,6 +391,7 @@ namespace CoreAPIDemo
 		public void UpdateControlsFromDocument()
 		{
 			pagesCount.Text = "/0";
+			bookmarksTree.Nodes.Clear();
 			if (m_CurDoc == null)
 				return;
 			pagesCount.Text = "/" + m_CurDoc.Pages.Count.ToString();
@@ -382,7 +403,6 @@ namespace CoreAPIDemo
 			}
 			//Updating bookmarks
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
-			bookmarksTree.Nodes.Clear();
 			if ((root != null) && (root.ChildrenCount != 0))
 				AddBookmarkToTree(null, root);
 		}
@@ -447,6 +467,12 @@ namespace CoreAPIDemo
 		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
 			InvokeMethod(e.Node);
+		}
+
+		private void bookmarksTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			TreeNode curNode = bookmarksTree.SelectedNode;
+			currentPage.Text = curNode.Name;
 		}
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
