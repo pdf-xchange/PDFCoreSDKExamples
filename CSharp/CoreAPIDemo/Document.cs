@@ -36,6 +36,8 @@ namespace CoreAPIDemo
 				Parent.CloseDocument();
 				Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(ofd.FileName, null);
 			}
+			IPXC_Bookmark root = Parent.m_CurDoc.BookmarkRoot;
+			Parent.AddBookmarkToTree(root);
 		}
 
 		[Description("2.3. Open document from string path")]

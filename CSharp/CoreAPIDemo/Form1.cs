@@ -40,7 +40,6 @@ namespace CoreAPIDemo
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
-
 			ImageList il = new ImageList();
 			try
 			{
@@ -142,6 +141,44 @@ namespace CoreAPIDemo
 			root.Expand();
 			if (root.Nodes.Count == 0)
 				sampleTree.Nodes.Remove(root);
+		}
+
+		public void AddBookmarkToTree(IPXC_Bookmark root)
+		{
+			IPXC_Bookmark child = root.FirstChild;
+			for (int i = 0; i < root.ChildrenCount; i++)
+			{
+				TreeNode node = new TreeNode();
+				node.ImageIndex = 0;
+				node.SelectedImageIndex = 0;
+				node.Name = "Bookmark " + (i + 1);
+				node.Text = child.Title;
+				if (child.ChildrenCount > 0)
+				{
+					AddBookmarkToTree(ref node, child);
+				}
+				bookmarksTree.Nodes.Add(node);
+				child = child.Next;
+			}
+		}
+
+		public void AddBookmarkToTree(ref TreeNode node, IPXC_Bookmark root)
+		{
+			IPXC_Bookmark child = root.FirstChild;
+			for (int i = 0; i < root.ChildrenCount; i++)
+			{
+				TreeNode childNode = new TreeNode();
+				childNode.ImageIndex = 0;
+				childNode.SelectedImageIndex = 0;
+				childNode.Name = node.Name + "." + (i + 1);
+				childNode.Text = child.Title;
+				if (child.ChildrenCount > 0)
+				{
+					AddBookmarkToTree(ref childNode, child);
+				}
+				node.Nodes.Add(childNode);
+				child = child.Next;
+			}
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
