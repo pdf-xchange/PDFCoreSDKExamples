@@ -191,6 +191,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\bookmark.24.png" />
     <Content Include="Images\clearFilters_24.png" />
     <Content Include="Images\closeDoc_24.png" />
     <Content Include="Images\collapseAll_24.png" />
