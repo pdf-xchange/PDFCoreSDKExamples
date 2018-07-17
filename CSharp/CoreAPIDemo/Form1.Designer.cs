@@ -59,8 +59,9 @@
 			this.collapseAll = new System.Windows.Forms.ToolStripButton();
 			this.viewControl = new System.Windows.Forms.TabControl();
 			this.bookmarksTab = new System.Windows.Forms.TabPage();
-			this.splitter3 = new System.Windows.Forms.Splitter();
 			this.bookmarksTree = new System.Windows.Forms.TreeView();
+			this.splitter3 = new System.Windows.Forms.Splitter();
+			this.bookmarkProgress = new System.Windows.Forms.ProgressBar();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -263,6 +264,7 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -379,6 +381,7 @@
 			// 
 			// bookmarksTab
 			// 
+			this.bookmarksTab.Controls.Add(this.bookmarkProgress);
 			this.bookmarksTab.Controls.Add(this.bookmarksTree);
 			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
 			this.bookmarksTab.Name = "bookmarksTab";
@@ -387,6 +390,15 @@
 			this.bookmarksTab.TabIndex = 0;
 			this.bookmarksTab.Text = "Bookmarks";
 			this.bookmarksTab.UseVisualStyleBackColor = true;
+			// 
+			// bookmarksTree
+			// 
+			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.bookmarksTree.Location = new System.Drawing.Point(3, 3);
+			this.bookmarksTree.Name = "bookmarksTree";
+			this.bookmarksTree.Size = new System.Drawing.Size(352, 1027);
+			this.bookmarksTree.TabIndex = 0;
+			this.bookmarksTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseClick);
 			// 
 			// splitter3
 			// 
@@ -397,18 +409,16 @@
 			this.splitter3.TabIndex = 0;
 			this.splitter3.TabStop = false;
 			// 
-			// bookmarksTree
+			// bookmarkProgress
 			// 
-			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.bookmarksTree.Location = new System.Drawing.Point(3, 3);
-			this.bookmarksTree.Name = "bookmarksTree";
-			this.bookmarksTree.Size = new System.Drawing.Size(352, 1027);
-			this.bookmarksTree.TabIndex = 0;
-			this.bookmarksTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseDoubleClick);
-			System.Windows.Forms.ImageList il = new System.Windows.Forms.ImageList();
-			System.Drawing.Bitmap img = new System.Drawing.Bitmap(System.Environment.CurrentDirectory + "\\Images\\bookmark_24.png");
-			il.Images.Add(img);
-			this.bookmarksTree.ImageList = il;
+			this.bookmarkProgress.Dock = System.Windows.Forms.DockStyle.Top;
+			this.bookmarkProgress.Location = new System.Drawing.Point(3, 3);
+			this.bookmarkProgress.Name = "bookmarkProgress";
+			this.bookmarkProgress.Size = new System.Drawing.Size(352, 10);
+			this.bookmarkProgress.Step = 1;
+			this.bookmarkProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.bookmarkProgress.TabIndex = 1;
+			this.bookmarkProgress.Visible = false;
 			// 
 			// Form1
 			// 
@@ -483,6 +493,7 @@
 		private System.Windows.Forms.TabPage bookmarksTab;
 		private System.Windows.Forms.Splitter splitter3;
 		private System.Windows.Forms.TreeView bookmarksTree;
+		private System.Windows.Forms.ProgressBar bookmarkProgress;
 	}
 }
 
