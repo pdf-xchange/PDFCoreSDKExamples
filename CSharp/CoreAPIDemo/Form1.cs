@@ -52,6 +52,10 @@ namespace CoreAPIDemo
 				il.Images.Add(img);
 				sampleTree.ImageList = il;
 				sampleTree.TreeViewNodeSorter = new NodeSorter();
+				ImageList ilfb = new ImageList();
+				img = new Bitmap(System.Environment.CurrentDirectory + "\\Images\\bookmark_24.png");
+				ilfb.Images.Add(img);
+				bookmarksTree.ImageList = ilfb;
 			}
 			catch (Exception)
 			{
@@ -159,9 +163,7 @@ namespace CoreAPIDemo
 
 		public void AddBookmarkToTree(TreeNode node, IPXC_Bookmark root)
 		{
-			IPXS_Inst pxcInst = m_pxcInst.GetExtension("PXS");
 			IPXC_Bookmark child = root.FirstChild;
-			uint typeGoTo = pxcInst.StrToAtom("GoTo");
 
 			for (int i = 0; i < root.ChildrenCount; i++)
 			{
@@ -468,10 +470,23 @@ namespace CoreAPIDemo
 			InvokeMethod(e.Node);
 		}
 
-		private void bookmarksTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+		private void bookmarksTree_NodeMouseClick(object sender, EventArgs e)
 		{
-			TreeNode curNode = bookmarksTree.SelectedNode;
-			currentPage.Text = curNode.Name;
+			IPXS_Inst pxcInst = m_pxcInst.GetExtension("PXS");
+			uint typeGoTo = pxcInst.StrToAtom("GoTo");
+
+			BookmarkNode curNode = (BookmarkNode)bookmarksTree.SelectedNode;
+			IPXC_ActionsList aList = curNode.m_Bookmark.Actions;
+			for (uint i = aList.Count - 1; i >= 0; i--)
+			{
+				if (aList[i].Type == typeGoTo)
+				{
+					IPXC_Action_Goto actGoTO = (IPXC_Action_Goto)aList[i];
+					currentPage.Text = (actGoTO.get_Dest().nPageNum + 1).ToString();
+					break;
+				}
+			}
+			
 		}
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
