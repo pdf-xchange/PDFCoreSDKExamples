@@ -27,7 +27,14 @@ namespace CoreAPIDemo
 			get { return uint.Parse(currentPage.Text) - 1; }
 		}
 
-
+		public enum eFormUpdateFlags
+		{
+			efuf_None				= 0,
+			efuf_Bookmarks			= 0x1,
+			efuf_NamedDests			= 0x2,
+			efuf_Annotations		= 0x4,
+			efuf_All				= 0xff,
+		}
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
@@ -292,9 +299,9 @@ namespace CoreAPIDemo
 				return;
 			}
 
-			theMethod.Invoke(this, new Object[] { this });
+			object invRes = theMethod.Invoke(this, new Object[] { this });
 
-			UpdateControlsFromDocument();
+			UpdateControlsFromDocument((int)invRes);
 			UpdatePreviewFromCurrentDocument();
 		}
 
@@ -386,14 +393,29 @@ namespace CoreAPIDemo
 			srcPage = null;
 		}
 
-		public void UpdateControlsFromDocument()
+		public void FillBookmarksTree()
+		{
+#warning get the selected node here and get the IPXC_Bookmark from it
+			bookmarksTree.Nodes.Clear();
+			//Refilling bookmarks tree
+#warning implement the tree fill in the different thread with the progress usage
+			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
+			if ((root != null) && (root.ChildrenCount != 0))
+				AddBookmarkToTree(null, root);
+#warning after you've filled the tree, select the node by the IPXC_Bookmark interface that you've remembered before (if it exists)
+		}
+
+		public void UpdateControlsFromDocument(int flags)
 		{
 			pagesCount.Text = "/0";
-			bookmarksTree.Nodes.Clear();
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
 			if (m_CurDoc == null)
+			{
+				bookmarksTree.Nodes.Clear();
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
 				return;
+			}
+				
 			pagesCount.Text = "/" + m_CurDoc.Pages.Count.ToString();
 			int nPage = int.Parse(currentPage.Text) - 1;
 			if (nPage >= m_CurDoc.Pages.Count)
@@ -401,10 +423,8 @@ namespace CoreAPIDemo
 				nPage = (int)m_CurDoc.Pages.Count - 1;
 				currentPage.Text = (nPage + 1).ToString();
 			}
-			//Updating bookmarks
-			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
-			if ((root != null) && (root.ChildrenCount != 0))
-				AddBookmarkToTree(null, root);
+			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
+				FillBookmarksTree();
 		}
 
 		public void CloseDocument()
@@ -572,7 +592,7 @@ namespace CoreAPIDemo
 		{
 			CloseDocument();
 
-			UpdateControlsFromDocument();
+			UpdateControlsFromDocument(0);
 			UpdatePreviewFromCurrentDocument();
 		}
 
@@ -590,6 +610,36 @@ namespace CoreAPIDemo
 			FileName = FileName.Replace(".tmp", ".pdf");
 			m_CurDoc.WriteToFile(FileName);
 			Process pr = Process.Start(FileName);
+		}
+
+		private void addBookmark_Click(object sender, EventArgs e)
+		{
+			Bookmarks.AddSiblingBookmark(this);
+		}
+
+		private void removeBookmark_Click(object sender, EventArgs e)
+		{
+			Bookmarks.RemoveSelectedBookmark(this);
+		}
+
+		private void moveBookmarkUp_Click(object sender, EventArgs e)
+		{
+			Bookmarks.MoveUpSelectedBookmark(this);
+		}
+
+		private void moveBookmarkDown_Click(object sender, EventArgs e)
+		{
+			Bookmarks.MoveDownSelectedBookmark(this);
+		}
+
+		private void expandBookmarks_Click(object sender, EventArgs e)
+		{
+#warning Implement bookmark tree expanding
+		}
+
+		private void collapseBookmarks_Click(object sender, EventArgs e)
+		{
+#warning Implement bookmark tree collapsing
 		}
 	}
 }
