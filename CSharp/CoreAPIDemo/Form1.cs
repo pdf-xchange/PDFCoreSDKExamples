@@ -159,27 +159,45 @@ namespace CoreAPIDemo
 		public IPXC_Bookmark m_Bookmark = null;
 		}
 
-
-		public void AddBookmarkToTree(TreeNode node, IPXC_Bookmark root)
+		public int CountAllBookmarks(IPXC_Bookmark root)
 		{
+			int retValue = 0;
 			IPXC_Bookmark child = root.FirstChild;
-
 			for (int i = 0; i < root.ChildrenCount; i++)
 			{
-				IPXC_ActionsList aList = child.Actions;
-				BookmarkNode childNode = new BookmarkNode(child);
-				childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
-				childNode.ImageIndex = 0;
-				childNode.SelectedImageIndex = 0;
-				childNode.Text = child.Title;
 				if (child.ChildrenCount > 0)
-					AddBookmarkToTree(childNode, child);
-				if (node != null)
-					node.Nodes.Add(childNode);
-				else
-					bookmarksTree.Nodes.Add(childNode);
+					retValue += CountAllBookmarks(child);
 				child = child.Next;
+				retValue++;
 			}
+			return retValue;
+		}
+		public void AddBookmarkToTree(IPXC_Bookmark root, TreeNode node = null)
+		{
+			Action action = () =>
+			{
+				IPXC_Bookmark child = root.FirstChild;
+
+				for (int i = 0; i < root.ChildrenCount; i++)
+				{
+					IPXC_ActionsList aList = child.Actions;
+					BookmarkNode childNode = new BookmarkNode(child);
+					childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
+					childNode.ImageIndex = 0;
+					childNode.SelectedImageIndex = 0;
+					childNode.Text = child.Title;
+					if (child.ChildrenCount > 0)
+						AddBookmarkToTree(child, childNode);
+					if (node != null)
+						node.Nodes.Add(childNode);
+					else
+						bookmarksTree.Nodes.Add(childNode);
+					child = child.Next;
+					changeProgresBar();
+					Thread.Sleep(10);
+				}
+			};
+			Invoke(action);
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
@@ -404,7 +422,14 @@ namespace CoreAPIDemo
 			//Updating bookmarks
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
-				AddBookmarkToTree(null, root);
+			{
+				bookmarkProgress.Maximum = CountAllBookmarks(root);
+				bookmarkProgress.Visible = true;
+				Thread secondThread = new Thread(delegate () { AddBookmarkToTree(root); });
+				secondThread.Name = "secondThread";
+				secondThread.IsBackground = true;
+				secondThread.Start();
+			}
 		}
 
 		public void CloseDocument()
@@ -453,6 +478,18 @@ namespace CoreAPIDemo
 			if (nPage > 0)
 				currentPage.Text = (nPage).ToString();
 		}
+		public void changeProgresBar()
+		{
+			Action action = () => {
+				bookmarkProgress.Value++;
+				if (bookmarkProgress.Value == bookmarkProgress.Maximum)
+				{
+					bookmarkProgress.Visible = false;
+					bookmarkProgress.Value = 0;
+				}
+			};
+			Invoke(action);
+		}
 
 		private void nextPage_Click(object sender, EventArgs e)
 		{
@@ -486,7 +523,6 @@ namespace CoreAPIDemo
 					if (actGoTo.IsNamedDest)
 					{
 #warning implement this when the Named Destinations will be investigated
-						continue;
 					}
 						
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();
