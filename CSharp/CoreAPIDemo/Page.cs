@@ -8,7 +8,7 @@ namespace CoreAPIDemo
 	class Page
 	{
 		[Description("3.1. Insert empty pages into the beginning of the current document")]
-		static public void InsertEmptyPages(Form1 Parent)
+		static public int InsertEmptyPages(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
@@ -17,10 +17,12 @@ namespace CoreAPIDemo
 			IPXC_UndoRedoData urd = null;
 			//Adding pages with the size of the first page of the current document
 			Parent.m_CurDoc.Pages.AddEmptyPages(0, 3, ref rcMedia, null, out urd);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("3.2. Insert page from another document into the beginning of the current document")]
-		static public void InsertPagesFromOtherDocument(Form1 Parent)
+		static public int InsertPagesFromOtherDocument(Form1 Parent)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = "PDF Documents (*.pdf)|*.pdf|All Files (*.*)|*.*";
@@ -33,14 +35,16 @@ namespace CoreAPIDemo
 				srcDoc = Parent.m_pxcInst.OpenDocumentFromFile(ofd.FileName, null);
 			}
 			if (srcDoc == null)
-				return;
+				return 0;
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
 			Parent.m_CurDoc.Pages.InsertPagesFromDoc(srcDoc, 0, 0, 1, (int)PXC_InsertPagesFlags.IPF_Annots_Copy | (int)PXC_InsertPagesFlags.IPF_Widgets_Copy);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("3.3. Remove first page from the current document")]
-		static public void RemoveFirstPageFromTheDocument(Form1 Parent)
+		static public int RemoveFirstPageFromTheDocument(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
@@ -52,10 +56,12 @@ namespace CoreAPIDemo
 				Parent.m_CurDoc.Pages.DeletePages(bs, null, out urd);
 			else
 				MessageBox.Show("The last page can't be removed from the document!");
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("3.4. Move first page of the current document into the last page position")]
-		static public void MoveFirstPageToBack(Form1 Parent)
+		static public int MoveFirstPageToBack(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
@@ -67,6 +73,8 @@ namespace CoreAPIDemo
 				Parent.m_CurDoc.Pages.MovePages(bs, Parent.m_CurDoc.Pages.Count, null, out urd);
 			else
 				MessageBox.Show("Current document has one page - nothing to move!");
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("3.5. Resize document pages to the size of the content")]

@@ -62,7 +62,15 @@
 			this.bookmarkProgress = new System.Windows.Forms.ProgressBar();
 			this.bookmarksTree = new System.Windows.Forms.TreeView();
 			this.splitter3 = new System.Windows.Forms.Splitter();
-			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.toolStrip4 = new System.Windows.Forms.ToolStrip();
+			this.addBookmark = new System.Windows.Forms.ToolStripButton();
+			this.removeBookmark = new System.Windows.Forms.ToolStripButton();
+			this.moveBookmarkUp = new System.Windows.Forms.ToolStripButton();
+			this.moveBookmarkDown = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.expandBookmarks = new System.Windows.Forms.ToolStripButton();
+			this.collapseBookmarks = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -73,6 +81,7 @@
 			this.toolStrip3.SuspendLayout();
 			this.viewControl.SuspendLayout();
 			this.bookmarksTab.SuspendLayout();
+			this.toolStrip4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sampleTree
@@ -392,8 +401,8 @@
 			// 
 			this.bookmarksTab.Controls.Add(this.bookmarkProgress);
 			this.bookmarksTab.Controls.Add(this.bookmarksTree);
-			this.bookmarksTab.Location = new System.Drawing.Point(4, 22);
-			this.bookmarksTab.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.bookmarksTab.Controls.Add(this.toolStrip4);
+			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
 			this.bookmarksTab.Name = "bookmarksTab";
 			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.bookmarksTab.Size = new System.Drawing.Size(236, 667);
@@ -404,10 +413,9 @@
 			// bookmarkProgress
 			// 
 			this.bookmarkProgress.Dock = System.Windows.Forms.DockStyle.Top;
-			this.bookmarkProgress.Location = new System.Drawing.Point(2, 2);
-			this.bookmarkProgress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.bookmarkProgress.Location = new System.Drawing.Point(3, 34);
 			this.bookmarkProgress.Name = "bookmarkProgress";
-			this.bookmarkProgress.Size = new System.Drawing.Size(232, 6);
+			this.bookmarkProgress.Size = new System.Drawing.Size(352, 10);
 			this.bookmarkProgress.Step = 1;
 			this.bookmarkProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.bookmarkProgress.TabIndex = 1;
@@ -416,10 +424,9 @@
 			// bookmarksTree
 			// 
 			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.bookmarksTree.Location = new System.Drawing.Point(2, 2);
-			this.bookmarksTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.bookmarksTree.Location = new System.Drawing.Point(3, 34);
 			this.bookmarksTree.Name = "bookmarksTree";
-			this.bookmarksTree.Size = new System.Drawing.Size(232, 663);
+			this.bookmarksTree.Size = new System.Drawing.Size(352, 996);
 			this.bookmarksTree.TabIndex = 0;
 			this.bookmarksTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseClick);
 			// 
@@ -432,6 +439,94 @@
 			this.splitter3.Size = new System.Drawing.Size(2, 693);
 			this.splitter3.TabIndex = 0;
 			this.splitter3.TabStop = false;
+			// 
+			// toolStrip4
+			// 
+			this.toolStrip4.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.toolStrip4.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addBookmark,
+            this.removeBookmark,
+            this.toolStripSeparator4,
+            this.moveBookmarkUp,
+            this.moveBookmarkDown,
+            this.toolStripSeparator5,
+            this.expandBookmarks,
+            this.collapseBookmarks});
+			this.toolStrip4.Location = new System.Drawing.Point(3, 3);
+			this.toolStrip4.Name = "toolStrip4";
+			this.toolStrip4.Size = new System.Drawing.Size(352, 31);
+			this.toolStrip4.TabIndex = 2;
+			this.toolStrip4.Text = "toolStrip4";
+			// 
+			// addBookmark
+			// 
+			this.addBookmark.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.addBookmark.Image = ((System.Drawing.Image)(resources.GetObject("addBookmark.Image")));
+			this.addBookmark.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.addBookmark.Name = "addBookmark";
+			this.addBookmark.Size = new System.Drawing.Size(28, 28);
+			this.addBookmark.Text = "Add Bookmark";
+			this.addBookmark.Click += new System.EventHandler(this.addBookmark_Click);
+			// 
+			// removeBookmark
+			// 
+			this.removeBookmark.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.removeBookmark.Image = ((System.Drawing.Image)(resources.GetObject("removeBookmark.Image")));
+			this.removeBookmark.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.removeBookmark.Name = "removeBookmark";
+			this.removeBookmark.Size = new System.Drawing.Size(28, 28);
+			this.removeBookmark.Text = "Remove Bookmark";
+			this.removeBookmark.Click += new System.EventHandler(this.removeBookmark_Click);
+			// 
+			// moveBookmarkUp
+			// 
+			this.moveBookmarkUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.moveBookmarkUp.Image = ((System.Drawing.Image)(resources.GetObject("moveBookmarkUp.Image")));
+			this.moveBookmarkUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.moveBookmarkUp.Name = "moveBookmarkUp";
+			this.moveBookmarkUp.Size = new System.Drawing.Size(28, 28);
+			this.moveBookmarkUp.Text = "Move Up";
+			this.moveBookmarkUp.Click += new System.EventHandler(this.moveBookmarkUp_Click);
+			// 
+			// moveBookmarkDown
+			// 
+			this.moveBookmarkDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.moveBookmarkDown.Image = ((System.Drawing.Image)(resources.GetObject("moveBookmarkDown.Image")));
+			this.moveBookmarkDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.moveBookmarkDown.Name = "moveBookmarkDown";
+			this.moveBookmarkDown.Size = new System.Drawing.Size(28, 28);
+			this.moveBookmarkDown.Text = "Move Down";
+			this.moveBookmarkDown.Click += new System.EventHandler(this.moveBookmarkDown_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 31);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 31);
+			// 
+			// expandBookmarks
+			// 
+			this.expandBookmarks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.expandBookmarks.Image = ((System.Drawing.Image)(resources.GetObject("expandBookmarks.Image")));
+			this.expandBookmarks.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.expandBookmarks.Name = "expandBookmarks";
+			this.expandBookmarks.Size = new System.Drawing.Size(28, 28);
+			this.expandBookmarks.Text = "Expand All Bookmarks";
+			this.expandBookmarks.Click += new System.EventHandler(this.expandBookmarks_Click);
+			// 
+			// collapseBookmarks
+			// 
+			this.collapseBookmarks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.collapseBookmarks.Image = ((System.Drawing.Image)(resources.GetObject("collapseBookmarks.Image")));
+			this.collapseBookmarks.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.collapseBookmarks.Name = "collapseBookmarks";
+			this.collapseBookmarks.Size = new System.Drawing.Size(28, 28);
+			this.collapseBookmarks.Text = "Collapse All Bookmarks";
+			this.collapseBookmarks.Click += new System.EventHandler(this.collapseBookmarks_Click);
 			// 
 			// Form1
 			// 
@@ -470,6 +565,9 @@
 			this.toolStrip3.PerformLayout();
 			this.viewControl.ResumeLayout(false);
 			this.bookmarksTab.ResumeLayout(false);
+			this.bookmarksTab.PerformLayout();
+			this.toolStrip4.ResumeLayout(false);
+			this.toolStrip4.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -508,7 +606,15 @@
 		private System.Windows.Forms.Splitter splitter3;
 		private System.Windows.Forms.TreeView bookmarksTree;
 		private System.Windows.Forms.ProgressBar bookmarkProgress;
-		private System.ComponentModel.BackgroundWorker backgroundWorker1;
+		private System.Windows.Forms.ToolStrip toolStrip4;
+		private System.Windows.Forms.ToolStripButton addBookmark;
+		private System.Windows.Forms.ToolStripButton removeBookmark;
+		private System.Windows.Forms.ToolStripButton moveBookmarkUp;
+		private System.Windows.Forms.ToolStripButton moveBookmarkDown;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripButton expandBookmarks;
+		private System.Windows.Forms.ToolStripButton collapseBookmarks;
 	}
 }
 

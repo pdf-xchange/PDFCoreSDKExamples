@@ -9,7 +9,7 @@ namespace CoreAPIDemo
 	public class Document
 	{
 		[Description("2.1. Create new document")]
-		static public void CreateNewDoc(Form1 Parent)
+		static public int CreateNewDoc(Form1 Parent)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
 			PXC_Rect rc;
@@ -21,10 +21,12 @@ namespace CoreAPIDemo
 			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("2.2. Open document with open file dialog")]
-		static public void OpenDocWithOpenDialog(Form1 Parent)
+		static public int OpenDocWithOpenDialog(Form1 Parent)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = "PDF Documents (*.pdf)|*.pdf|All Files (*.*)|*.*";
@@ -36,18 +38,22 @@ namespace CoreAPIDemo
 				Parent.CloseDocument();
 				Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(ofd.FileName, null);
 			}
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("2.3. Open document from string path")]
-		static public void OpenDocFromStringPath(Form1 Parent)
+		static public int OpenDocFromStringPath(Form1 Parent)
 		{
 			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("2.4. Open document from IStream")]
-		static public void OpenDocumentFromStream(Form1 Parent)
+		static public int OpenDocumentFromStream(Form1 Parent)
 		{
 			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
@@ -57,6 +63,8 @@ namespace CoreAPIDemo
 				IStreamWrapper srcIStream = new IStreamWrapper(srcStream);
 				Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(srcIStream, null);
 			}
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		private class AuthCallback : IPXC_DocAuthCallback
@@ -69,7 +77,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("2.5. Open password protected document from IAFS_Name")]
-		static public void OpenPasswordProtectedDocument(Form1 Parent)
+		static public int OpenPasswordProtectedDocument(Form1 Parent)
 		{
 			string sPath = System.Environment.CurrentDirectory + "\\Documents\\PasswordProtected.pdf";
 			IAFS_Inst fsInst = (IAFS_Inst)Parent.m_pxcInst.GetExtension("AFS");
@@ -77,6 +85,8 @@ namespace CoreAPIDemo
 			Parent.CloseDocument();
 			AuthCallback clbk = new AuthCallback();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFrom(destPath, clbk);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("2.6. Save document to file")]

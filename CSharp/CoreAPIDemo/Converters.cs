@@ -87,7 +87,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("8.2. Convert from image to PDF")]
-		static public void ConvertToPDF(Form1 Parent)
+		static public int ConvertToPDF(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -136,6 +136,8 @@ namespace CoreAPIDemo
 			}
 			CC.RestoreState();
 			Page.PlaceContent(CC.Detach());
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("8.3. Convert from PDF to txt file")]
@@ -183,10 +185,17 @@ namespace CoreAPIDemo
 			{
 				stream.Write(Text.GetChars(textsLineInfo[i].nFirstCharIndex, textsLineInfo[i].nCharsCount));
 				if (i < Text.LinesCount - 1)
-					stream.Write((textsLineInfo[i].rcBBox.top == textsLineInfo[i + 1].rcBBox.top) ? " ": "\r\n");
+					stream.Write((textsLineInfo[i].rcBBox.top == textsLineInfo[i + 1].rcBBox.top) ? " " : "\r\n");
 			}
 			stream.Close();
 			Process.Start(writePath);
+		}
+
+		[Description("8.4. Convert from txt to PDF")]
+		static public int ConvertFromTXT(Form1 Parent)
+		{
+#warning Implement this converter
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 	}
 }

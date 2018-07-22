@@ -8,7 +8,7 @@ namespace CoreAPIDemo
 	public class StartingGuide
 	{
 		[Description("1.1. Create new document")]
-		static public void CreateNewDocument(Form1 Parent)
+		static public int CreateNewDocument(Form1 Parent)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
 			PXC_Rect rc;
@@ -20,18 +20,22 @@ namespace CoreAPIDemo
 			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("1.2. Open document from string path")]
-		static public void OpenDocumentFromStringPath(Form1 Parent)
+		static public int OpenDocumentFromStringPath(Form1 Parent)
 		{
 			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			Parent.CloseDocument();
 			Parent.m_CurDoc = Parent.m_pxcInst.OpenDocumentFromFile(sPath, null);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("1.3. Insert empty page into the beginning of the current document")]
-		static public void InsertEmptyPagesIntoDoc(Form1 Parent)
+		static public int InsertEmptyPagesIntoDoc(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
@@ -40,10 +44,12 @@ namespace CoreAPIDemo
 			IPXC_UndoRedoData urd = null;
 			//Adding page with the size of the first page of the current document
 			Parent.m_CurDoc.Pages.AddEmptyPages(0, 1, ref rcMedia, null, out urd);
+
+			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
 		[Description("1.4. Add text to the center of the first page")]
-		static public void InsertEmptyPagesIntoDocument(Form1 Parent)
+		static public void AddTextToThePageCenter(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -76,7 +82,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("1.5. Draw Square annotation in the center of the first page")]
-		static public void DrawSquareAnnotation(Form1 Parent)
+		static public int DrawSquareAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -109,6 +115,8 @@ namespace CoreAPIDemo
 			border.nDashCount = 2; //Number of dashes
 			aData.set_Border(border);
 			annot.Data = aData;
+
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
 		[Description("1.6. Save document to file")]
