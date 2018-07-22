@@ -174,30 +174,24 @@ namespace CoreAPIDemo
 		}
 		public void AddBookmarkToTree(IPXC_Bookmark root, TreeNode node = null)
 		{
-			Action action = () =>
-			{
-				IPXC_Bookmark child = root.FirstChild;
+			IPXC_Bookmark child = root.FirstChild;
 
-				for (int i = 0; i < root.ChildrenCount; i++)
-				{
-					IPXC_ActionsList aList = child.Actions;
-					BookmarkNode childNode = new BookmarkNode(child);
-					childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
-					childNode.ImageIndex = 0;
-					childNode.SelectedImageIndex = 0;
-					childNode.Text = child.Title;
-					if (child.ChildrenCount > 0)
-						AddBookmarkToTree(child, childNode);
-					if (node != null)
-						node.Nodes.Add(childNode);
-					else
-						bookmarksTree.Nodes.Add(childNode);
-					child = child.Next;
-					changeProgresBar();
-					Thread.Sleep(10);
-				}
-			};
-			Invoke(action);
+			for (int i = 0; i < root.ChildrenCount; i++)
+			{
+				IPXC_ActionsList aList = child.Actions;
+				BookmarkNode childNode = new BookmarkNode(child);
+				childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
+				childNode.ImageIndex = 0;
+				childNode.SelectedImageIndex = 0;
+				childNode.Text = child.Title;
+				if (child.ChildrenCount > 0)
+					AddBookmarkToTree(child, childNode);
+				if (node != null)
+					node.Nodes.Add(childNode);
+				else
+					bookmarksTree.Nodes.Add(childNode);
+				child = child.Next;
+			}
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
@@ -422,14 +416,7 @@ namespace CoreAPIDemo
 			//Updating bookmarks
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
-			{
-				bookmarkProgress.Maximum = CountAllBookmarks(root);
-				bookmarkProgress.Visible = true;
-				Thread secondThread = new Thread(delegate () { AddBookmarkToTree(root); });
-				secondThread.Name = "secondThread";
-				secondThread.IsBackground = true;
-				secondThread.Start();
-			}
+				AddBookmarkToTree(root);
 		}
 
 		public void CloseDocument()
@@ -477,18 +464,6 @@ namespace CoreAPIDemo
 			int nPage = int.Parse(currentPage.Text) - 1;
 			if (nPage > 0)
 				currentPage.Text = (nPage).ToString();
-		}
-		public void changeProgresBar()
-		{
-			Action action = () => {
-				bookmarkProgress.Value++;
-				if (bookmarkProgress.Value == bookmarkProgress.Maximum)
-				{
-					bookmarkProgress.Visible = false;
-					bookmarkProgress.Value = 0;
-				}
-			};
-			Invoke(action);
 		}
 
 		private void nextPage_Click(object sender, EventArgs e)
