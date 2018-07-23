@@ -278,7 +278,6 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -427,6 +426,7 @@
 			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.bookmarksTree.Location = new System.Drawing.Point(2, 33);
 			this.bookmarksTree.Name = "bookmarksTree";
+			this.bookmarksTree.ShowLines = false;
 			this.bookmarksTree.Size = new System.Drawing.Size(232, 632);
 			this.bookmarksTree.TabIndex = 0;
 			this.bookmarksTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseClick);

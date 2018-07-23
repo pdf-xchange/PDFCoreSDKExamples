@@ -52,6 +52,7 @@ namespace CoreAPIDemo
 			m_pxcInst.Init("");
 			InitializeComponent();
 		}
+
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
 
@@ -324,7 +325,7 @@ namespace CoreAPIDemo
 
 			object invRes = theMethod.Invoke(this, new Object[] { this });
 
-			UpdateControlsFromDocument(0xff/*(int)invRes*/);
+			UpdateControlsFromDocument((invRes == null) ? (int)eFormUpdateFlags.efuf_None : (int)invRes);
 			UpdatePreviewFromCurrentDocument();
 		}
 
@@ -426,7 +427,33 @@ namespace CoreAPIDemo
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
 				AddBookmarkToTree(root);
-#warning after you've filled the tree, select the node by the IPXC_Bookmark interface that you've remembered before (if it exists)
+			SelectBookmarkNodeByBookmark(bookmark, bookmarksTree.Nodes);
+		}
+
+		public void SelectBookmarkNodeByBookmark(IPXC_Bookmark bookmark, TreeNodeCollection nodeCollection)
+		{
+			if (bookmark == null)
+				return;
+
+			int index = 0;
+			while (bookmarksTree.SelectedNode == null)
+			{
+				if (index == nodeCollection.Count)
+				{
+					break;
+				}
+				if ((nodeCollection[index] as BookmarkNode).m_Bookmark == bookmark)
+				{
+					bookmarksTree.SelectedNode = nodeCollection[index];
+					bookmarksTree.Focus();
+					break;
+				}
+				if (nodeCollection[index].Nodes.Count > 0)
+				{
+					SelectBookmarkNodeByBookmark(bookmark, nodeCollection[index].Nodes);
+				}
+				index++;
+			}
 		}
 
 		public void UpdateControlsFromDocument(int flags)
@@ -637,22 +664,26 @@ namespace CoreAPIDemo
 
 		private void addBookmark_Click(object sender, EventArgs e)
 		{
-			Bookmarks.AddSiblingBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.AddSiblingBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void removeBookmark_Click(object sender, EventArgs e)
 		{
-			Bookmarks.RemoveSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.RemoveSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void moveBookmarkUp_Click(object sender, EventArgs e)
 		{
-			Bookmarks.MoveUpSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.MoveUpSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void moveBookmarkDown_Click(object sender, EventArgs e)
 		{
-			Bookmarks.MoveDownSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.MoveDownSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void expandBookmarks_Click(object sender, EventArgs e)
