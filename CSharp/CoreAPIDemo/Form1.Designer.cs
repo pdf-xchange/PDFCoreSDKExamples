@@ -61,16 +61,16 @@
 			this.bookmarksTab = new System.Windows.Forms.TabPage();
 			this.bookmarkProgress = new System.Windows.Forms.ProgressBar();
 			this.bookmarksTree = new System.Windows.Forms.TreeView();
-			this.splitter3 = new System.Windows.Forms.Splitter();
 			this.toolStrip4 = new System.Windows.Forms.ToolStrip();
 			this.addBookmark = new System.Windows.Forms.ToolStripButton();
 			this.removeBookmark = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.moveBookmarkUp = new System.Windows.Forms.ToolStripButton();
 			this.moveBookmarkDown = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandBookmarks = new System.Windows.Forms.ToolStripButton();
 			this.collapseBookmarks = new System.Windows.Forms.ToolStripButton();
+			this.splitter3 = new System.Windows.Forms.Splitter();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -92,7 +92,7 @@
 			this.sampleTree.HotTracking = true;
 			this.sampleTree.ItemHeight = 26;
 			this.sampleTree.Location = new System.Drawing.Point(0, 31);
-			this.sampleTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.sampleTree.Margin = new System.Windows.Forms.Padding(2);
 			this.sampleTree.Name = "sampleTree";
 			this.sampleTree.ShowLines = false;
 			this.sampleTree.Size = new System.Drawing.Size(505, 662);
@@ -103,7 +103,7 @@
 			// splitter1
 			// 
 			this.splitter1.Location = new System.Drawing.Point(505, 0);
-			this.splitter1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.splitter1.Margin = new System.Windows.Forms.Padding(2);
 			this.splitter1.Name = "splitter1";
 			this.splitter1.Size = new System.Drawing.Size(7, 693);
 			this.splitter1.TabIndex = 0;
@@ -238,7 +238,7 @@
 			this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(0, 31);
-			this.previewImage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.previewImage.Margin = new System.Windows.Forms.Padding(2);
 			this.previewImage.Name = "previewImage";
 			this.previewImage.Size = new System.Drawing.Size(551, 415);
 			this.previewImage.TabIndex = 0;
@@ -248,7 +248,7 @@
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitter2.Location = new System.Drawing.Point(512, 446);
-			this.splitter2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.splitter2.Margin = new System.Windows.Forms.Padding(2);
 			this.splitter2.Name = "splitter2";
 			this.splitter2.Size = new System.Drawing.Size(551, 6);
 			this.splitter2.TabIndex = 0;
@@ -278,12 +278,13 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
 			this.codeSource.LeftBracket2 = '{';
 			this.codeSource.Location = new System.Drawing.Point(0, 31);
-			this.codeSource.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.codeSource.Margin = new System.Windows.Forms.Padding(2);
 			this.codeSource.Name = "codeSource";
 			this.codeSource.Paddings = new System.Windows.Forms.Padding(0);
 			this.codeSource.ReadOnly = true;
@@ -301,7 +302,7 @@
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel1.Location = new System.Drawing.Point(512, 452);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(551, 241);
 			this.panel1.TabIndex = 3;
@@ -312,7 +313,7 @@
 			this.panel2.Controls.Add(this.toolStrip2);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Location = new System.Drawing.Point(512, 0);
-			this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel2.Margin = new System.Windows.Forms.Padding(2);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(551, 446);
 			this.panel2.TabIndex = 4;
@@ -323,7 +324,7 @@
 			this.panel3.Controls.Add(this.toolStrip3);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel3.Location = new System.Drawing.Point(0, 0);
-			this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel3.Margin = new System.Windows.Forms.Padding(2);
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(505, 693);
 			this.panel3.TabIndex = 5;
@@ -391,7 +392,7 @@
 			this.viewControl.Controls.Add(this.bookmarksTab);
 			this.viewControl.Dock = System.Windows.Forms.DockStyle.Right;
 			this.viewControl.Location = new System.Drawing.Point(1065, 0);
-			this.viewControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.viewControl.Margin = new System.Windows.Forms.Padding(2);
 			this.viewControl.Name = "viewControl";
 			this.viewControl.SelectedIndex = 0;
 			this.viewControl.Size = new System.Drawing.Size(244, 693);
@@ -402,9 +403,9 @@
 			this.bookmarksTab.Controls.Add(this.bookmarkProgress);
 			this.bookmarksTab.Controls.Add(this.bookmarksTree);
 			this.bookmarksTab.Controls.Add(this.toolStrip4);
-			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
+			this.bookmarksTab.Location = new System.Drawing.Point(4, 22);
 			this.bookmarksTab.Name = "bookmarksTab";
-			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2);
 			this.bookmarksTab.Size = new System.Drawing.Size(236, 667);
 			this.bookmarksTab.TabIndex = 0;
 			this.bookmarksTab.Text = "Bookmarks";
@@ -413,9 +414,9 @@
 			// bookmarkProgress
 			// 
 			this.bookmarkProgress.Dock = System.Windows.Forms.DockStyle.Top;
-			this.bookmarkProgress.Location = new System.Drawing.Point(3, 34);
+			this.bookmarkProgress.Location = new System.Drawing.Point(2, 33);
 			this.bookmarkProgress.Name = "bookmarkProgress";
-			this.bookmarkProgress.Size = new System.Drawing.Size(352, 10);
+			this.bookmarkProgress.Size = new System.Drawing.Size(232, 10);
 			this.bookmarkProgress.Step = 1;
 			this.bookmarkProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.bookmarkProgress.TabIndex = 1;
@@ -424,21 +425,11 @@
 			// bookmarksTree
 			// 
 			this.bookmarksTree.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.bookmarksTree.Location = new System.Drawing.Point(3, 34);
+			this.bookmarksTree.Location = new System.Drawing.Point(2, 33);
 			this.bookmarksTree.Name = "bookmarksTree";
-			this.bookmarksTree.Size = new System.Drawing.Size(352, 996);
+			this.bookmarksTree.Size = new System.Drawing.Size(232, 632);
 			this.bookmarksTree.TabIndex = 0;
 			this.bookmarksTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseClick);
-			// 
-			// splitter3
-			// 
-			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
-			this.splitter3.Location = new System.Drawing.Point(1063, 0);
-			this.splitter3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-			this.splitter3.Name = "splitter3";
-			this.splitter3.Size = new System.Drawing.Size(2, 693);
-			this.splitter3.TabIndex = 0;
-			this.splitter3.TabStop = false;
 			// 
 			// toolStrip4
 			// 
@@ -452,9 +443,9 @@
             this.toolStripSeparator5,
             this.expandBookmarks,
             this.collapseBookmarks});
-			this.toolStrip4.Location = new System.Drawing.Point(3, 3);
+			this.toolStrip4.Location = new System.Drawing.Point(2, 2);
 			this.toolStrip4.Name = "toolStrip4";
-			this.toolStrip4.Size = new System.Drawing.Size(352, 31);
+			this.toolStrip4.Size = new System.Drawing.Size(232, 31);
 			this.toolStrip4.TabIndex = 2;
 			this.toolStrip4.Text = "toolStrip4";
 			// 
@@ -478,6 +469,11 @@
 			this.removeBookmark.Text = "Remove Bookmark";
 			this.removeBookmark.Click += new System.EventHandler(this.removeBookmark_Click);
 			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 31);
+			// 
 			// moveBookmarkUp
 			// 
 			this.moveBookmarkUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -497,11 +493,6 @@
 			this.moveBookmarkDown.Size = new System.Drawing.Size(28, 28);
 			this.moveBookmarkDown.Text = "Move Down";
 			this.moveBookmarkDown.Click += new System.EventHandler(this.moveBookmarkDown_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 31);
 			// 
 			// toolStripSeparator5
 			// 
@@ -528,6 +519,16 @@
 			this.collapseBookmarks.Text = "Collapse All Bookmarks";
 			this.collapseBookmarks.Click += new System.EventHandler(this.collapseBookmarks_Click);
 			// 
+			// splitter3
+			// 
+			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
+			this.splitter3.Location = new System.Drawing.Point(1063, 0);
+			this.splitter3.Margin = new System.Windows.Forms.Padding(2);
+			this.splitter3.Name = "splitter3";
+			this.splitter3.Size = new System.Drawing.Size(2, 693);
+			this.splitter3.TabIndex = 0;
+			this.splitter3.TabStop = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -541,7 +542,7 @@
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.panel3);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.MinimumSize = new System.Drawing.Size(859, 638);
 			this.Name = "Form1";
 			this.Text = "CoreAPIDemo";

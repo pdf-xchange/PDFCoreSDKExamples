@@ -27,6 +27,17 @@ namespace CoreAPIDemo
 			get { return uint.Parse(currentPage.Text) - 1; }
 		}
 
+		public TreeView GetBookmarkTree
+		{
+			get { return bookmarksTree; }
+		}
+
+		public BookmarkNode SelectedBookmarkNode
+		{
+			get { return bookmarksTree.SelectedNode as BookmarkNode; }
+			set { bookmarksTree.SelectedNode = value; }
+		}
+
 		public enum eFormUpdateFlags
 		{
 			efuf_None				= 0,
@@ -153,7 +164,7 @@ namespace CoreAPIDemo
 				sampleTree.Nodes.Remove(root);
 		}
 
-		class BookmarkNode : TreeNode
+		public class BookmarkNode : TreeNode
 		{
 			public BookmarkNode(IPXC_Bookmark book)
 			{
@@ -313,7 +324,7 @@ namespace CoreAPIDemo
 
 			object invRes = theMethod.Invoke(this, new Object[] { this });
 
-			UpdateControlsFromDocument((int)invRes);
+			UpdateControlsFromDocument(0xff/*(int)invRes*/);
 			UpdatePreviewFromCurrentDocument();
 		}
 
@@ -407,13 +418,14 @@ namespace CoreAPIDemo
 
 		public void FillBookmarksTree()
 		{
-#warning get the selected node here and get the IPXC_Bookmark from it
+			BookmarkNode remBookmark = bookmarksTree.SelectedNode == null ? null : bookmarksTree.SelectedNode as BookmarkNode;
+			IPXC_Bookmark bookmark = remBookmark == null ? null : remBookmark.m_Bookmark;
 			bookmarksTree.Nodes.Clear();
 			//Refilling bookmarks tree
 #warning implement the tree fill in the different thread with the progress usage
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
-				AddBookmarkToTree(null, root);
+				AddBookmarkToTree(root);
 #warning after you've filled the tree, select the node by the IPXC_Bookmark interface that you've remembered before (if it exists)
 		}
 
@@ -519,7 +531,7 @@ namespace CoreAPIDemo
 					{
 #warning implement this when the Named Destinations will be investigated
 					}
-						
+
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();
 					break;
 				}
@@ -645,12 +657,12 @@ namespace CoreAPIDemo
 
 		private void expandBookmarks_Click(object sender, EventArgs e)
 		{
-#warning Implement bookmark tree expanding
+			bookmarksTree.ExpandAll();
 		}
 
 		private void collapseBookmarks_Click(object sender, EventArgs e)
 		{
-#warning Implement bookmark tree collapsing
+			bookmarksTree.CollapseAll();
 		}
 	}
 }
