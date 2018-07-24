@@ -193,24 +193,29 @@ namespace CoreAPIDemo
 		}
 		public void AddBookmarkToTree(IPXC_Bookmark root, TreeNode node = null)
 		{
-			IPXC_Bookmark child = root.FirstChild;
-
-			for (int i = 0; i < root.ChildrenCount; i++)
+			Action addBookmarkToTree = () =>
 			{
-				IPXC_ActionsList aList = child.Actions;
-				BookmarkNode childNode = new BookmarkNode(child);
-				childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
-				childNode.ImageIndex = 0;
-				childNode.SelectedImageIndex = 0;
-				childNode.Text = child.Title;
-				if (child.ChildrenCount > 0)
-					AddBookmarkToTree(child, childNode);
-				if (node != null)
-					node.Nodes.Add(childNode);
-				else
-					bookmarksTree.Nodes.Add(childNode);
-				child = child.Next;
-			}
+				IPXC_Bookmark child = root.FirstChild;
+
+				for (int i = 0; i < root.ChildrenCount; i++)
+				{
+					IPXC_ActionsList aList = child.Actions;
+					BookmarkNode childNode = new BookmarkNode(child);
+					childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
+					childNode.ImageIndex = 0;
+					childNode.SelectedImageIndex = 0;
+					childNode.Text = child.Title;
+					if (child.ChildrenCount > 0)
+						AddBookmarkToTree(child, childNode);
+					if (node != null)
+						node.Nodes.Add(childNode);
+					else
+						bookmarksTree.Nodes.Add(childNode);
+					child = child.Next;
+					bookmarkProgress.Value++;
+				}
+			};
+			Invoke(addBookmarkToTree);
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
@@ -423,10 +428,17 @@ namespace CoreAPIDemo
 			IPXC_Bookmark bookmark = remBookmark == null ? null : remBookmark.m_Bookmark;
 			bookmarksTree.Nodes.Clear();
 			//Refilling bookmarks tree
-#warning implement the tree fill in the different thread with the progress usage
+
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
-				AddBookmarkToTree(root);
+			{
+				bookmarkProgress.Visible = true;
+				bookmarkProgress.Maximum = CountAllBookmarks(m_CurDoc.BookmarkRoot);
+				Thread secondThread = new Thread(delegate() {
+					AddBookmarkToTree(root);});
+				secondThread.Start();
+			}
+				
 			SelectBookmarkNodeByBookmark(bookmark, bookmarksTree.Nodes);
 		}
 
