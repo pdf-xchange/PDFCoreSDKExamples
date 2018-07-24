@@ -27,6 +27,17 @@ namespace CoreAPIDemo
 			get { return uint.Parse(currentPage.Text) - 1; }
 		}
 
+		public TreeView GetBookmarkTree
+		{
+			get { return bookmarksTree; }
+		}
+
+		public BookmarkNode SelectedBookmarkNode
+		{
+			get { return bookmarksTree.SelectedNode as BookmarkNode; }
+			set { bookmarksTree.SelectedNode = value; }
+		}
+
 		public enum eFormUpdateFlags
 		{
 			efuf_None				= 0,
@@ -41,12 +52,14 @@ namespace CoreAPIDemo
 			m_pxcInst.Init("");
 			InitializeComponent();
 		}
+
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
+			SetWindowTheme(bookmarksTree.Handle, "explorer", null);
 			ImageList il = new ImageList();
 			try
 			{
@@ -153,7 +166,7 @@ namespace CoreAPIDemo
 				sampleTree.Nodes.Remove(root);
 		}
 
-		class BookmarkNode : TreeNode
+		public class BookmarkNode : TreeNode
 		{
 			public BookmarkNode(IPXC_Bookmark book)
 			{
@@ -166,27 +179,44 @@ namespace CoreAPIDemo
 		public IPXC_Bookmark m_Bookmark = null;
 		}
 
-
-		public void AddBookmarkToTree(TreeNode node, IPXC_Bookmark root)
+		public int CountAllBookmarks(IPXC_Bookmark root)
 		{
+			int retValue = 0;
 			IPXC_Bookmark child = root.FirstChild;
-
 			for (int i = 0; i < root.ChildrenCount; i++)
 			{
-				IPXC_ActionsList aList = child.Actions;
-				BookmarkNode childNode = new BookmarkNode(child);
-				childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
-				childNode.ImageIndex = 0;
-				childNode.SelectedImageIndex = 0;
-				childNode.Text = child.Title;
 				if (child.ChildrenCount > 0)
-					AddBookmarkToTree(childNode, child);
-				if (node != null)
-					node.Nodes.Add(childNode);
-				else
-					bookmarksTree.Nodes.Add(childNode);
+					retValue += CountAllBookmarks(child);
 				child = child.Next;
+				retValue++;
 			}
+			return retValue;
+		}
+		public void AddBookmarkToTree(IPXC_Bookmark root, TreeNode node = null)
+		{
+			Action addBookmarkToTree = () =>
+			{
+				IPXC_Bookmark child = root.FirstChild;
+
+				for (int i = 0; i < root.ChildrenCount; i++)
+				{
+					IPXC_ActionsList aList = child.Actions;
+					BookmarkNode childNode = new BookmarkNode(child);
+					childNode.Name = ((node != null) ? (node.Name + ".") : "Bookmark") + (i + 1);
+					childNode.ImageIndex = 0;
+					childNode.SelectedImageIndex = 0;
+					childNode.Text = child.Title;
+					if (child.ChildrenCount > 0)
+						AddBookmarkToTree(child, childNode);
+					if (node != null)
+						node.Nodes.Add(childNode);
+					else
+						bookmarksTree.Nodes.Add(childNode);
+					child = child.Next;
+					bookmarkProgress.Value++;
+				}
+			};
+			Invoke(addBookmarkToTree);
 		}
 
 		private MethodInfo GetCurrentMethod(TreeNode curNode)
@@ -301,7 +331,7 @@ namespace CoreAPIDemo
 
 			object invRes = theMethod.Invoke(this, new Object[] { this });
 
-			UpdateControlsFromDocument((int)invRes);
+			UpdateControlsFromDocument((invRes == null) ? (int)eFormUpdateFlags.efuf_None : (int)invRes);
 			UpdatePreviewFromCurrentDocument();
 		}
 
@@ -395,14 +425,55 @@ namespace CoreAPIDemo
 
 		public void FillBookmarksTree()
 		{
-#warning get the selected node here and get the IPXC_Bookmark from it
+			BookmarkNode remBookmark = bookmarksTree.SelectedNode as BookmarkNode;
+			IPXC_Bookmark bookmark = null;
+			if (remBookmark != null)
+				bookmark = remBookmark.m_Bookmark;
 			bookmarksTree.Nodes.Clear();
 			//Refilling bookmarks tree
-#warning implement the tree fill in the different thread with the progress usage
+			bookmarkProgress.Visible = false;
+			bookmarkProgress.Value = 0;
 			IPXC_Bookmark root = m_CurDoc.BookmarkRoot;
 			if ((root != null) && (root.ChildrenCount != 0))
-				AddBookmarkToTree(null, root);
-#warning after you've filled the tree, select the node by the IPXC_Bookmark interface that you've remembered before (if it exists)
+			{
+				bookmarkProgress.Visible = true;
+				Thread secondThread = new Thread(delegate()
+				{
+					bookmarkProgress.Invoke((MethodInvoker)delegate
+					{
+						bookmarkProgress.Maximum = CountAllBookmarks(m_CurDoc.BookmarkRoot);
+					});
+					
+					AddBookmarkToTree(root);
+					bookmarkProgress.Invoke((MethodInvoker)delegate
+					{
+						bookmarkProgress.Visible = false;
+						SelectBookmarkNodeByBookmark(bookmark, bookmarksTree.Nodes);
+					});
+					
+				});
+				secondThread.Start();
+			}
+		}
+
+		public bool SelectBookmarkNodeByBookmark(IPXC_Bookmark bookmark, TreeNodeCollection nodeCollection)
+		{
+			if (bookmark == null)
+				return false;
+
+			foreach (BookmarkNode bookNode in nodeCollection)
+			{
+				if (bookNode.m_Bookmark == bookmark)
+				{
+					bookmarksTree.SelectedNode = bookNode;
+					bookNode.EnsureVisible();
+					bookmarksTree.Focus();
+					return true;
+				}
+				if (SelectBookmarkNodeByBookmark(bookmark, bookNode.Nodes))
+					return true;
+			}
+			return false;
 		}
 
 		public void UpdateControlsFromDocument(int flags)
@@ -508,7 +579,7 @@ namespace CoreAPIDemo
 #warning implement this when the Named Destinations will be investigated
 						continue;
 					}
-						
+
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();
 					break;
 				}
@@ -614,32 +685,36 @@ namespace CoreAPIDemo
 
 		private void addBookmark_Click(object sender, EventArgs e)
 		{
-			Bookmarks.AddSiblingBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.AddSiblingBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void removeBookmark_Click(object sender, EventArgs e)
 		{
-			Bookmarks.RemoveSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.RemoveSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void moveBookmarkUp_Click(object sender, EventArgs e)
 		{
-			Bookmarks.MoveUpSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.MoveUpSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void moveBookmarkDown_Click(object sender, EventArgs e)
 		{
-			Bookmarks.MoveDownSelectedBookmark(this);
+			UpdateControlsFromDocument(Bookmarks.MoveDownSelectedBookmark(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void expandBookmarks_Click(object sender, EventArgs e)
 		{
-#warning Implement bookmark tree expanding
+			bookmarksTree.ExpandAll();
 		}
 
 		private void collapseBookmarks_Click(object sender, EventArgs e)
 		{
-#warning Implement bookmark tree collapsing
+			bookmarksTree.CollapseAll();
 		}
 	}
 }
