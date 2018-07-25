@@ -576,8 +576,8 @@ namespace CoreAPIDemo
 					IPXC_Action_Goto actGoTo = (IPXC_Action_Goto)aList[i];
 					if (actGoTo.IsNamedDest)
 					{
-#warning implement this when the Named Destinations will be investigated
-						continue;
+						currentPage.Text = (m_CurDoc.GetNamedDestination(actGoTo.DestName).nPageNum + 1).ToString();
+						break;
 					}
 
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();

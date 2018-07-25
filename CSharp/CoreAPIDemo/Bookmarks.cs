@@ -13,6 +13,7 @@ namespace CoreAPIDemo
 	class Bookmarks
 	{
 		delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
+		delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
 
 		[Description("9.1. Add Bookmark after the currently selected bookmark in the Bookmarks Tree")]
 		static public int AddSiblingBookmark(Form1 Parent)
@@ -191,7 +192,71 @@ namespace CoreAPIDemo
 		[Description("9.8. Sort bookmarks by page in the current document")]
 		static public int SortBookmarksByPage(Form1 Parent)
 		{
-			
+			//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
+			GetXYFromDestination getXYFromDestination = (IPXC_Bookmark book, PXC_Destination destination) => {
+				PXC_DestType Type = destination.nType;
+				double[] retValue = new double[2]; // retValue[0] - X, retValue[1] - Y
+				PXC_Rect contentBBox = book.Document.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_BBox);
+				PXC_Rect pageBBox = book.Document.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_PageBox);
+				switch (Type)
+				{
+					case PXC_DestType.Dest_XYZ:
+						{
+							retValue[0] = destination.dValues[0];
+							retValue[1] = destination.dValues[1];
+							break;
+						}
+					case PXC_DestType.Dest_Fit:
+						{
+							retValue[0] = pageBBox.left;
+							retValue[1] = pageBBox.top;
+							break;
+						}
+					case PXC_DestType.Dest_FitH:
+						{
+							retValue[0] = pageBBox.left;
+							retValue[1] = destination.dValues[1];
+							break;
+						}
+					case PXC_DestType.Dest_FitV:
+						{
+							retValue[0] = destination.dValues[0];
+							retValue[1] = pageBBox.top;
+							break;
+						}
+					case PXC_DestType.Dest_FitR:
+						{
+							retValue[0] = destination.dValues[0];
+							retValue[1] = destination.dValues[3];
+							break;
+						}
+					case PXC_DestType.Dest_FitB:
+						{
+							retValue[0] = contentBBox.left;
+							retValue[1] = contentBBox.top;
+							break;
+						}
+					case PXC_DestType.Dest_FitBH:
+						{
+							retValue[0] = contentBBox.left;
+							retValue[1] = destination.dValues[1];
+							break;
+						}
+					case PXC_DestType.Dest_FitBV:
+						{
+							retValue[0] = destination.dValues[0];
+							retValue[1] = contentBBox.top;
+							break;
+						}
+					default:
+						{
+							retValue[0] = pageBBox.left;
+							retValue[1] = pageBBox.top;
+							break;
+						}
+				}
+				return retValue;
+			};
 			//delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark root);
 			SortByAnything sortByAnything = (sort, root, actionType) => {
 				List<Tuple<IPXC_Bookmark, PXC_Destination>> bookmarks = new List<Tuple<IPXC_Bookmark, PXC_Destination>>();
@@ -202,8 +267,10 @@ namespace CoreAPIDemo
 						if (root.FirstChild.Actions[(uint)i].Type == actionType)
 						{
 							int MAX_VALUE = int.MaxValue;
-#warning Get correct destination from the Named Destinations
-							PXC_Destination currDest = (root.FirstChild.Actions[(uint)i] as IPXC_Action_Goto).get_Dest();
+							IPXC_Action_Goto actionGoTo = root.FirstChild.Actions[(uint)i] as IPXC_Action_Goto;
+							PXC_Destination currDest = actionGoTo.IsNamedDest
+								? Parent.m_CurDoc.GetNamedDestination(actionGoTo.DestName)
+								: actionGoTo.get_Dest();
 
 							if ((bookmarks.Count == 0) || (currDest.nPageNum > bookmarks[bookmarks.Count - 1].Item2.nPageNum))
 							{
@@ -237,13 +304,26 @@ namespace CoreAPIDemo
 									}
 									else
 									{
-										if (currDest.dValues[1] > bookmarks[mid].Item2.dValues[1])
+										double[] currentBookmarkXY = getXYFromDestination(root.FirstChild, currDest);
+										double[] bookmarkXY_FromList = getXYFromDestination(bookmarks[mid].Item1, bookmarks[mid].Item2);
+										if (currentBookmarkXY[1] < bookmarkXY_FromList[1])
+										{
+											first = mid + 1;
+										}
+										else if (currentBookmarkXY[1] > bookmarkXY_FromList[1])
 										{
 											last = mid;
 										}
 										else
 										{
-											first = mid + 1;
+											if (currentBookmarkXY[0] < bookmarkXY_FromList[0])
+											{
+												last = mid;
+											}
+											else
+											{
+												first = mid + 1;
+											}
 										}
 									}
 
