@@ -34,12 +34,6 @@ namespace CoreAPIDemo
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
 			bookmark.Title = (Parent.CurrentPage + 1) + " page";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
-			PXC_Destination dest = new PXC_Destination();
-			dest.nPageNum = Parent.CurrentPage;
-			dest.nNullFlags = 15;
-			dest.nType = PXC_DestType.Dest_Fit;
-			aList.AddGoto(dest);
-			bookmark.Actions = aList;
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
@@ -59,8 +53,11 @@ namespace CoreAPIDemo
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			PXC_Destination dest = new PXC_Destination();
 			dest.nPageNum = Parent.CurrentPage;
-			dest.nNullFlags = 15;
-			dest.nType = PXC_DestType.Dest_Fit;
+			dest.nNullFlags = 0;
+			dest.nType = PXC_DestType.Dest_FitR;
+			PXC_Rect rc = Parent.m_CurDoc.Pages[Parent.CurrentPage].get_Box(PXC_BoxType.PBox_BBox);
+			double[] rect = { rc.left, rc.bottom, rc.right, rc.top };
+			dest.dValues = rect;
 			aList.AddGoto(dest);
 			bookmark.Actions = aList;
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
