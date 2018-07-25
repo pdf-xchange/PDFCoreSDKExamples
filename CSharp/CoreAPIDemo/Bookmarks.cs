@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PDFXCoreAPI;
 using System.Windows.Forms;
+using System.Security;
+using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
@@ -14,6 +13,13 @@ namespace CoreAPIDemo
 	{
 		delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
 		delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
+
+		[SuppressUnmanagedCodeSecurity]
+		internal static class NativeMethods
+		{
+			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			public static extern int StrCmpLogicalW(string psz1, string psz2);
+		}
 
 		[Description("9.1. Add Bookmark after the currently selected bookmark in the Bookmarks Tree")]
 		static public int AddSiblingBookmark(Form1 Parent)
@@ -160,6 +166,13 @@ namespace CoreAPIDemo
 		[Description("9.7. Sort bookmarks by name in the current document")]
 		static public int SortBookmarksByName(Form1 Parent)
 		{
+			//	[SuppressUnmanagedCodeSecurity]
+			//	internal static class NativeMethods
+			//	{
+			//		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			//		public static extern int StrCmpLogicalW(string psz1, string psz2);
+			//	}
+			//delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
 			SortByAnything sortByAnything = (sort, root, actionType) => {
 				List<IPXC_Bookmark> bookmarks = new List<IPXC_Bookmark>();
 				while (root.ChildrenCount > 0)
@@ -170,7 +183,7 @@ namespace CoreAPIDemo
 
 				bookmarks.Sort(delegate (IPXC_Bookmark firstNode, IPXC_Bookmark secondNode)
 				{
-					return String.Compare(firstNode.Title, secondNode.Title);
+					return NativeMethods.StrCmpLogicalW(firstNode.Title, secondNode.Title);
 				});
 
 				foreach (IPXC_Bookmark bookmark in bookmarks)
@@ -192,8 +205,14 @@ namespace CoreAPIDemo
 		[Description("9.8. Sort bookmarks by page in the current document")]
 		static public int SortBookmarksByPage(Form1 Parent)
 		{
-			//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
-			GetXYFromDestination getXYFromDestination = (IPXC_Bookmark book, PXC_Destination destination) => {
+			//	[SuppressUnmanagedCodeSecurity]
+			//	internal static class NativeMethods
+			//	{
+			//		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			//		public static extern int StrCmpLogicalW(string psz1, string psz2);
+			//	}
+		//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
+		GetXYFromDestination getXYFromDestination = (IPXC_Bookmark book, PXC_Destination destination) => {
 				PXC_DestType Type = destination.nType;
 				double[] retValue = new double[2]; // retValue[0] - X, retValue[1] - Y
 				PXC_Rect contentBBox = book.Document.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_BBox);
@@ -202,8 +221,26 @@ namespace CoreAPIDemo
 				{
 					case PXC_DestType.Dest_XYZ:
 						{
-							retValue[0] = destination.dValues[0];
-							retValue[1] = destination.dValues[1];
+							if ((destination.nNullFlags & 0x1) == (destination.nNullFlags & 0x2))
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = destination.dValues[1];
+							}
+							else if ((destination.nNullFlags & 0x1) == 0)
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = destination.dValues[1];
+							}
+							else if ((destination.nNullFlags & 0x2) == 0)
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = pageBBox.top;
+							}
+							else
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = pageBBox.top;
+							}
 							break;
 						}
 					case PXC_DestType.Dest_Fit:
@@ -214,20 +251,54 @@ namespace CoreAPIDemo
 						}
 					case PXC_DestType.Dest_FitH:
 						{
-							retValue[0] = pageBBox.left;
-							retValue[1] = destination.dValues[1];
+							if ((destination.nNullFlags & 0x2) == 0)
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = destination.dValues[1];
+							}
+							else
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = pageBBox.top;
+							}
 							break;
 						}
 					case PXC_DestType.Dest_FitV:
 						{
-							retValue[0] = destination.dValues[0];
-							retValue[1] = pageBBox.top;
+							if ((destination.nNullFlags & 0x1) == 0)
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = pageBBox.top;
+							}
+							else
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = pageBBox.top;
+							}
 							break;
 						}
 					case PXC_DestType.Dest_FitR:
 						{
-							retValue[0] = destination.dValues[0];
-							retValue[1] = destination.dValues[3];
+							if ((destination.nNullFlags & 0x1) == (destination.nNullFlags & 0x8))
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = destination.dValues[3];
+							}
+							else if ((destination.nNullFlags & 0x1) == 0)
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = pageBBox.top;
+						}
+							else if ((destination.nNullFlags & 0x8) == 0)
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = destination.dValues[3];
+							}
+							else
+							{
+								retValue[0] = pageBBox.left;
+								retValue[1] = pageBBox.top;
+							}
 							break;
 						}
 					case PXC_DestType.Dest_FitB:
@@ -238,16 +309,32 @@ namespace CoreAPIDemo
 						}
 					case PXC_DestType.Dest_FitBH:
 						{
-							retValue[0] = contentBBox.left;
-							retValue[1] = destination.dValues[1];
+							if ((destination.nNullFlags & 0x2) == 0)
+							{
+								retValue[0] = contentBBox.left;
+								retValue[1] = destination.dValues[1];
+							}
+							else
+							{
+								retValue[0] = contentBBox.left;
+								retValue[1] = contentBBox.top;
+							}
 							break;
-						}
+					}
 					case PXC_DestType.Dest_FitBV:
 						{
-							retValue[0] = destination.dValues[0];
-							retValue[1] = contentBBox.top;
+							if ((destination.nNullFlags & 0x1) == 0)
+							{
+								retValue[0] = destination.dValues[0];
+								retValue[1] = contentBBox.top;
+							}
+							else
+							{
+								retValue[0] = contentBBox.left;
+								retValue[1] = contentBBox.top;
+							}
 							break;
-						}
+					}
 					default:
 						{
 							retValue[0] = pageBBox.left;
@@ -262,6 +349,48 @@ namespace CoreAPIDemo
 				List<Tuple<IPXC_Bookmark, PXC_Destination>> bookmarks = new List<Tuple<IPXC_Bookmark, PXC_Destination>>();
 				while (root.ChildrenCount > 0)
 				{
+					if ((root.FirstChild.Actions == null) || (root.FirstChild.Actions.Count == 0))
+					{
+						PXC_Destination invalidDest = new PXC_Destination();
+						invalidDest.nPageNum = int.MaxValue;
+
+						if (bookmarks.Count == 0)
+						{
+							bookmarks.Add(Tuple.Create(root.FirstChild, invalidDest));
+							root.FirstChild.Unlink();
+							continue;
+						}
+						int first = 0;
+						int last = bookmarks.Count;
+						while (first < last)
+						{
+							int mid = first + (last - first) / 2;
+							if (invalidDest.nPageNum == bookmarks[mid].Item2.nPageNum)
+							{
+								
+								if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
+								{
+									first = mid + 1;
+								}
+								else
+								{
+									last = mid;
+								}
+							}
+							else if (invalidDest.nPageNum < bookmarks[mid].Item2.nPageNum)
+							{
+								last = mid;
+							}
+							else
+							{
+								first = mid + 1;
+							}
+						}
+						bookmarks.Insert(last, Tuple.Create(root.FirstChild, invalidDest));
+						root.FirstChild.Unlink();
+						continue;
+					}
+
 					for (int i = (int)root.FirstChild.Actions.Count - 1; i >= 0; i--)
 					{
 						if (root.FirstChild.Actions[(uint)i].Type == actionType)
@@ -293,7 +422,7 @@ namespace CoreAPIDemo
 								{
 									if ((MAX_VALUE == currDest.nPageNum) && (MAX_VALUE == bookmarks[mid].Item2.nPageNum))
 									{
-										if (String.Compare(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
+										if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
 										{
 											last = mid;
 										}
@@ -339,7 +468,44 @@ namespace CoreAPIDemo
 							}
 							bookmarks.Insert(last, Tuple.Create(root.FirstChild, currDest));
 						}
+						if ((root.FirstChild.Actions[(uint)i].Type != actionType) && (i == 0))
+						{
+							PXC_Destination invalidDest = new PXC_Destination();
+							invalidDest.nPageNum = int.MaxValue;
 
+							if (bookmarks.Count == 0)
+							{
+								bookmarks.Add(Tuple.Create(root.FirstChild, invalidDest));
+								root.FirstChild.Unlink();
+								continue;
+							}
+							int first = 0;
+							int last = bookmarks.Count;
+							while (first < last)
+							{
+								int mid = first + (last - first) / 2;
+								if (invalidDest.nPageNum == bookmarks[mid].Item2.nPageNum)
+								{
+									if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
+									{
+										first = mid + 1;
+									}
+									else
+									{
+										last = mid;
+									}
+								}
+								else if (invalidDest.nPageNum < bookmarks[mid].Item2.nPageNum)
+								{
+									last = mid;
+								}
+								else
+								{
+									first = mid + 1;
+								}
+							}
+							bookmarks.Insert(last, Tuple.Create(root.FirstChild, invalidDest));
+						}
 					}
 					root.FirstChild.Unlink();
 				}

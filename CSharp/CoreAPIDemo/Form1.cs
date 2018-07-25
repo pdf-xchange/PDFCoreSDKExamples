@@ -568,6 +568,10 @@ namespace CoreAPIDemo
 			BookmarkNode curNode = e.Node as BookmarkNode;
 			if (curNode.m_Bookmark == null)
 				return;
+
+			if (curNode.m_Bookmark.Actions == null)
+				return;
+
 			IPXC_ActionsList aList = curNode.m_Bookmark.Actions;
 			for (uint i = aList.Count - 1; i >= 0; i--)
 			{
