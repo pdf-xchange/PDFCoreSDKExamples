@@ -568,16 +568,30 @@ namespace CoreAPIDemo
 			BookmarkNode curNode = e.Node as BookmarkNode;
 			if (curNode.m_Bookmark == null)
 				return;
+
+			if (curNode.m_Bookmark.Actions == null)
+				return;
+
 			IPXC_ActionsList aList = curNode.m_Bookmark.Actions;
-			for (uint i = aList.Count - 1; i >= 0; i--)
+			for (int i = (int)aList.Count - 1; i >= 0; i--)
 			{
-				if (aList[i].Type == typeGoTo)
+				if (aList[(uint)i].Type == typeGoTo)
 				{
-					IPXC_Action_Goto actGoTo = (IPXC_Action_Goto)aList[i];
+					IPXC_Action_Goto actGoTo = (IPXC_Action_Goto)aList[(uint)i];
 					if (actGoTo.IsNamedDest)
 					{
-#warning implement this when the Named Destinations will be investigated
-						continue;
+						try
+						{
+							uint nPageNum = m_CurDoc.GetNamedDestination(actGoTo.DestName).nPageNum;
+							if (nPageNum > m_CurDoc.Pages.Count - 1)
+								continue;
+							currentPage.Text = (nPageNum + 1).ToString();
+							break;
+						}
+						catch(Exception)
+						{
+							continue;
+						}
 					}
 
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();
