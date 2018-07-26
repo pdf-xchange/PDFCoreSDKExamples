@@ -11,6 +11,43 @@ namespace CoreAPIDemo
 	[Description("8. Converters")]
 	class Converters
 	{
+		private class DrawTextCallbacks : IPXC_DrawTextCallbacks
+		{
+			public IPXC_Page currPage = null;
+			public void OnGetNewRect(IPXC_ContentCreator pCC, out PXC_Rect pRect, ref uint pFlags, out PXC_Rect pClip)
+			{
+				currPage.PlaceContent(pCC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				PXC_Rect rc = currPage.get_Box(PXC_BoxType.PBox_PageBox);
+				IPXC_UndoRedoData urData;
+				currPage.Document.CreateContentCreator();
+				IPXC_Page page = currPage.Document.Pages.InsertPage(currPage.Number + 1, ref rc, out urData);
+				currPage = page;
+
+				PXC_Rect rect = new PXC_Rect();
+				rect.top = rc.top - 40;
+				rect.right = rc.right - 40;
+				rect.bottom = rc.bottom + 40;
+				rect.left = rc.left + 40;
+
+				pRect = rect;
+				pClip = rect;
+			}
+
+			public void OnGetNewText(IPXC_ContentCreator pCC, out string ppText, out int pTextLen, out uint pFlags)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void OnEndPara(IPXC_ContentCreator pCC, int nIndex, string pID, string pText, int nTextLen, IPXC_Rects pLines)
+			{
+				throw new NotImplementedException();
+			}
+			public void OnFinal(IPXC_ContentCreator CC)
+			{
+				currPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			}
+		}
+
 		[Description("8.1. Convert from PDF to image")]
 		static public void ConvertToImage(Form1 Parent)
 		{
@@ -194,7 +231,30 @@ namespace CoreAPIDemo
 		[Description("8.4. Convert from txt to PDF")]
 		static public int ConvertFromTXT(Form1 Parent)
 		{
-#warning Implement this converter
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			PXC_Rect rc = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
+			IPXC_UndoRedoData urData;
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			DrawTextCallbacks drawTextCallbacks = new DrawTextCallbacks();
+			drawTextCallbacks.currPage = page;
+			string Text = File.ReadAllText(Environment.CurrentDirectory + "\\Documents\\PDF File.txt");
+
+			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 400);
+			CC.SetColorRGB(0x00000000);
+			CC.SetFont(font);
+			CC.SetFontSize(15);
+
+			PXC_Rect rect = new PXC_Rect();
+			rect.top = rc.top - 40;
+			rect.right = rc.right - 40;
+			rect.bottom = rc.bottom + 40;
+			rect.left = rc.left + 40;
+
+			CC.ShowTextBlock(Text, rect, rect, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution, -1, null, null, drawTextCallbacks, out rect);
+			
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 	}

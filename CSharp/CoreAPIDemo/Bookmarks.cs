@@ -12,7 +12,7 @@ namespace CoreAPIDemo
 	class Bookmarks
 	{
 		delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
-		delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
+		delegate PXC_Point GetXYFromDestination(IPXC_Document document, PXC_Destination dest);
 
 		[SuppressUnmanagedCodeSecurity]
 		internal static class NativeMethods
@@ -34,6 +34,14 @@ namespace CoreAPIDemo
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
 			bookmark.Title = (Parent.CurrentPage + 1) + " page";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
+			PXC_Destination dest = new PXC_Destination();
+			dest.nPageNum = Parent.CurrentPage;
+			dest.nNullFlags = 12;
+			dest.nType = PXC_DestType.Dest_XYZ;
+			double[] point = { 20, 30, 0, 0 };
+			dest.dValues = point;
+			aList.AddGoto(dest);
+			bookmark.Actions = aList;
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
@@ -202,309 +210,151 @@ namespace CoreAPIDemo
 		[Description("9.8. Sort bookmarks by page in the current document")]
 		static public int SortBookmarksByPage(Form1 Parent)
 		{
-			//	[SuppressUnmanagedCodeSecurity]
-			//	internal static class NativeMethods
-			//	{
-			//		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-			//		public static extern int StrCmpLogicalW(string psz1, string psz2);
-			//	}
-		//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
-		GetXYFromDestination getXYFromDestination = (IPXC_Bookmark book, PXC_Destination destination) => {
+			//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);
+			GetXYFromDestination getXYFromDestination = (IPXC_Document doc, PXC_Destination destination) => {
 				PXC_DestType Type = destination.nType;
-				double[] retValue = new double[2]; // retValue[0] - X, retValue[1] - Y
-				PXC_Rect contentBBox = book.Document.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_BBox);
-				PXC_Rect pageBBox = book.Document.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_PageBox);
+				PXC_Point retValue = new PXC_Point();
+				PXC_Rect contentBBox = doc.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_BBox);
+				PXC_Rect pageBBox = doc.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_PageBox);
+				bool IsContentType = (Type == PXC_DestType.Dest_FitB) || (Type == PXC_DestType.Dest_FitBH) || (Type == PXC_DestType.Dest_FitBV);
+				retValue.x = pageBBox.left;
+				retValue.y = pageBBox.top;
+				if (IsContentType)
+				{
+					retValue.x = contentBBox.left;
+					retValue.y = contentBBox.top;
+				}
 				switch (Type)
 				{
-					case PXC_DestType.Dest_XYZ:
-						{
-							if ((destination.nNullFlags & 0x1) == (destination.nNullFlags & 0x2))
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = destination.dValues[1];
-							}
-							else if ((destination.nNullFlags & 0x1) == 0)
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = destination.dValues[1];
-							}
-							else if ((destination.nNullFlags & 0x2) == 0)
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = pageBBox.top;
-							}
-							else
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = pageBBox.top;
-							}
-							break;
-						}
-					case PXC_DestType.Dest_Fit:
-						{
-							retValue[0] = pageBBox.left;
-							retValue[1] = pageBBox.top;
-							break;
-						}
-					case PXC_DestType.Dest_FitH:
-						{
-							if ((destination.nNullFlags & 0x2) == 0)
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = destination.dValues[1];
-							}
-							else
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = pageBBox.top;
-							}
-							break;
-						}
-					case PXC_DestType.Dest_FitV:
-						{
-							if ((destination.nNullFlags & 0x1) == 0)
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = pageBBox.top;
-							}
-							else
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = pageBBox.top;
-							}
-							break;
-						}
-					case PXC_DestType.Dest_FitR:
-						{
-							if ((destination.nNullFlags & 0x1) == (destination.nNullFlags & 0x8))
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = destination.dValues[3];
-							}
-							else if ((destination.nNullFlags & 0x1) == 0)
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = pageBBox.top;
-						}
-							else if ((destination.nNullFlags & 0x8) == 0)
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = destination.dValues[3];
-							}
-							else
-							{
-								retValue[0] = pageBBox.left;
-								retValue[1] = pageBBox.top;
-							}
-							break;
-						}
-					case PXC_DestType.Dest_FitB:
-						{
-							retValue[0] = contentBBox.left;
-							retValue[1] = contentBBox.top;
-							break;
-						}
-					case PXC_DestType.Dest_FitBH:
-						{
-							if ((destination.nNullFlags & 0x2) == 0)
-							{
-								retValue[0] = contentBBox.left;
-								retValue[1] = destination.dValues[1];
-							}
-							else
-							{
-								retValue[0] = contentBBox.left;
-								retValue[1] = contentBBox.top;
-							}
-							break;
+				case PXC_DestType.Dest_XYZ:
+					{
+						if ((destination.nNullFlags & 1) == 0)
+							retValue.x = destination.dValues[0];
+						if ((destination.nNullFlags & 2) == 0)
+							retValue.y = destination.dValues[1];
+						break;
 					}
-					case PXC_DestType.Dest_FitBV:
-						{
-							if ((destination.nNullFlags & 0x1) == 0)
-							{
-								retValue[0] = destination.dValues[0];
-								retValue[1] = contentBBox.top;
-							}
-							else
-							{
-								retValue[0] = contentBBox.left;
-								retValue[1] = contentBBox.top;
-							}
-							break;
+				case PXC_DestType.Dest_FitH:
+					{
+						if ((destination.nNullFlags & 2) == 0)
+							retValue.y = destination.dValues[1];
+						break;
 					}
-					default:
-						{
-							retValue[0] = pageBBox.left;
-							retValue[1] = pageBBox.top;
-							break;
-						}
+				case PXC_DestType.Dest_FitV:
+					{
+						if ((destination.nNullFlags & 1) == 0)
+							retValue.x = destination.dValues[0];
+						break;
+					}
+				case PXC_DestType.Dest_FitR:
+					{
+						if ((destination.nNullFlags & 1) == 0)
+							retValue.x = destination.dValues[0];
+						if ((destination.nNullFlags & 8) == 0)
+							retValue.y = destination.dValues[3];
+						break;
+					}
+				case PXC_DestType.Dest_FitBH:
+					{
+						if ((destination.nNullFlags & 2) == 0)
+							retValue.y = destination.dValues[1];
+						break;
+					}
+				case PXC_DestType.Dest_FitBV:
+					{
+						if ((destination.nNullFlags & 1) == 0)
+							retValue.x = destination.dValues[0];
+						break;
+					}
+				default:
+					break;
 				}
-				return retValue;
+			return retValue;
 			};
 			//delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark root);
 			SortByAnything sortByAnything = (sort, root, actionType) => {
 				List<Tuple<IPXC_Bookmark, PXC_Destination>> bookmarks = new List<Tuple<IPXC_Bookmark, PXC_Destination>>();
+				int MAX_VALUE = int.MaxValue;
+				PXC_Destination invalidDest = new PXC_Destination();
+				invalidDest.nPageNum = (uint)MAX_VALUE;
+
 				while (root.ChildrenCount > 0)
 				{
-					if ((root.FirstChild.Actions == null) || (root.FirstChild.Actions.Count == 0))
+					Tuple<IPXC_Bookmark, PXC_Destination> currentBookmark = Tuple.Create(root.FirstChild, invalidDest);
+					if (root.FirstChild.Actions != null)
 					{
-						PXC_Destination invalidDest = new PXC_Destination();
-						invalidDest.nPageNum = int.MaxValue;
-
-						if (bookmarks.Count == 0)
+						for (int i = (int)root.FirstChild.Actions.Count - 1; i >= 0; i--)
 						{
-							bookmarks.Add(Tuple.Create(root.FirstChild, invalidDest));
-							root.FirstChild.Unlink();
-							continue;
-						}
-						int first = 0;
-						int last = bookmarks.Count;
-						while (first < last)
-						{
-							int mid = first + (last - first) / 2;
-							if (invalidDest.nPageNum == bookmarks[mid].Item2.nPageNum)
+							if (root.FirstChild.Actions[(uint)i].Type == actionType)
 							{
-								
-								if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
-								{
-									first = mid + 1;
-								}
-								else
-								{
-									last = mid;
-								}
-							}
-							else if (invalidDest.nPageNum < bookmarks[mid].Item2.nPageNum)
-							{
-								last = mid;
-							}
-							else
-							{
-								first = mid + 1;
-							}
-						}
-						bookmarks.Insert(last, Tuple.Create(root.FirstChild, invalidDest));
-						root.FirstChild.Unlink();
-						continue;
-					}
-
-					for (int i = (int)root.FirstChild.Actions.Count - 1; i >= 0; i--)
-					{
-						if (root.FirstChild.Actions[(uint)i].Type == actionType)
-						{
-							int MAX_VALUE = int.MaxValue;
-							IPXC_Action_Goto actionGoTo = root.FirstChild.Actions[(uint)i] as IPXC_Action_Goto;
-							PXC_Destination currDest = actionGoTo.IsNamedDest
-								? Parent.m_CurDoc.GetNamedDestination(actionGoTo.DestName)
-								: actionGoTo.get_Dest();
-
-							if ((bookmarks.Count == 0) || (currDest.nPageNum > bookmarks[bookmarks.Count - 1].Item2.nPageNum))
-							{
-								bookmarks.Add(Tuple.Create(root.FirstChild, currDest));
+								IPXC_Action_Goto actionGoTo = root.FirstChild.Actions[(uint)i] as IPXC_Action_Goto;
+								PXC_Destination currDest = actionGoTo.IsNamedDest
+									? Parent.m_CurDoc.GetNamedDestination(actionGoTo.DestName)
+									: actionGoTo.get_Dest();
+								currentBookmark = Tuple.Create(root.FirstChild, currDest);
 								break;
 							}
-							if (currDest.nPageNum < bookmarks[0].Item2.nPageNum)
-							{
-								bookmarks.Insert(0, Tuple.Create(root.FirstChild, currDest));
-								break;
-							}
-
-							int first = 0;
-							int last = bookmarks.Count;
-
-							while (first < last)
-							{
-								int mid = first + (last - first) / 2;
-								if (currDest.nPageNum == bookmarks[mid].Item2.nPageNum)
-								{
-									if ((MAX_VALUE == currDest.nPageNum) && (MAX_VALUE == bookmarks[mid].Item2.nPageNum))
-									{
-										if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
-										{
-											last = mid;
-										}
-										else
-										{
-											first = mid + 1;
-										}
-									}
-									else
-									{
-										double[] currentBookmarkXY = getXYFromDestination(root.FirstChild, currDest);
-										double[] bookmarkXY_FromList = getXYFromDestination(bookmarks[mid].Item1, bookmarks[mid].Item2);
-										if (currentBookmarkXY[1] < bookmarkXY_FromList[1])
-										{
-											first = mid + 1;
-										}
-										else if (currentBookmarkXY[1] > bookmarkXY_FromList[1])
-										{
-											last = mid;
-										}
-										else
-										{
-											if (currentBookmarkXY[0] < bookmarkXY_FromList[0])
-											{
-												last = mid;
-											}
-											else
-											{
-												first = mid + 1;
-											}
-										}
-									}
-
-								}
-								else if (currDest.nPageNum < bookmarks[mid].Item2.nPageNum)
-								{
-									last = mid;
-								}
-								else
-								{
-									first = mid + 1;
-								}
-							}
-							bookmarks.Insert(last, Tuple.Create(root.FirstChild, currDest));
-						}
-						if ((root.FirstChild.Actions[(uint)i].Type != actionType) && (i == 0))
-						{
-							PXC_Destination invalidDest = new PXC_Destination();
-							invalidDest.nPageNum = int.MaxValue;
-
-							if (bookmarks.Count == 0)
-							{
-								bookmarks.Add(Tuple.Create(root.FirstChild, invalidDest));
-								root.FirstChild.Unlink();
-								continue;
-							}
-							int first = 0;
-							int last = bookmarks.Count;
-							while (first < last)
-							{
-								int mid = first + (last - first) / 2;
-								if (invalidDest.nPageNum == bookmarks[mid].Item2.nPageNum)
-								{
-									if (NativeMethods.StrCmpLogicalW(root.FirstChild.Title, bookmarks[mid].Item1.Title) == 1)
-									{
-										first = mid + 1;
-									}
-									else
-									{
-										last = mid;
-									}
-								}
-								else if (invalidDest.nPageNum < bookmarks[mid].Item2.nPageNum)
-								{
-									last = mid;
-								}
-								else
-								{
-									first = mid + 1;
-								}
-							}
-							bookmarks.Insert(last, Tuple.Create(root.FirstChild, invalidDest));
 						}
 					}
 					root.FirstChild.Unlink();
+
+					if ((bookmarks.Count == 0) || (currentBookmark.Item2.nPageNum > bookmarks[bookmarks.Count - 1].Item2.nPageNum))
+					{
+						bookmarks.Add(currentBookmark);
+						continue;
+					}
+					else if (currentBookmark.Item2.nPageNum < bookmarks[0].Item2.nPageNum)
+					{
+						bookmarks.Insert(0, currentBookmark);
+						continue;
+					}
+
+					int first = 0;
+					int last = bookmarks.Count;
+
+					while (first < last)
+					{
+						int mid = first + (last - first) / 2;
+						if (currentBookmark.Item2.nPageNum == bookmarks[mid].Item2.nPageNum)
+						{
+							if ((MAX_VALUE == currentBookmark.Item2.nPageNum) && (MAX_VALUE == bookmarks[mid].Item2.nPageNum))
+							{
+								if (NativeMethods.StrCmpLogicalW(currentBookmark.Item1.Title, bookmarks[mid].Item1.Title) == 1)
+									first = mid + 1;
+								else
+									last = mid;
+							}
+							else
+							{
+								PXC_Point currentBookmarkXY = getXYFromDestination(Parent.m_CurDoc, currentBookmark.Item2);
+								PXC_Point bookmarkXY_FromList = getXYFromDestination(Parent.m_CurDoc, bookmarks[mid].Item2);
+								if (currentBookmarkXY.y < bookmarkXY_FromList.y)
+								{
+									first = mid + 1;
+								}
+								else if (currentBookmarkXY.y > bookmarkXY_FromList.y)
+								{
+									last = mid;
+								}
+								else
+								{
+									if (currentBookmarkXY.x < bookmarkXY_FromList.x)
+										last = mid;
+									else
+										first = mid + 1;
+								}
+							}
+						}
+						else if (currentBookmark.Item2.nPageNum < bookmarks[mid].Item2.nPageNum)
+						{
+							last = mid;
+						}
+						else
+						{
+							first = mid + 1;
+						}
+					}
+					bookmarks.Insert(last, currentBookmark);
 				}
 
 				foreach(Tuple<IPXC_Bookmark, PXC_Destination> bookmark in bookmarks)

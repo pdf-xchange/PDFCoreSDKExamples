@@ -573,15 +573,22 @@ namespace CoreAPIDemo
 				return;
 
 			IPXC_ActionsList aList = curNode.m_Bookmark.Actions;
-			for (uint i = aList.Count - 1; i >= 0; i--)
+			for (int i = (int)aList.Count - 1; i >= 0; i--)
 			{
-				if (aList[i].Type == typeGoTo)
+				if (aList[(uint)i].Type == typeGoTo)
 				{
-					IPXC_Action_Goto actGoTo = (IPXC_Action_Goto)aList[i];
+					IPXC_Action_Goto actGoTo = (IPXC_Action_Goto)aList[(uint)i];
 					if (actGoTo.IsNamedDest)
 					{
-						currentPage.Text = (m_CurDoc.GetNamedDestination(actGoTo.DestName).nPageNum + 1).ToString();
-						break;
+						try
+						{
+							currentPage.Text = (m_CurDoc.GetNamedDestination(actGoTo.DestName).nPageNum + 1).ToString();
+							break;
+						}
+						catch(Exception)
+						{
+							continue;
+						}
 					}
 
 					currentPage.Text = (actGoTo.get_Dest().nPageNum + 1).ToString();
