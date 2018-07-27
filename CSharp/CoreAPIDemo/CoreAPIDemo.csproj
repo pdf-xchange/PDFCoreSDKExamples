@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="FormFields.cs" />
     <Compile Include="IStreamWrapper.cs" />
+    <Compile Include="NamedDestinations.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Pagemarks.cs" />
     <Compile Include="Program.cs" />
@@ -195,6 +196,9 @@
     <Content Include="Documents\Hobbit.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\addDest_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\bookmark_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -231,6 +235,9 @@
     </Content>
     <Content Include="Images\openWith_24.png" />
     <Content Include="Images\prev_24.png" />
+    <Content Include="Images\removeDest_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\runGreyed_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

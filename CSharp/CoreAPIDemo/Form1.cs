@@ -60,6 +60,7 @@ namespace CoreAPIDemo
 		{
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
 			SetWindowTheme(bookmarksTree.Handle, "explorer", null);
+			SetWindowTheme(namedDestsList.Handle, "explorer", null);
 			ImageList il = new ImageList();
 			try
 			{
@@ -423,6 +424,11 @@ namespace CoreAPIDemo
 			srcPage = null;
 		}
 
+		public void FillNamedDestinationsList()
+		{
+#warning Implement filling of the named destination list in the different thread
+		}
+
 		public void FillBookmarksTree()
 		{
 			BookmarkNode remBookmark = bookmarksTree.SelectedNode as BookmarkNode;
@@ -496,6 +502,8 @@ namespace CoreAPIDemo
 			}
 			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
 				FillBookmarksTree();
+			if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
+				FillNamedDestinationsList();
 		}
 
 		public void CloseDocument()
@@ -729,6 +737,31 @@ namespace CoreAPIDemo
 		private void collapseBookmarks_Click(object sender, EventArgs e)
 		{
 			bookmarksTree.CollapseAll();
+		}
+
+		private void addDest_Click(object sender, EventArgs e)
+		{
+#warning Implement this
+		}
+
+		private void removeDest_Click(object sender, EventArgs e)
+		{
+#warning Implement this
+		}
+
+		private void expandDests_Click(object sender, EventArgs e)
+		{
+#warning Implement this
+		}
+
+		private void collapseDests_Click(object sender, EventArgs e)
+		{
+#warning Implement this
+		}
+
+		private void namedDestsList_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+#warning Implement sorting here (note that you will have to draw or set the sorting arrows)
 		}
 	}
 }

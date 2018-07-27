@@ -70,7 +70,18 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.expandBookmarks = new System.Windows.Forms.ToolStripButton();
 			this.collapseBookmarks = new System.Windows.Forms.ToolStripButton();
+			this.namedDests = new System.Windows.Forms.TabPage();
+			this.namedDestsList = new System.Windows.Forms.ListView();
+			this.destName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.destPage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.namedDestsProgress = new System.Windows.Forms.ProgressBar();
 			this.splitter3 = new System.Windows.Forms.Splitter();
+			this.toolStrip5 = new System.Windows.Forms.ToolStrip();
+			this.addDest = new System.Windows.Forms.ToolStripButton();
+			this.removeDest = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.expandDests = new System.Windows.Forms.ToolStripButton();
+			this.collapseDests = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -82,6 +93,8 @@
 			this.viewControl.SuspendLayout();
 			this.bookmarksTab.SuspendLayout();
 			this.toolStrip4.SuspendLayout();
+			this.namedDests.SuspendLayout();
+			this.toolStrip5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sampleTree
@@ -91,21 +104,19 @@
 			this.sampleTree.HideSelection = false;
 			this.sampleTree.HotTracking = true;
 			this.sampleTree.ItemHeight = 26;
-			this.sampleTree.Location = new System.Drawing.Point(0, 31);
-			this.sampleTree.Margin = new System.Windows.Forms.Padding(2);
+			this.sampleTree.Location = new System.Drawing.Point(0, 35);
 			this.sampleTree.Name = "sampleTree";
 			this.sampleTree.ShowLines = false;
-			this.sampleTree.Size = new System.Drawing.Size(505, 662);
+			this.sampleTree.Size = new System.Drawing.Size(758, 1031);
 			this.sampleTree.TabIndex = 0;
 			this.sampleTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseClick);
 			this.sampleTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.sampleTree_NodeMouseDoubleClick);
 			// 
 			// splitter1
 			// 
-			this.splitter1.Location = new System.Drawing.Point(505, 0);
-			this.splitter1.Margin = new System.Windows.Forms.Padding(2);
+			this.splitter1.Location = new System.Drawing.Point(758, 0);
 			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(7, 693);
+			this.splitter1.Size = new System.Drawing.Size(10, 1066);
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
 			this.splitter1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter1_SplitterMoved);
@@ -119,7 +130,8 @@
             this.toolStripButton2});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(551, 31);
+			this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.toolStrip1.Size = new System.Drawing.Size(827, 35);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -129,21 +141,21 @@
 			this.runSample.Image = ((System.Drawing.Image)(resources.GetObject("runSample.Image")));
 			this.runSample.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.runSample.Name = "runSample";
-			this.runSample.Size = new System.Drawing.Size(109, 28);
+			this.runSample.Size = new System.Drawing.Size(144, 32);
 			this.runSample.Text = "Run Sample";
 			this.runSample.Click += new System.EventHandler(this.runSample_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 35);
 			// 
 			// toolStripButton2
 			// 
 			this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
 			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton2.Name = "toolStripButton2";
-			this.toolStripButton2.Size = new System.Drawing.Size(103, 28);
+			this.toolStripButton2.Size = new System.Drawing.Size(144, 32);
 			this.toolStripButton2.Text = "Go to Source";
 			this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
 			// 
@@ -161,7 +173,8 @@
             this.btnClose});
 			this.toolStrip2.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(551, 31);
+			this.toolStrip2.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.toolStrip2.Size = new System.Drawing.Size(827, 35);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			// 
@@ -171,7 +184,7 @@
 			this.prevPage.Image = ((System.Drawing.Image)(resources.GetObject("prevPage.Image")));
 			this.prevPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.prevPage.Name = "prevPage";
-			this.prevPage.Size = new System.Drawing.Size(28, 28);
+			this.prevPage.Size = new System.Drawing.Size(28, 32);
 			this.prevPage.Text = "Previuos Page";
 			this.prevPage.Click += new System.EventHandler(this.prevPage_Click);
 			// 
@@ -180,14 +193,14 @@
 			this.currentPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.currentPage.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
 			this.currentPage.Name = "currentPage";
-			this.currentPage.Size = new System.Drawing.Size(34, 27);
+			this.currentPage.Size = new System.Drawing.Size(50, 31);
 			this.currentPage.Text = "1";
 			this.currentPage.TextChanged += new System.EventHandler(this.currentPage_TextChanged);
 			// 
 			// pagesCount
 			// 
 			this.pagesCount.Name = "pagesCount";
-			this.pagesCount.Size = new System.Drawing.Size(18, 28);
+			this.pagesCount.Size = new System.Drawing.Size(29, 32);
 			this.pagesCount.Text = "/0";
 			// 
 			// nextPage
@@ -196,21 +209,21 @@
 			this.nextPage.Image = ((System.Drawing.Image)(resources.GetObject("nextPage.Image")));
 			this.nextPage.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.nextPage.Name = "nextPage";
-			this.nextPage.Size = new System.Drawing.Size(28, 28);
+			this.nextPage.Size = new System.Drawing.Size(28, 32);
 			this.nextPage.Text = "Next Page";
 			this.nextPage.Click += new System.EventHandler(this.nextPage_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 31);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 35);
 			// 
 			// btnOpen
 			// 
 			this.btnOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnOpen.Image")));
 			this.btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnOpen.Name = "btnOpen";
-			this.btnOpen.Size = new System.Drawing.Size(169, 28);
+			this.btnOpen.Size = new System.Drawing.Size(241, 32);
 			this.btnOpen.Text = "Open with Default Viewer";
 			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
 			// 
@@ -219,7 +232,7 @@
 			this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
 			this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(59, 28);
+			this.btnSave.Size = new System.Drawing.Size(77, 32);
 			this.btnSave.Text = "Save";
 			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
@@ -228,7 +241,7 @@
 			this.btnClose.Image = ((System.Drawing.Image)(resources.GetObject("btnClose.Image")));
 			this.btnClose.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnClose.Name = "btnClose";
-			this.btnClose.Size = new System.Drawing.Size(64, 28);
+			this.btnClose.Size = new System.Drawing.Size(83, 32);
 			this.btnClose.Text = "Close";
 			this.btnClose.Click += new System.EventHandler(this.toolStripButton3_Click);
 			// 
@@ -237,20 +250,18 @@
 			this.previewImage.BackColor = System.Drawing.SystemColors.Control;
 			this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.previewImage.Location = new System.Drawing.Point(0, 31);
-			this.previewImage.Margin = new System.Windows.Forms.Padding(2);
+			this.previewImage.Location = new System.Drawing.Point(0, 35);
 			this.previewImage.Name = "previewImage";
-			this.previewImage.Size = new System.Drawing.Size(551, 415);
+			this.previewImage.Size = new System.Drawing.Size(827, 651);
 			this.previewImage.TabIndex = 0;
 			this.previewImage.TabStop = false;
 			// 
 			// splitter2
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.splitter2.Location = new System.Drawing.Point(512, 446);
-			this.splitter2.Margin = new System.Windows.Forms.Padding(2);
+			this.splitter2.Location = new System.Drawing.Point(768, 686);
 			this.splitter2.Name = "splitter2";
-			this.splitter2.Size = new System.Drawing.Size(551, 6);
+			this.splitter2.Size = new System.Drawing.Size(827, 9);
 			this.splitter2.TabIndex = 0;
 			this.splitter2.TabStop = false;
 			this.splitter2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitter2_SplitterMoved);
@@ -270,11 +281,11 @@
         '\''};
 			this.codeSource.AutoIndentCharsPatterns = "\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\n^\\s*(case|default)\\s*[^:]*(" +
     "?<range>:)\\s*(?<range>[^;]+);\n";
-			this.codeSource.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+			this.codeSource.AutoScrollMinSize = new System.Drawing.Size(35, 22);
 			this.codeSource.BackBrush = null;
 			this.codeSource.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
-			this.codeSource.CharHeight = 14;
-			this.codeSource.CharWidth = 8;
+			this.codeSource.CharHeight = 22;
+			this.codeSource.CharWidth = 12;
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -283,8 +294,7 @@
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
 			this.codeSource.LeftBracket2 = '{';
-			this.codeSource.Location = new System.Drawing.Point(0, 31);
-			this.codeSource.Margin = new System.Windows.Forms.Padding(2);
+			this.codeSource.Location = new System.Drawing.Point(0, 35);
 			this.codeSource.Name = "codeSource";
 			this.codeSource.Paddings = new System.Windows.Forms.Padding(0);
 			this.codeSource.ReadOnly = true;
@@ -292,7 +302,7 @@
 			this.codeSource.RightBracket2 = '}';
 			this.codeSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
 			this.codeSource.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("codeSource.ServiceColors")));
-			this.codeSource.Size = new System.Drawing.Size(551, 210);
+			this.codeSource.Size = new System.Drawing.Size(827, 336);
 			this.codeSource.TabIndex = 2;
 			this.codeSource.Zoom = 100;
 			// 
@@ -301,10 +311,9 @@
 			this.panel1.Controls.Add(this.codeSource);
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(512, 452);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2);
+			this.panel1.Location = new System.Drawing.Point(768, 695);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(551, 241);
+			this.panel1.Size = new System.Drawing.Size(827, 371);
 			this.panel1.TabIndex = 3;
 			// 
 			// panel2
@@ -312,10 +321,9 @@
 			this.panel2.Controls.Add(this.previewImage);
 			this.panel2.Controls.Add(this.toolStrip2);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(512, 0);
-			this.panel2.Margin = new System.Windows.Forms.Padding(2);
+			this.panel2.Location = new System.Drawing.Point(768, 0);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(551, 446);
+			this.panel2.Size = new System.Drawing.Size(827, 686);
 			this.panel2.TabIndex = 4;
 			// 
 			// panel3
@@ -324,9 +332,8 @@
 			this.panel3.Controls.Add(this.toolStrip3);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel3.Location = new System.Drawing.Point(0, 0);
-			this.panel3.Margin = new System.Windows.Forms.Padding(2);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(505, 693);
+			this.panel3.Size = new System.Drawing.Size(758, 1066);
 			this.panel3.TabIndex = 5;
 			// 
 			// toolStrip3
@@ -340,7 +347,8 @@
             this.collapseAll});
 			this.toolStrip3.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip3.Name = "toolStrip3";
-			this.toolStrip3.Size = new System.Drawing.Size(505, 31);
+			this.toolStrip3.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.toolStrip3.Size = new System.Drawing.Size(758, 35);
 			this.toolStrip3.TabIndex = 1;
 			this.toolStrip3.Text = "toolStrip3";
 			// 
@@ -349,7 +357,7 @@
 			this.filterEdit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.filterEdit.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
 			this.filterEdit.Name = "filterEdit";
-			this.filterEdit.Size = new System.Drawing.Size(334, 27);
+			this.filterEdit.Size = new System.Drawing.Size(500, 31);
 			this.filterEdit.TextChanged += new System.EventHandler(this.filterEdit_TextChanged);
 			// 
 			// toolStripButton1
@@ -358,14 +366,14 @@
 			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(28, 28);
+			this.toolStripButton1.Size = new System.Drawing.Size(28, 32);
 			this.toolStripButton1.Text = "Clear Filter";
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 35);
 			// 
 			// expandAll
 			// 
@@ -373,7 +381,7 @@
 			this.expandAll.Image = ((System.Drawing.Image)(resources.GetObject("expandAll.Image")));
 			this.expandAll.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.expandAll.Name = "expandAll";
-			this.expandAll.Size = new System.Drawing.Size(28, 28);
+			this.expandAll.Size = new System.Drawing.Size(28, 32);
 			this.expandAll.Text = "Expand All";
 			this.expandAll.Click += new System.EventHandler(this.expandAll_Click);
 			// 
@@ -383,19 +391,19 @@
 			this.collapseAll.Image = ((System.Drawing.Image)(resources.GetObject("collapseAll.Image")));
 			this.collapseAll.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.collapseAll.Name = "collapseAll";
-			this.collapseAll.Size = new System.Drawing.Size(28, 28);
+			this.collapseAll.Size = new System.Drawing.Size(28, 32);
 			this.collapseAll.Text = "Collapse All";
 			this.collapseAll.Click += new System.EventHandler(this.collapseAll_Click);
 			// 
 			// viewControl
 			// 
 			this.viewControl.Controls.Add(this.bookmarksTab);
+			this.viewControl.Controls.Add(this.namedDests);
 			this.viewControl.Dock = System.Windows.Forms.DockStyle.Right;
-			this.viewControl.Location = new System.Drawing.Point(1065, 0);
-			this.viewControl.Margin = new System.Windows.Forms.Padding(2);
+			this.viewControl.Location = new System.Drawing.Point(1598, 0);
 			this.viewControl.Name = "viewControl";
 			this.viewControl.SelectedIndex = 0;
-			this.viewControl.Size = new System.Drawing.Size(244, 693);
+			this.viewControl.Size = new System.Drawing.Size(366, 1066);
 			this.viewControl.TabIndex = 2;
 			// 
 			// bookmarksTab
@@ -403,10 +411,11 @@
 			this.bookmarksTab.Controls.Add(this.bookmarkProgress);
 			this.bookmarksTab.Controls.Add(this.bookmarksTree);
 			this.bookmarksTab.Controls.Add(this.toolStrip4);
-			this.bookmarksTab.Location = new System.Drawing.Point(4, 22);
+			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
+			this.bookmarksTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.bookmarksTab.Name = "bookmarksTab";
-			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2);
-			this.bookmarksTab.Size = new System.Drawing.Size(236, 667);
+			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(3);
+			this.bookmarksTab.Size = new System.Drawing.Size(358, 1033);
 			this.bookmarksTab.TabIndex = 0;
 			this.bookmarksTab.Text = "Bookmarks";
 			this.bookmarksTab.UseVisualStyleBackColor = true;
@@ -414,9 +423,10 @@
 			// bookmarkProgress
 			// 
 			this.bookmarkProgress.Dock = System.Windows.Forms.DockStyle.Top;
-			this.bookmarkProgress.Location = new System.Drawing.Point(2, 33);
+			this.bookmarkProgress.Location = new System.Drawing.Point(3, 34);
+			this.bookmarkProgress.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.bookmarkProgress.Name = "bookmarkProgress";
-			this.bookmarkProgress.Size = new System.Drawing.Size(232, 10);
+			this.bookmarkProgress.Size = new System.Drawing.Size(352, 15);
 			this.bookmarkProgress.Step = 1;
 			this.bookmarkProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.bookmarkProgress.TabIndex = 1;
@@ -428,10 +438,11 @@
 			this.bookmarksTree.FullRowSelect = true;
 			this.bookmarksTree.HideSelection = false;
 			this.bookmarksTree.HotTracking = true;
-			this.bookmarksTree.Location = new System.Drawing.Point(2, 33);
+			this.bookmarksTree.Location = new System.Drawing.Point(3, 34);
+			this.bookmarksTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.bookmarksTree.Name = "bookmarksTree";
 			this.bookmarksTree.ShowLines = false;
-			this.bookmarksTree.Size = new System.Drawing.Size(232, 632);
+			this.bookmarksTree.Size = new System.Drawing.Size(352, 996);
 			this.bookmarksTree.TabIndex = 0;
 			this.bookmarksTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.bookmarksTree_NodeMouseClick);
 			// 
@@ -447,9 +458,10 @@
             this.toolStripSeparator5,
             this.expandBookmarks,
             this.collapseBookmarks});
-			this.toolStrip4.Location = new System.Drawing.Point(2, 2);
+			this.toolStrip4.Location = new System.Drawing.Point(3, 3);
 			this.toolStrip4.Name = "toolStrip4";
-			this.toolStrip4.Size = new System.Drawing.Size(232, 31);
+			this.toolStrip4.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.toolStrip4.Size = new System.Drawing.Size(352, 31);
 			this.toolStrip4.TabIndex = 2;
 			this.toolStrip4.Text = "toolStrip4";
 			// 
@@ -523,21 +535,125 @@
 			this.collapseBookmarks.Text = "Collapse All Bookmarks";
 			this.collapseBookmarks.Click += new System.EventHandler(this.collapseBookmarks_Click);
 			// 
+			// namedDests
+			// 
+			this.namedDests.Controls.Add(this.namedDestsList);
+			this.namedDests.Controls.Add(this.namedDestsProgress);
+			this.namedDests.Controls.Add(this.toolStrip5);
+			this.namedDests.Location = new System.Drawing.Point(4, 29);
+			this.namedDests.Name = "namedDests";
+			this.namedDests.Size = new System.Drawing.Size(358, 1033);
+			this.namedDests.TabIndex = 1;
+			this.namedDests.Text = "Named Destinations";
+			this.namedDests.UseVisualStyleBackColor = true;
+			// 
+			// namedDestsList
+			// 
+			this.namedDestsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.destName,
+            this.destPage});
+			this.namedDestsList.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.namedDestsList.HideSelection = false;
+			this.namedDestsList.Location = new System.Drawing.Point(0, 46);
+			this.namedDestsList.Name = "namedDestsList";
+			this.namedDestsList.Size = new System.Drawing.Size(358, 987);
+			this.namedDestsList.TabIndex = 1;
+			this.namedDestsList.UseCompatibleStateImageBehavior = false;
+			this.namedDestsList.View = System.Windows.Forms.View.Details;
+			this.namedDestsList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.namedDestsList_ColumnClick);
+			// 
+			// destName
+			// 
+			this.destName.Text = "Name";
+			this.destName.Width = 270;
+			// 
+			// destPage
+			// 
+			this.destPage.Text = "Page";
+			// 
+			// namedDestsProgress
+			// 
+			this.namedDestsProgress.Dock = System.Windows.Forms.DockStyle.Top;
+			this.namedDestsProgress.Location = new System.Drawing.Point(0, 31);
+			this.namedDestsProgress.Name = "namedDestsProgress";
+			this.namedDestsProgress.Size = new System.Drawing.Size(358, 15);
+			this.namedDestsProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.namedDestsProgress.TabIndex = 0;
+			// 
 			// splitter3
 			// 
 			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
-			this.splitter3.Location = new System.Drawing.Point(1063, 0);
-			this.splitter3.Margin = new System.Windows.Forms.Padding(2);
+			this.splitter3.Location = new System.Drawing.Point(1595, 0);
 			this.splitter3.Name = "splitter3";
-			this.splitter3.Size = new System.Drawing.Size(2, 693);
+			this.splitter3.Size = new System.Drawing.Size(3, 1066);
 			this.splitter3.TabIndex = 0;
 			this.splitter3.TabStop = false;
 			// 
+			// toolStrip5
+			// 
+			this.toolStrip5.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.toolStrip5.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addDest,
+            this.removeDest,
+            this.toolStripSeparator6,
+            this.expandDests,
+            this.collapseDests});
+			this.toolStrip5.Location = new System.Drawing.Point(0, 0);
+			this.toolStrip5.Name = "toolStrip5";
+			this.toolStrip5.Size = new System.Drawing.Size(358, 31);
+			this.toolStrip5.TabIndex = 2;
+			this.toolStrip5.Text = "toolStrip5";
+			// 
+			// addDest
+			// 
+			this.addDest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.addDest.Image = ((System.Drawing.Image)(resources.GetObject("addDest.Image")));
+			this.addDest.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.addDest.Name = "addDest";
+			this.addDest.Size = new System.Drawing.Size(28, 28);
+			this.addDest.Text = "Add Named Destination";
+			this.addDest.Click += new System.EventHandler(this.addDest_Click);
+			// 
+			// removeDest
+			// 
+			this.removeDest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.removeDest.Image = ((System.Drawing.Image)(resources.GetObject("removeDest.Image")));
+			this.removeDest.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.removeDest.Name = "removeDest";
+			this.removeDest.Size = new System.Drawing.Size(28, 28);
+			this.removeDest.Text = "Remove Named Destination";
+			this.removeDest.Click += new System.EventHandler(this.removeDest_Click);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 31);
+			// 
+			// expandDests
+			// 
+			this.expandDests.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.expandDests.Image = ((System.Drawing.Image)(resources.GetObject("expandDests.Image")));
+			this.expandDests.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.expandDests.Name = "expandDests";
+			this.expandDests.Size = new System.Drawing.Size(28, 28);
+			this.expandDests.Text = "Expand All";
+			this.expandDests.Click += new System.EventHandler(this.expandDests_Click);
+			// 
+			// collapseDests
+			// 
+			this.collapseDests.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.collapseDests.Image = ((System.Drawing.Image)(resources.GetObject("collapseDests.Image")));
+			this.collapseDests.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.collapseDests.Name = "collapseDests";
+			this.collapseDests.Size = new System.Drawing.Size(28, 28);
+			this.collapseDests.Text = "Collapse All";
+			this.collapseDests.Click += new System.EventHandler(this.collapseDests_Click);
+			// 
 			// Form1
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1309, 693);
+			this.ClientSize = new System.Drawing.Size(1964, 1066);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.splitter2);
 			this.Controls.Add(this.panel1);
@@ -546,8 +662,7 @@
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.panel3);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(2);
-			this.MinimumSize = new System.Drawing.Size(857, 632);
+			this.MinimumSize = new System.Drawing.Size(1274, 942);
 			this.Name = "Form1";
 			this.Text = "CoreAPIDemo";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -573,6 +688,10 @@
 			this.bookmarksTab.PerformLayout();
 			this.toolStrip4.ResumeLayout(false);
 			this.toolStrip4.PerformLayout();
+			this.namedDests.ResumeLayout(false);
+			this.namedDests.PerformLayout();
+			this.toolStrip5.ResumeLayout(false);
+			this.toolStrip5.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -620,6 +739,17 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripButton expandBookmarks;
 		private System.Windows.Forms.ToolStripButton collapseBookmarks;
+		private System.Windows.Forms.TabPage namedDests;
+		private System.Windows.Forms.ListView namedDestsList;
+		private System.Windows.Forms.ColumnHeader destName;
+		private System.Windows.Forms.ColumnHeader destPage;
+		private System.Windows.Forms.ProgressBar namedDestsProgress;
+		private System.Windows.Forms.ToolStrip toolStrip5;
+		private System.Windows.Forms.ToolStripButton addDest;
+		private System.Windows.Forms.ToolStripButton removeDest;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripButton expandDests;
+		private System.Windows.Forms.ToolStripButton collapseDests;
 	}
 }
 
