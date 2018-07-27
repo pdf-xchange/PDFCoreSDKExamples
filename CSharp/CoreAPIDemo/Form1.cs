@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -198,7 +199,7 @@ namespace CoreAPIDemo
 			Action addBookmarkToTree = () =>
 			{
 				IPXC_Bookmark child = root.FirstChild;
-
+				Console.OpenStandardOutput();
 				for (int i = 0; i < root.ChildrenCount; i++)
 				{
 					IPXC_ActionsList aList = child.Actions;
@@ -426,7 +427,52 @@ namespace CoreAPIDemo
 
 		public void FillNamedDestinationsList()
 		{
-#warning Implement filling of the named destination list in the different thread
+			Thread thirdThread = new Thread(delegate () {
+				IPXC_NameTree nameTree = null;
+				ListViewItem[] listItems = null;
+				int countNameThree = 0;
+				namedDestsList.Invoke((MethodInvoker)delegate
+					{
+						nameTree = m_CurDoc.GetNameTree("Dests");
+						namedDestsList.BeginUpdate();
+						namedDestsProgress.Visible = true;
+						countNameThree = (int)nameTree.Count;
+					});
+				listItems = new ListViewItem[countNameThree];
+				int relation = countNameThree / 100;
+				for (int i = 0; i < countNameThree; i++)
+				{
+					string nameDest = "";
+					IPXS_PDFVariant pdfVariant = null;
+					string destPage = "";
+					try
+					{
+						PXC_Destination dest = new PXC_Destination();
+						Invoke((MethodInvoker)delegate
+						{
+							namedDestsProgress.Value = i / relation;
+							nameTree.Item((uint)i, out nameDest, out pdfVariant);
+							dest = m_CurDoc.FillDestination(pdfVariant);
+						});
+						destPage = (dest.nPageNum + 1).ToString();
+					}
+					catch (Exception)
+					{
+					}
+					ListViewItem item = new ListViewItem(nameDest);
+					item.Name = "item " + i + 1;
+					listItems[i] = item;
+					listItems[i].SubItems.Add(destPage);
+				}
+				namedDestsList.Invoke((MethodInvoker)delegate
+				{
+					namedDestsProgress.Visible = false;
+					namedDestsProgress.Value = 0;
+					namedDestsList.Items.AddRange(listItems);
+					namedDestsList.EndUpdate();
+				});
+			});
+			thirdThread.Start();
 		}
 
 		public void FillBookmarksTree()
@@ -448,11 +494,12 @@ namespace CoreAPIDemo
 					bookmarkProgress.Invoke((MethodInvoker)delegate
 					{
 						bookmarkProgress.Maximum = CountAllBookmarks(m_CurDoc.BookmarkRoot);
+						bookmarksTree.BeginUpdate();
 					});
-					
 					AddBookmarkToTree(root);
 					bookmarkProgress.Invoke((MethodInvoker)delegate
 					{
+						bookmarksTree.EndUpdate();
 						bookmarkProgress.Visible = false;
 						SelectBookmarkNodeByBookmark(bookmark, bookmarksTree.Nodes);
 					});
@@ -500,10 +547,12 @@ namespace CoreAPIDemo
 				nPage = (int)m_CurDoc.Pages.Count - 1;
 				currentPage.Text = (nPage + 1).ToString();
 			}
-			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
-				FillBookmarksTree();
 			if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
 				FillNamedDestinationsList();
+			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
+				FillBookmarksTree();
+
+
 		}
 
 		public void CloseDocument()
