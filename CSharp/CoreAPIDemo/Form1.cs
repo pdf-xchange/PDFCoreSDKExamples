@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using PDFXCoreAPI;
@@ -31,6 +32,16 @@ namespace CoreAPIDemo
 		public TreeView GetBookmarkTree
 		{
 			get { return bookmarksTree; }
+		}
+
+		public ListViewItem SelectedNameDest_Item
+		{
+			get { return namedDestsList.SelectedItems[0]; }
+		}
+
+		public ListView GetNamedDestinationList
+		{
+			get { return namedDestsList; }
 		}
 
 		public BookmarkNode SelectedBookmarkNode
@@ -78,6 +89,17 @@ namespace CoreAPIDemo
 				img = new Bitmap(sImgFolder + "bookmark_24.png");
 				ilfb.Images.Add(img);
 				bookmarksTree.ImageList = ilfb;
+
+				ImageList ilnd = new ImageList();
+				img = new Bitmap(1, 1);
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "dest_24.png");
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "sortAsc_24.png");
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "sortDesc_24.png");
+				ilnd.Images.Add(img);
+				namedDestsList.SmallImageList = ilnd;
 			}
 			catch (Exception)
 			{
@@ -434,6 +456,7 @@ namespace CoreAPIDemo
 					{
 						nameTree = m_CurDoc.GetNameTree("Dests");
 						namedDestsList.BeginUpdate();
+						namedDestsList.Items.Clear();
 						namedDestsProgress.Visible = true;
 						count = (int)nameTree.Count;
 						namedDestsProgress.Maximum = count;
@@ -461,6 +484,7 @@ namespace CoreAPIDemo
 
 					ListViewItem item = new ListViewItem(nameDest);
 					item.Name = "item_" + i;
+					item.ImageIndex = 1;
 					listItems[i] = item;
 					listItems[i].SubItems.Add(destPage);
 				}
@@ -790,27 +814,89 @@ namespace CoreAPIDemo
 
 		private void addDest_Click(object sender, EventArgs e)
 		{
-#warning Implement this
+			NamedDestinations.AddNewDestination(this);
 		}
 
 		private void removeDest_Click(object sender, EventArgs e)
 		{
-#warning Implement this
-		}
-
-		private void expandDests_Click(object sender, EventArgs e)
-		{
-#warning Implement this
-		}
-
-		private void collapseDests_Click(object sender, EventArgs e)
-		{
-#warning Implement this
+			NamedDestinations.RemoveNamedDest(this);
 		}
 
 		private void namedDestsList_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
+			int SecondColumn = e.Column == 0 ? 1 : 0;
+			namedDestsList.Columns[SecondColumn].ImageIndex = 0;
+			int Sort = namedDestsList.Columns[e.Column].ImageIndex;
+			if((Sort == -1) || (Sort == 3))
+			{
+				namedDestsList.Columns[e.Column].ImageIndex = 2;
+				namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
+			}
+			else
+			{
+				namedDestsList.Columns[e.Column].ImageIndex = 3;
+				namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
+			}
 #warning Implement sorting here (note that you will have to draw or set the sorting arrows)
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		internal static class NativeMethods
+		{
+			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			public static extern int StrCmpLogicalW(string psz1, string psz2);
+		}
+
+		class ListViewColumnComparer : IComparer
+		{
+			public int ColumnIndex { get; set; }
+			public int Sort { get; set; }
+			public int SecondColumnIndex { get; set; }
+
+			public ListViewColumnComparer(int columnIndex, int sort, int secondColumnIndex)
+			{
+				ColumnIndex = columnIndex;
+				Sort = sort;
+				SecondColumnIndex = secondColumnIndex;
+			}
+
+			public int Compare(object x, object y)
+			{
+				if ((Sort == -1) || (Sort == 3))
+				{
+					if ((((ListViewItem)x).SubItems[ColumnIndex].Text == "") && (((ListViewItem)y).SubItems[ColumnIndex].Text == ""))
+					{
+						return NativeMethods.StrCmpLogicalW(
+						((ListViewItem)x).SubItems[SecondColumnIndex].Text,
+						((ListViewItem)y).SubItems[SecondColumnIndex].Text);
+					}
+					else
+					{
+						return NativeMethods.StrCmpLogicalW(
+						((ListViewItem)x).SubItems[ColumnIndex].Text,
+						((ListViewItem)y).SubItems[ColumnIndex].Text);
+					}
+				}
+				else
+				{
+					if ((((ListViewItem)x).SubItems[ColumnIndex].Text == "") && (((ListViewItem)y).SubItems[ColumnIndex].Text == ""))
+					{
+						return NativeMethods.StrCmpLogicalW(
+						((ListViewItem)y).SubItems[SecondColumnIndex].Text,
+						((ListViewItem)x).SubItems[SecondColumnIndex].Text);
+					}
+					else
+					{
+						return NativeMethods.StrCmpLogicalW(
+						((ListViewItem)y).SubItems[ColumnIndex].Text,
+						((ListViewItem)x).SubItems[ColumnIndex].Text);
+					}
+				}
+			}
+		}
+		private void namedDestsList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
