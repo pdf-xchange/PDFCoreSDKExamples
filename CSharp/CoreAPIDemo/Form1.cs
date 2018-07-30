@@ -36,7 +36,7 @@ namespace CoreAPIDemo
 
 		public ListViewItem SelectedNameDest_Item
 		{
-			get { return namedDestsList.SelectedItems[0]; }
+			get { return namedDestsList.SelectedItems.Count == 0 ? null : namedDestsList.SelectedItems[0]; }
 		}
 
 		public ListView GetNamedDestinationList
@@ -58,6 +58,18 @@ namespace CoreAPIDemo
 			efuf_Annotations		= 0x4,
 			efuf_All				= 0xff,
 		}
+		public enum eFormColumnSortFlag
+		{
+			efcsf_InAscending = 0,
+			efcsf_InDescending = 0x1
+		}
+		public enum eFormColumnSortFlags
+		{
+			efcsf_None = 0,
+			efcsf_InAscending = 0x1,
+			efcsf_InDescending = 0x2
+		}
+
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
@@ -67,6 +79,13 @@ namespace CoreAPIDemo
 
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
+
+		[SuppressUnmanagedCodeSecurity]
+		internal static class NativeMethods
+		{
+			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			public static extern int StrCmpLogicalW(string psz1, string psz2);
+		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
@@ -814,41 +833,33 @@ namespace CoreAPIDemo
 
 		private void addDest_Click(object sender, EventArgs e)
 		{
-			NamedDestinations.AddNewDestination(this);
+			UpdateControlsFromDocument(NamedDestinations.AddNewDestination(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void removeDest_Click(object sender, EventArgs e)
 		{
-			NamedDestinations.RemoveNamedDest(this);
+			UpdateControlsFromDocument(NamedDestinations.RemoveNamedDest(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void namedDestsList_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			int SecondColumn = e.Column == 0 ? 1 : 0;
+			int SecondColumn = e.Column ^ 1;
 			namedDestsList.Columns[SecondColumn].ImageIndex = 0;
 			int Sort = namedDestsList.Columns[e.Column].ImageIndex;
-			if((Sort == -1) || (Sort == 3))
-			{
-				namedDestsList.Columns[e.Column].ImageIndex = 2;
-				namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
-			}
-			else
-			{
-				namedDestsList.Columns[e.Column].ImageIndex = 3;
-				namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
-			}
-#warning Implement sorting here (note that you will have to draw or set the sorting arrows)
-		}
 
-		[SuppressUnmanagedCodeSecurity]
-		internal static class NativeMethods
-		{
-			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-			public static extern int StrCmpLogicalW(string psz1, string psz2);
+			if((Sort == -1) || (Sort == 3))
+				namedDestsList.Columns[e.Column].ImageIndex = 2;
+			else
+				namedDestsList.Columns[e.Column].ImageIndex = 3;
+
+			namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
 		}
 
 		class ListViewColumnComparer : IComparer
 		{
+			public int MAX_VALUE = int.MaxValue;
 			public int ColumnIndex { get; set; }
 			public int Sort { get; set; }
 			public int SecondColumnIndex { get; set; }
@@ -862,41 +873,24 @@ namespace CoreAPIDemo
 
 			public int Compare(object x, object y)
 			{
-				if ((Sort == -1) || (Sort == 3))
-				{
-					if ((((ListViewItem)x).SubItems[ColumnIndex].Text == "") && (((ListViewItem)y).SubItems[ColumnIndex].Text == ""))
-					{
-						return NativeMethods.StrCmpLogicalW(
-						((ListViewItem)x).SubItems[SecondColumnIndex].Text,
-						((ListViewItem)y).SubItems[SecondColumnIndex].Text);
-					}
-					else
-					{
-						return NativeMethods.StrCmpLogicalW(
-						((ListViewItem)x).SubItems[ColumnIndex].Text,
-						((ListViewItem)y).SubItems[ColumnIndex].Text);
-					}
-				}
-				else
-				{
-					if ((((ListViewItem)x).SubItems[ColumnIndex].Text == "") && (((ListViewItem)y).SubItems[ColumnIndex].Text == ""))
-					{
-						return NativeMethods.StrCmpLogicalW(
-						((ListViewItem)y).SubItems[SecondColumnIndex].Text,
-						((ListViewItem)x).SubItems[SecondColumnIndex].Text);
-					}
-					else
-					{
-						return NativeMethods.StrCmpLogicalW(
-						((ListViewItem)y).SubItems[ColumnIndex].Text,
-						((ListViewItem)x).SubItems[ColumnIndex].Text);
-					}
-				}
-			}
-		}
-		private void namedDestsList_SelectedIndexChanged(object sender, EventArgs e)
-		{
+				string ComparerX = ((ListViewItem)x).SubItems[ColumnIndex].Text == "" 
+					? MAX_VALUE.ToString() 
+					: ((ListViewItem)x).SubItems[ColumnIndex].Text;
+				string ComparerY = ((ListViewItem)y).SubItems[ColumnIndex].Text == ""
+					? MAX_VALUE.ToString()
+					: ((ListViewItem)y).SubItems[ColumnIndex].Text;
 
+				if ((ComparerX == MAX_VALUE.ToString()) && (ComparerY == MAX_VALUE.ToString()))
+				{
+					ComparerX = ((ListViewItem)x).SubItems[SecondColumnIndex].Text;
+					ComparerY = ((ListViewItem)y).SubItems[SecondColumnIndex].Text;
+				}
+
+				if ((Sort == -1) || (Sort == 3))
+					return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
+				else
+					return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+			}
 		}
 	}
 }

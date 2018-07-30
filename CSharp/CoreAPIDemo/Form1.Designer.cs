@@ -289,6 +289,7 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -562,16 +563,16 @@
 			this.namedDestsList.UseCompatibleStateImageBehavior = false;
 			this.namedDestsList.View = System.Windows.Forms.View.Details;
 			this.namedDestsList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.namedDestsList_ColumnClick);
-			this.namedDestsList.SelectedIndexChanged += new System.EventHandler(this.namedDestsList_SelectedIndexChanged);
 			// 
 			// destName
 			// 
 			this.destName.Text = "Name";
-			this.destName.Width = 174;
+			this.destName.Width = 118;
 			// 
 			// destPage
 			// 
 			this.destPage.Text = "Page";
+			this.destPage.Width = 111;
 			// 
 			// namedDestsProgress
 			// 
