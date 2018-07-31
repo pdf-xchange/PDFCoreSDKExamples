@@ -58,16 +58,12 @@ namespace CoreAPIDemo
 			efuf_Annotations		= 0x4,
 			efuf_All				= 0xff,
 		}
-		public enum eFormColumnSortFlag
-		{
-			efcsf_InAscending = 0,
-			efcsf_InDescending = 0x1
-		}
-		public enum eFormColumnSortFlags
+		public enum eFormNameDestinationFlags
 		{
 			efcsf_None = 0,
-			efcsf_InAscending = 0x1,
-			efcsf_InDescending = 0x2
+			efcsf_Destination = 1,
+			efcsf_InAscending = 2,
+			efcsf_InDescending = 3
 		}
 
 		public Form1()
@@ -119,6 +115,9 @@ namespace CoreAPIDemo
 				img = new Bitmap(sImgFolder + "sortDesc_24.png");
 				ilnd.Images.Add(img);
 				namedDestsList.SmallImageList = ilnd;
+
+				namedDestsList.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+				namedDestsList.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 			}
 			catch (Exception)
 			{
@@ -220,6 +219,11 @@ namespace CoreAPIDemo
 				m_Bookmark = null;
 			}
 		public IPXC_Bookmark m_Bookmark = null;
+		}
+
+		public class ListItemDestination : ListViewItem
+		{
+			public int m_nPageNumber = 0;
 		}
 
 		public int CountAllBookmarks(IPXC_Bookmark root)
@@ -469,7 +473,7 @@ namespace CoreAPIDemo
 		{
 			Thread th = new Thread(delegate () {
 				IPXC_NameTree nameTree = null;
-				ListViewItem[] listItems = null;
+				ListItemDestination[] listItems = null;
 				int count = 0;
 				namedDestsList.Invoke((MethodInvoker)delegate
 					{
@@ -480,7 +484,7 @@ namespace CoreAPIDemo
 						count = (int)nameTree.Count;
 						namedDestsProgress.Maximum = count;
 					});
-				listItems = new ListViewItem[count];
+				listItems = new ListItemDestination[count];
 				for (int i = 0; i < count; i++)
 				{
 					string nameDest = "";
@@ -501,11 +505,18 @@ namespace CoreAPIDemo
 						}
 					});
 
-					ListViewItem item = new ListViewItem(nameDest);
+					ListItemDestination item = new ListItemDestination();
 					item.Name = "item_" + i;
-					item.ImageIndex = 1;
+					item.Text = nameDest;
+					item.ImageIndex = (int)eFormNameDestinationFlags.efcsf_Destination;
+					if (destPage == "")
+						item.m_nPageNumber = int.MaxValue;
+					else
+						item.m_nPageNumber = Convert.ToInt32(destPage);
 					listItems[i] = item;
 					listItems[i].SubItems.Add(destPage);
+					
+						
 				}
 				namedDestsList.Invoke((MethodInvoker)delegate
 				{
@@ -845,52 +856,69 @@ namespace CoreAPIDemo
 
 		private void namedDestsList_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			int SecondColumn = e.Column ^ 1;
-			namedDestsList.Columns[SecondColumn].ImageIndex = 0;
+			namedDestsList.Columns[e.Column ^ 1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 			int Sort = namedDestsList.Columns[e.Column].ImageIndex;
 
-			if((Sort == -1) || (Sort == 3))
-				namedDestsList.Columns[e.Column].ImageIndex = 2;
+			if ((Sort == (int)eFormNameDestinationFlags.efcsf_None) || (Sort == (int)eFormNameDestinationFlags.efcsf_InAscending))
+				namedDestsList.Columns[e.Column].ImageIndex = (int)eFormNameDestinationFlags.efcsf_InDescending;
 			else
-				namedDestsList.Columns[e.Column].ImageIndex = 3;
+				namedDestsList.Columns[e.Column].ImageIndex = (int)eFormNameDestinationFlags.efcsf_InAscending;
 
-			namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort, SecondColumn);
+			namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort);
 		}
 
 		class ListViewColumnComparer : IComparer
 		{
-			public int MAX_VALUE = int.MaxValue;
-			public int ColumnIndex { get; set; }
-			public int Sort { get; set; }
-			public int SecondColumnIndex { get; set; }
+			public int m_nColumnIndex { get; set; }
+			public int m_nSortIndex { get; set; }
 
-			public ListViewColumnComparer(int columnIndex, int sort, int secondColumnIndex)
+			public ListViewColumnComparer(int columnIndex, int sortIndex)
 			{
-				ColumnIndex = columnIndex;
-				Sort = sort;
-				SecondColumnIndex = secondColumnIndex;
+				m_nColumnIndex = columnIndex;
+				m_nSortIndex = sortIndex;
 			}
 
 			public int Compare(object x, object y)
 			{
-				string ComparerX = ((ListViewItem)x).SubItems[ColumnIndex].Text == "" 
-					? MAX_VALUE.ToString() 
-					: ((ListViewItem)x).SubItems[ColumnIndex].Text;
-				string ComparerY = ((ListViewItem)y).SubItems[ColumnIndex].Text == ""
-					? MAX_VALUE.ToString()
-					: ((ListViewItem)y).SubItems[ColumnIndex].Text;
+				ListItemDestination X = x as ListItemDestination;
+				ListItemDestination Y = y as ListItemDestination;
+				string ComparerX = X.SubItems[0].Text;
+				string ComparerY = Y.SubItems[0].Text;
 
-				if ((ComparerX == MAX_VALUE.ToString()) && (ComparerY == MAX_VALUE.ToString()))
+				if ((m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_None) || (m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_InAscending))
 				{
-					ComparerX = ((ListViewItem)x).SubItems[SecondColumnIndex].Text;
-					ComparerY = ((ListViewItem)y).SubItems[SecondColumnIndex].Text;
+					if (m_nColumnIndex == 1)
+					{
+						if (Y.m_nPageNumber == X.m_nPageNumber)
+							return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+						else
+							return Y.m_nPageNumber.CompareTo(X.m_nPageNumber);
+					}
+					else
+					{
+						return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+					}
 				}
-
-				if ((Sort == -1) || (Sort == 3))
-					return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
 				else
-					return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+				{
+					if (m_nColumnIndex == 1)
+					{
+						if (X.m_nPageNumber == Y.m_nPageNumber)
+							return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
+						else
+							return X.m_nPageNumber.CompareTo(Y.m_nPageNumber);
+					}
+					else
+					{
+						return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
+					}
+				}
 			}
+		}
+		private void namedDestsList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+		{
+			if (e.Item.SubItems[1].Text != "")
+				currentPage.Text = e.Item.SubItems[1].Text;
 		}
 	}
 }

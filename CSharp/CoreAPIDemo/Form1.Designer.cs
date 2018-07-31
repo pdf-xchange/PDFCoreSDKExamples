@@ -563,6 +563,7 @@
 			this.namedDestsList.UseCompatibleStateImageBehavior = false;
 			this.namedDestsList.View = System.Windows.Forms.View.Details;
 			this.namedDestsList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.namedDestsList_ColumnClick);
+			this.namedDestsList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.namedDestsList_ItemSelectionChanged);
 			// 
 			// destName
 			// 
