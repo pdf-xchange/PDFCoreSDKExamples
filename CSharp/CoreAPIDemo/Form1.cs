@@ -894,10 +894,7 @@ namespace CoreAPIDemo
 						else
 							return Y.m_nPageNumber.CompareTo(X.m_nPageNumber);
 					}
-					else
-					{
-						return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
-					}
+					return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
 				}
 				else
 				{
@@ -908,10 +905,7 @@ namespace CoreAPIDemo
 						else
 							return X.m_nPageNumber.CompareTo(Y.m_nPageNumber);
 					}
-					else
-					{
-						return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
-					}
+					return NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
 				}
 			}
 		}
