@@ -114,6 +114,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations.cs" />
     <Compile Include="Bookmarks.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Converters.cs" />
