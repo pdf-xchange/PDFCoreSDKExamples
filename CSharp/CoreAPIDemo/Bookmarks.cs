@@ -14,13 +14,6 @@ namespace CoreAPIDemo
 		delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
 		delegate PXC_Point GetXYFromDestination(IPXC_Document document, PXC_Destination dest);
 
-		[SuppressUnmanagedCodeSecurity]
-		internal static class NativeMethods
-		{
-			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-			public static extern int StrCmpLogicalW(string psz1, string psz2);
-		}
-
 		[Description("9.1. Add Bookmark after the currently selected bookmark in the Bookmarks Tree")]
 		static public int AddSiblingBookmark(Form1 Parent)
 		{
@@ -182,7 +175,7 @@ namespace CoreAPIDemo
 
 				bookmarks.Sort(delegate (IPXC_Bookmark firstNode, IPXC_Bookmark secondNode)
 				{
-					return NativeMethods.StrCmpLogicalW(firstNode.Title, secondNode.Title);
+					return Form1.NativeMethods.StrCmpLogicalW(firstNode.Title, secondNode.Title);
 				});
 
 				foreach (IPXC_Bookmark bookmark in bookmarks)
@@ -308,7 +301,7 @@ namespace CoreAPIDemo
 						{
 							if ((MAX_VALUE == currentBookmark.Item2.nPageNum) && (MAX_VALUE == bookmarks[mid].Item2.nPageNum))
 							{
-								if (NativeMethods.StrCmpLogicalW(currentBookmark.Item1.Title, bookmarks[mid].Item1.Title) == 1)
+								if (Form1.NativeMethods.StrCmpLogicalW(currentBookmark.Item1.Title, bookmarks[mid].Item1.Title) == 1)
 									first = mid + 1;
 								else
 									last = mid;

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using PDFXCoreAPI;
@@ -33,6 +34,16 @@ namespace CoreAPIDemo
 			get { return bookmarksTree; }
 		}
 
+		public ListViewItem SelectedNameDest_Item
+		{
+			get { return namedDestsList.SelectedItems.Count == 0 ? null : namedDestsList.SelectedItems[0]; }
+		}
+
+		public ListView GetNamedDestinationList
+		{
+			get { return namedDestsList; }
+		}
+
 		public BookmarkNode SelectedBookmarkNode
 		{
 			get { return bookmarksTree.SelectedNode as BookmarkNode; }
@@ -47,6 +58,14 @@ namespace CoreAPIDemo
 			efuf_Annotations		= 0x4,
 			efuf_All				= 0xff,
 		}
+		public enum eFormNameDestinationFlags
+		{
+			efcsf_None = 0,
+			efcsf_Destination = 1,
+			efcsf_Ascending = 2,
+			efcsf_Descending = 3
+		}
+
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
@@ -56,6 +75,13 @@ namespace CoreAPIDemo
 
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
+
+		[SuppressUnmanagedCodeSecurity]
+		internal static class NativeMethods
+		{
+			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+			public static extern int StrCmpLogicalW(string psz1, string psz2);
+		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
@@ -78,6 +104,20 @@ namespace CoreAPIDemo
 				img = new Bitmap(sImgFolder + "bookmark_24.png");
 				ilfb.Images.Add(img);
 				bookmarksTree.ImageList = ilfb;
+
+				ImageList ilnd = new ImageList();
+				img = new Bitmap(1, 1);
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "dest_24.png");
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "sortAsc_24.png");
+				ilnd.Images.Add(img);
+				img = new Bitmap(sImgFolder + "sortDesc_24.png");
+				ilnd.Images.Add(img);
+				namedDestsList.SmallImageList = ilnd;
+
+				namedDestsList.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+				namedDestsList.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 			}
 			catch (Exception)
 			{
@@ -179,6 +219,11 @@ namespace CoreAPIDemo
 				m_Bookmark = null;
 			}
 		public IPXC_Bookmark m_Bookmark = null;
+		}
+
+		public class ListItemDestination : ListViewItem
+		{
+			public int m_nPageNumber = 0;
 		}
 
 		public int CountAllBookmarks(IPXC_Bookmark root)
@@ -428,17 +473,18 @@ namespace CoreAPIDemo
 		{
 			Thread th = new Thread(delegate () {
 				IPXC_NameTree nameTree = null;
-				ListViewItem[] listItems = null;
+				ListItemDestination[] listItems = null;
 				int count = 0;
 				namedDestsList.Invoke((MethodInvoker)delegate
 					{
 						nameTree = m_CurDoc.GetNameTree("Dests");
 						namedDestsList.BeginUpdate();
+						namedDestsList.Items.Clear();
 						namedDestsProgress.Visible = true;
 						count = (int)nameTree.Count;
 						namedDestsProgress.Maximum = count;
 					});
-				listItems = new ListViewItem[count];
+				listItems = new ListItemDestination[count];
 				for (int i = 0; i < count; i++)
 				{
 					string nameDest = "";
@@ -459,10 +505,18 @@ namespace CoreAPIDemo
 						}
 					});
 
-					ListViewItem item = new ListViewItem(nameDest);
+					ListItemDestination item = new ListItemDestination();
 					item.Name = "item_" + i;
+					item.Text = nameDest;
+					item.ImageIndex = (int)eFormNameDestinationFlags.efcsf_Destination;
+					if (destPage == "")
+						item.m_nPageNumber = int.MaxValue;
+					else
+						item.m_nPageNumber = Convert.ToInt32(destPage);
 					listItems[i] = item;
 					listItems[i].SubItems.Add(destPage);
+					
+						
 				}
 				namedDestsList.Invoke((MethodInvoker)delegate
 				{
@@ -790,27 +844,69 @@ namespace CoreAPIDemo
 
 		private void addDest_Click(object sender, EventArgs e)
 		{
-#warning Implement this
+			UpdateControlsFromDocument(NamedDestinations.AddNewDestination(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void removeDest_Click(object sender, EventArgs e)
 		{
-#warning Implement this
-		}
-
-		private void expandDests_Click(object sender, EventArgs e)
-		{
-#warning Implement this
-		}
-
-		private void collapseDests_Click(object sender, EventArgs e)
-		{
-#warning Implement this
+			UpdateControlsFromDocument(NamedDestinations.RemoveNamedDest(this));
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void namedDestsList_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-#warning Implement sorting here (note that you will have to draw or set the sorting arrows)
+			namedDestsList.Columns[e.Column ^ 1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+			int Sort = namedDestsList.Columns[e.Column].ImageIndex;
+
+			namedDestsList.Columns[e.Column].ImageIndex = (int)eFormNameDestinationFlags.efcsf_Ascending;
+			if ((Sort == (int)eFormNameDestinationFlags.efcsf_None) || (Sort == (int)eFormNameDestinationFlags.efcsf_Ascending))
+				namedDestsList.Columns[e.Column].ImageIndex = (int)eFormNameDestinationFlags.efcsf_Descending;
+
+			namedDestsList.ListViewItemSorter = new ListViewColumnComparer(e.Column, Sort);
+		}
+
+		class ListViewColumnComparer : IComparer
+		{
+			public int m_nColumnIndex { get; set; }
+			public int m_nSortIndex { get; set; }
+
+			public ListViewColumnComparer(int columnIndex, int sortIndex)
+			{
+				m_nColumnIndex = columnIndex;
+				m_nSortIndex = sortIndex;
+			}
+
+			public int Compare(object x, object y)
+			{
+				ListItemDestination X = x as ListItemDestination;
+				ListItemDestination Y = y as ListItemDestination;
+				string ComparerX = X.SubItems[0].Text;
+				string ComparerY = Y.SubItems[0].Text;
+
+				int nMod = 1;
+				if ((m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_None) || (m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_Ascending))
+					nMod = -1;
+				//if (m_nColumnIndex == 1)
+				//{
+				//	if (Y.m_nPageNumber == X.m_nPageNumber)
+				//		return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+				//	return Y.m_nPageNumber.CompareTo(X.m_nPageNumber);
+				//}
+				//return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
+				if (m_nColumnIndex == 1)
+				{
+					if (X.m_nPageNumber == Y.m_nPageNumber)
+						return nMod * NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
+					return nMod * X.m_nPageNumber.CompareTo(Y.m_nPageNumber);
+				}
+				return nMod * NativeMethods.StrCmpLogicalW(ComparerX, ComparerY);
+			}
+		}
+		private void namedDestsList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+		{
+			if (e.Item.SubItems[1].Text != "")
+				currentPage.Text = e.Item.SubItems[1].Text;
 		}
 	}
 }

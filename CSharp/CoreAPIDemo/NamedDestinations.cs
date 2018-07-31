@@ -1,4 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
@@ -8,42 +12,29 @@ namespace CoreAPIDemo
 		[Description("10.1. Add Named Destination after the currently selected item in the Named Destinations List")]
 		static public int AddNewDestination(Form1 Parent)
 		{
-#warning Implement this
+			if (Parent.m_CurDoc == null)
+				return 0;
+
+			PXC_Destination dest = new PXC_Destination();
+			dest.nPageNum = Parent.CurrentPage;
+			dest.nNullFlags = 12;
+			dest.nType = PXC_DestType.Dest_XYZ;
+			double[] point = { 20, 30, 0, 0 };
+			dest.dValues = point;
+			Parent.m_CurDoc.SetNamedDestination("P." + (Parent.CurrentPage + 1), dest);
 			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
 		}
 
 		[Description("10.2. Remove currently selected Named Destination from the Named Destinations List")]
 		static public int RemoveNamedDest(Form1 Parent)
 		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
-		}
+			if (Parent.m_CurDoc == null)
+				return 0;
+			if (Parent.SelectedNameDest_Item == null)
+				return 0;
 
-		[Description("10.3. Sort Named Destination List by Name in ascending order")]
-		static public int SortDestByNameAscending(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
-		}
-
-		[Description("10.4. Sort Named Destination List by Name in descending order")]
-		static public int SortDestByNameDescending(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
-		}
-
-		[Description("10.5. Sort Named Destination List by Page in ascending order")]
-		static public int SortDestByPageAscending(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
-		}
-
-		[Description("10.6. Sort Named Destination List by Page in descending order")]
-		static public int SortDestByPageDescending(Form1 Parent)
-		{
-#warning Implement this
+			IPXC_NameTree nameTree = Parent.m_CurDoc.GetNameTree("Dests");
+			nameTree.Remove(Parent.SelectedNameDest_Item.Text);
 			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
 		}
 	}

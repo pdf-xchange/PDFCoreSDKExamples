@@ -79,8 +79,6 @@
 			this.addDest = new System.Windows.Forms.ToolStripButton();
 			this.removeDest = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-			this.expandDests = new System.Windows.Forms.ToolStripButton();
-			this.collapseDests = new System.Windows.Forms.ToolStripButton();
 			this.splitter3 = new System.Windows.Forms.Splitter();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
@@ -105,7 +103,7 @@
 			this.sampleTree.HotTracking = true;
 			this.sampleTree.ItemHeight = 26;
 			this.sampleTree.Location = new System.Drawing.Point(0, 31);
-			this.sampleTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.sampleTree.Margin = new System.Windows.Forms.Padding(2);
 			this.sampleTree.Name = "sampleTree";
 			this.sampleTree.ShowLines = false;
 			this.sampleTree.Size = new System.Drawing.Size(505, 662);
@@ -116,7 +114,7 @@
 			// splitter1
 			// 
 			this.splitter1.Location = new System.Drawing.Point(505, 0);
-			this.splitter1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.splitter1.Margin = new System.Windows.Forms.Padding(2);
 			this.splitter1.Name = "splitter1";
 			this.splitter1.Size = new System.Drawing.Size(7, 693);
 			this.splitter1.TabIndex = 0;
@@ -251,7 +249,7 @@
 			this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.previewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewImage.Location = new System.Drawing.Point(0, 31);
-			this.previewImage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.previewImage.Margin = new System.Windows.Forms.Padding(2);
 			this.previewImage.Name = "previewImage";
 			this.previewImage.Size = new System.Drawing.Size(551, 415);
 			this.previewImage.TabIndex = 0;
@@ -261,7 +259,7 @@
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitter2.Location = new System.Drawing.Point(512, 446);
-			this.splitter2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.splitter2.Margin = new System.Windows.Forms.Padding(2);
 			this.splitter2.Name = "splitter2";
 			this.splitter2.Size = new System.Drawing.Size(551, 6);
 			this.splitter2.TabIndex = 0;
@@ -291,12 +289,13 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
 			this.codeSource.LeftBracket2 = '{';
 			this.codeSource.Location = new System.Drawing.Point(0, 31);
-			this.codeSource.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.codeSource.Margin = new System.Windows.Forms.Padding(2);
 			this.codeSource.Name = "codeSource";
 			this.codeSource.Paddings = new System.Windows.Forms.Padding(0);
 			this.codeSource.ReadOnly = true;
@@ -314,7 +313,7 @@
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel1.Location = new System.Drawing.Point(512, 452);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(551, 241);
 			this.panel1.TabIndex = 3;
@@ -325,7 +324,7 @@
 			this.panel2.Controls.Add(this.toolStrip2);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Location = new System.Drawing.Point(512, 0);
-			this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel2.Margin = new System.Windows.Forms.Padding(2);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(551, 446);
 			this.panel2.TabIndex = 4;
@@ -336,7 +335,7 @@
 			this.panel3.Controls.Add(this.toolStrip3);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel3.Location = new System.Drawing.Point(0, 0);
-			this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel3.Margin = new System.Windows.Forms.Padding(2);
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(505, 693);
 			this.panel3.TabIndex = 5;
@@ -405,7 +404,7 @@
 			this.viewControl.Controls.Add(this.namedDests);
 			this.viewControl.Dock = System.Windows.Forms.DockStyle.Right;
 			this.viewControl.Location = new System.Drawing.Point(1065, 0);
-			this.viewControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.viewControl.Margin = new System.Windows.Forms.Padding(2);
 			this.viewControl.Name = "viewControl";
 			this.viewControl.SelectedIndex = 0;
 			this.viewControl.Size = new System.Drawing.Size(244, 693);
@@ -418,7 +417,7 @@
 			this.bookmarksTab.Controls.Add(this.toolStrip4);
 			this.bookmarksTab.Location = new System.Drawing.Point(4, 22);
 			this.bookmarksTab.Name = "bookmarksTab";
-			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(2);
 			this.bookmarksTab.Size = new System.Drawing.Size(236, 667);
 			this.bookmarksTab.TabIndex = 0;
 			this.bookmarksTab.Text = "Bookmarks";
@@ -542,7 +541,7 @@
 			this.namedDests.Controls.Add(this.namedDestsProgress);
 			this.namedDests.Controls.Add(this.toolStrip5);
 			this.namedDests.Location = new System.Drawing.Point(4, 22);
-			this.namedDests.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.namedDests.Margin = new System.Windows.Forms.Padding(2);
 			this.namedDests.Name = "namedDests";
 			this.namedDests.Size = new System.Drawing.Size(236, 667);
 			this.namedDests.TabIndex = 1;
@@ -557,28 +556,30 @@
 			this.namedDestsList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.namedDestsList.HideSelection = false;
 			this.namedDestsList.Location = new System.Drawing.Point(0, 41);
-			this.namedDestsList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.namedDestsList.Margin = new System.Windows.Forms.Padding(2);
 			this.namedDestsList.Name = "namedDestsList";
 			this.namedDestsList.Size = new System.Drawing.Size(236, 626);
 			this.namedDestsList.TabIndex = 1;
 			this.namedDestsList.UseCompatibleStateImageBehavior = false;
 			this.namedDestsList.View = System.Windows.Forms.View.Details;
 			this.namedDestsList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.namedDestsList_ColumnClick);
+			this.namedDestsList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.namedDestsList_ItemSelectionChanged);
 			// 
 			// destName
 			// 
 			this.destName.Text = "Name";
-			this.destName.Width = 174;
+			this.destName.Width = 118;
 			// 
 			// destPage
 			// 
 			this.destPage.Text = "Page";
+			this.destPage.Width = 111;
 			// 
 			// namedDestsProgress
 			// 
 			this.namedDestsProgress.Dock = System.Windows.Forms.DockStyle.Top;
 			this.namedDestsProgress.Location = new System.Drawing.Point(0, 31);
-			this.namedDestsProgress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.namedDestsProgress.Margin = new System.Windows.Forms.Padding(2);
 			this.namedDestsProgress.Name = "namedDestsProgress";
 			this.namedDestsProgress.Size = new System.Drawing.Size(236, 10);
 			this.namedDestsProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -591,9 +592,7 @@
 			this.toolStrip5.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addDest,
             this.removeDest,
-            this.toolStripSeparator6,
-            this.expandDests,
-            this.collapseDests});
+            this.toolStripSeparator6});
 			this.toolStrip5.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip5.Name = "toolStrip5";
 			this.toolStrip5.Size = new System.Drawing.Size(236, 31);
@@ -625,31 +624,11 @@
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 31);
 			// 
-			// expandDests
-			// 
-			this.expandDests.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.expandDests.Image = ((System.Drawing.Image)(resources.GetObject("expandDests.Image")));
-			this.expandDests.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.expandDests.Name = "expandDests";
-			this.expandDests.Size = new System.Drawing.Size(28, 28);
-			this.expandDests.Text = "Expand All";
-			this.expandDests.Click += new System.EventHandler(this.expandDests_Click);
-			// 
-			// collapseDests
-			// 
-			this.collapseDests.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.collapseDests.Image = ((System.Drawing.Image)(resources.GetObject("collapseDests.Image")));
-			this.collapseDests.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.collapseDests.Name = "collapseDests";
-			this.collapseDests.Size = new System.Drawing.Size(28, 28);
-			this.collapseDests.Text = "Collapse All";
-			this.collapseDests.Click += new System.EventHandler(this.collapseDests_Click);
-			// 
 			// splitter3
 			// 
 			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
 			this.splitter3.Location = new System.Drawing.Point(1063, 0);
-			this.splitter3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.splitter3.Margin = new System.Windows.Forms.Padding(2);
 			this.splitter3.Name = "splitter3";
 			this.splitter3.Size = new System.Drawing.Size(2, 693);
 			this.splitter3.TabIndex = 0;
@@ -668,7 +647,7 @@
 			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.panel3);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.MinimumSize = new System.Drawing.Size(855, 626);
 			this.Name = "Form1";
 			this.Text = "CoreAPIDemo";
@@ -755,8 +734,6 @@
 		private System.Windows.Forms.ToolStripButton addDest;
 		private System.Windows.Forms.ToolStripButton removeDest;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-		private System.Windows.Forms.ToolStripButton expandDests;
-		private System.Windows.Forms.ToolStripButton collapseDests;
 	}
 }
 
