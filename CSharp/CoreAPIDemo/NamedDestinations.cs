@@ -6,10 +6,10 @@ using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
-	[Description("10. Named Destinations")]
+	[Description("11. Named Destinations")]
 	class NamedDestinations
 	{
-		[Description("10.1. Add Named Destination after the currently selected item in the Named Destinations List")]
+		[Description("11.1. Add Named Destination after the currently selected item in the Named Destinations List")]
 		static public int AddNewDestination(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -25,7 +25,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
 		}
 
-		[Description("10.2. Remove currently selected Named Destination from the Named Destinations List")]
+		[Description("11.2. Remove currently selected Named Destination from the Named Destinations List")]
 		static public int RemoveNamedDest(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

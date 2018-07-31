@@ -8,13 +8,13 @@ using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
-	[Description("9. Bookmarks")]
+	[Description("10. Bookmarks")]
 	class Bookmarks
 	{
 		delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
 		delegate PXC_Point GetXYFromDestination(IPXC_Document document, PXC_Destination dest);
 
-		[Description("9.1. Add Bookmark after the currently selected bookmark in the Bookmarks Tree")]
+		[Description("10.1. Add Bookmark after the currently selected bookmark in the Bookmarks Tree")]
 		static public int AddSiblingBookmark(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -38,7 +38,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.2. Add Bookmark as a last child of the currently selected bookmark in the Bookmarks Tree")]
+		[Description("10.2. Add Bookmark as a last child of the currently selected bookmark in the Bookmarks Tree")]
 		static public int AddChildBookmark(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -64,7 +64,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.3. Remove currently selected bookmark in the Bookmarks Tree with it's children")]
+		[Description("10.3. Remove currently selected bookmark in the Bookmarks Tree with it's children")]
 		static public int RemoveSelectedBookmark(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -79,7 +79,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.4. Remove currently selected bookmark in the Bookmarks Tree without it's children")]
+		[Description("10.4. Remove currently selected bookmark in the Bookmarks Tree without it's children")]
 		static public int RemoveSelectedBookmarkWithoutChildren(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -102,7 +102,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.5. Move Up currently selected bookmark in the Bookmarks Tree")]
+		[Description("10.5. Move Up currently selected bookmark in the Bookmarks Tree")]
 		static public int MoveUpSelectedBookmark(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -132,7 +132,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.6. Move Down currently selected bookmark in the Bookmarks Tree")]
+		[Description("10.6. Move Down currently selected bookmark in the Bookmarks Tree")]
 		static public int MoveDownSelectedBookmark(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -161,7 +161,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.7. Sort bookmarks by name in the current document")]
+		[Description("10.7. Sort bookmarks by name in the current document")]
 		static public int SortBookmarksByName(Form1 Parent)
 		{
 			//delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark bookmark, uint actionType);
@@ -194,7 +194,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
-		[Description("9.8. Sort bookmarks by page in the current document")]
+		[Description("10.8. Sort bookmarks by page in the current document")]
 		static public int SortBookmarksByPage(Form1 Parent)
 		{
 			//delegate double[] GetXYFromDestination(IPXC_Bookmark bookmark, PXC_Destination dest);

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
-	[Description("8. Converters")]
+	[Description("9. Converters")]
 	class Converters
 	{
 		private class DrawTextCallbacks : IPXC_DrawTextCallbacks
@@ -54,7 +54,7 @@ namespace CoreAPIDemo
 			}
 		}
 
-		[Description("8.1. Convert from PDF to image")]
+		[Description("9.1. Convert from PDF to image")]
 		static public void ConvertToImage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -129,7 +129,7 @@ namespace CoreAPIDemo
 			Process.Start(sPath);
 		}
 
-		[Description("8.2. Convert from image to PDF")]
+		[Description("9.2. Convert from image to PDF")]
 		static public int ConvertToPDF(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -183,7 +183,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
-		[Description("8.3. Convert from PDF to txt file")]
+		[Description("9.3. Convert from PDF to txt file")]
 		static public void ConvertToTXT(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -234,7 +234,7 @@ namespace CoreAPIDemo
 			Process.Start(writePath);
 		}
 
-		[Description("8.4. Convert from txt to PDF")]
+		[Description("9.4. Convert from txt to PDF")]
 		static public int ConvertFromTXT(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

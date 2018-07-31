@@ -4,10 +4,10 @@ using PDFXCoreAPI;
 
 namespace CoreAPIDemo
 {
-	[Description("7. Pagemarks")]
+	[Description("8. Pagemarks")]
 	class Pagemarks
 	{
-		[Description("7.1. Add Headers and Footers on pages")]
+		[Description("8.1. Add Headers and Footers on pages")]
 		static public void AddHeadersAndFootersOnPages(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -60,7 +60,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, thirdHeaderFooter);
 		}
 
-		[Description("7.2. Add Watermarks on page")]
+		[Description("8.2. Add Watermarks on page")]
 		static public void AddWatermarksOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -94,7 +94,7 @@ namespace CoreAPIDemo
 			Parent.m_CurDoc.PlaceWatermark(bitSet, watermark);
 		}
 
-		[Description("7.3. Add Background on page")]
+		[Description("8.3. Add Background on page")]
 		static public void AddBackgroundOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)

@@ -887,13 +887,6 @@ namespace CoreAPIDemo
 				int nMod = 1;
 				if ((m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_None) || (m_nSortIndex == (int)eFormNameDestinationFlags.efcsf_Ascending))
 					nMod = -1;
-				//if (m_nColumnIndex == 1)
-				//{
-				//	if (Y.m_nPageNumber == X.m_nPageNumber)
-				//		return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
-				//	return Y.m_nPageNumber.CompareTo(X.m_nPageNumber);
-				//}
-				//return NativeMethods.StrCmpLogicalW(ComparerY, ComparerX);
 				if (m_nColumnIndex == 1)
 				{
 					if (X.m_nPageNumber == Y.m_nPageNumber)
