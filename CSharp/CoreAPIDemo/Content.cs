@@ -107,8 +107,8 @@ namespace CoreAPIDemo
 			Font = Parent.m_CurDoc.CreateNewFont("Impact", 0, 0);
 			double fntsize = 25.0;
 			string text = "Text Rendering Mode";
-			double nWidth;
-			double nHight;
+			double nWidth = 0.0;
+			double nHight = 0.0;
 
 			CC.SaveState();
 			CC.SetFont(Font);

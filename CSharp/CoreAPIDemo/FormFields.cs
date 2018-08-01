@@ -328,7 +328,10 @@ namespace CoreAPIDemo
 			firstGroup.CheckWidget(1, true);
 			secondGroup.CheckWidget(1, true);
 
+			Marshal.ReleaseComObject(firstGroup.Widget[1]);
+			Marshal.ReleaseComObject(firstGroup.Widget[2]);
 			Marshal.ReleaseComObject(firstGroup);
+			Marshal.ReleaseComObject(secondGroup.Widget[1]);
 			Marshal.ReleaseComObject(secondGroup);
 		}
 
