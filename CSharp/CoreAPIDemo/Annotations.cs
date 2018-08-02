@@ -65,7 +65,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Link annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("Link");
 
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
@@ -79,7 +79,6 @@ namespace CoreAPIDemo
 			IPXC_AnnotData_Link aData = annot.Data as IPXC_AnnotData_Link;
 			aData.Contents = "Link Annotation 1.";
 			aData.HighlighMode = PXC_AnnotHighlightMode.AHM_Outline;
-
 			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
 			color.SetRGB(0.0f, 0.8f, 0.8f);
 			aData.Color = color;
@@ -91,6 +90,10 @@ namespace CoreAPIDemo
 			border.DashArray[0] = border.DashArray[1] = 16.0f; //Width of dashes
 			border.nDashCount = 2; //Number of dashes
 			aData.set_Border(border);
+			//Setting the annotation's URI action
+			IPXC_ActionsList AL = Parent.m_CurDoc.CreateActionsList();
+			AL.AddURI("https://www.google.com");
+			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 			annot.Data = aData;
 
 			rcOut.bottom -= 200;
@@ -101,6 +104,14 @@ namespace CoreAPIDemo
 			color = auxInst.CreateColor(ColorType.ColorType_RGB);
 			color.SetRGB(0.5f, 0.4f, 0.48f);
 			aData.Color = color;
+			//Setting the annotation's Goto action
+			PXC_Destination dest = new PXC_Destination();
+			dest.nPageNum = page.Number + 1;
+			dest.nType = PXC_DestType.Dest_XYZ;
+			dest.nNullFlags = 15;
+			AL = Parent.m_CurDoc.CreateActionsList();
+			AL.AddGoto(dest);
+			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 			annot.Data = aData;
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
@@ -117,7 +128,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Free text annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("FreeText");
 
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
@@ -197,7 +208,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Line annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("Line");
 
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
@@ -304,7 +315,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Square and Circle annotations atom for the InsertNewAnnot method
 			uint nSquare = pxsInst.StrToAtom("Square");
 			uint nCircle = pxsInst.StrToAtom("Circle");
 
@@ -380,7 +391,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Polygon and Polyline annotations atom for the InsertNewAnnot method
 			string sPolygon = "Polygon";
 			string sPolyline = "PolyLine";
 			uint nText = pxsInst.StrToAtom(sPolygon);
@@ -488,7 +499,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
-		[Description("7.9. Add Highlight annotations")]
+		[Description("7.7. Add Highlight, Underline, Strikeout and Squiggly annotations")]
 		static public int AddHighlightAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -501,13 +512,16 @@ namespace CoreAPIDemo
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
-			double nCY = (rcPage.top - rcPage.bottom) / 2.0;
+			double nCY = (rcPage.top - rcPage.bottom) / 4.0 * 3.0;
 
 			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", (uint)PXC_CreateFontFlags.CreateFont_Monospaced, 700);
 			CC.SetFontSize(30);
 			CC.SetFont(font);
 			CC.SetColorRGB(0x00000000);
-			CC.ShowTextLine(nCX - 190, nCY, "This is a story of long ago.", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+			for (int i = 0; i < 4; i++)
+			{
+				CC.ShowTextLine(nCX - 190, nCY- (40 * i), "This is a story of long ago.", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+			}
 			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 			IPXC_PageText Text = page.GetText(null, false);
 
@@ -516,136 +530,37 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY - 100;
 			rcOut.right = nCX + 150;
 			rcOut.top = nCY + 100;
-			//Getting Text annotation atom for the InsertNewAnnot method
-			uint nText = pxsInst.StrToAtom("Highlight");
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
-			IPXC_AnnotData_TextMarkup aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Highlight annotation 1.";
-			IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
-			uint afafaf = quadsF.Count;
-			PXC_RectF rectF = new PXC_RectF();
-			Text.GetTextQuads3(0, 7, quadsF, out rectF);
-			aData.Quads = quadsF;
-			annot.Data = aData;
+			string[] textMarkups = new string[] { "Highlight", "Underline", "Squiggly", "StrikeOut" };
+			//Getting Highlight, Underline, Strikeout and Squiggly annotations atom for the InsertNewAnnot method
+			for (int i = 0; i < 4; i++)
+			{
+				uint nText = pxsInst.StrToAtom(textMarkups[i]);
+				IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+				IPXC_AnnotData_TextMarkup aData = annot.Data as IPXC_AnnotData_TextMarkup;
+				aData.Title = textMarkups[i] + " annotation 1.";
+				IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
+				uint afafaf = quadsF.Count;
+				PXC_RectF rectF = new PXC_RectF();
+				Text.GetTextQuads3(0 + (uint)(i * 28), 7, quadsF, out rectF);
+				aData.Quads = quadsF;
+				annot.Data = aData;
 
-			annot = page.InsertNewAnnot(nText, ref rcOut);
-			aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Highlight annotation 2.";
-			Text.GetTextQuads3(19, 9, quadsF, out rectF);
-			IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
-			color.SetRGB(0.74f, 0.74f, 0.74f);
-			aData.Color = color;
-			aData.Quads = quadsF;
-			annot.Data = aData;
+				annot = page.InsertNewAnnot(nText, ref rcOut);
+				aData = annot.Data as IPXC_AnnotData_TextMarkup;
+				aData.Title = textMarkups[i] + " annotation 2.";
+				Text.GetTextQuads3(19 + (uint)(i * 28), 9, quadsF, out rectF);
+				IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
+				color.SetRGB(0.0f, 1.0f, 1.0f);
+				aData.Color = color;
+				aData.Quads = quadsF;
+				annot.Data = aData;
+			}
+			
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
-		[Description("7.10. Add Underline annotations")]
-		static public int AddUnderlineAnnotation(Form1 Parent)
-		{
-			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
-
-			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
-			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
-			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			double nCX = (rcPage.right - rcPage.left) / 2.0;
-			double nCY = (rcPage.top - rcPage.bottom) / 2.0;
-
-			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", (uint)PXC_CreateFontFlags.CreateFont_Monospaced, 700);
-			CC.SetFontSize(30);
-			CC.SetFont(font);
-			CC.SetColorRGB(0x00000000);
-			CC.ShowTextLine(nCX - 190, nCY, "This is a story of long ago.", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
-			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-			IPXC_PageText Text = page.GetText(null, false);
-
-			PXC_Rect rcOut = new PXC_Rect();
-			rcOut.left = nCX - 150;
-			rcOut.bottom = nCY - 100;
-			rcOut.right = nCX + 150;
-			rcOut.top = nCY + 100;
-			//Getting Text annotation atom for the InsertNewAnnot method
-			uint nText = pxsInst.StrToAtom("Underline");
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
-			IPXC_AnnotData_TextMarkup aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Underline annotation 1.";
-			IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
-			uint afafaf = quadsF.Count;
-			PXC_RectF rectF = new PXC_RectF();
-			Text.GetTextQuads3(0, 7, quadsF, out rectF);
-			aData.Quads = quadsF;
-			annot.Data = aData;
-
-			annot = page.InsertNewAnnot(nText, ref rcOut);
-			aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Underline annotation 2.";
-			Text.GetTextQuads3(19, 9, quadsF, out rectF);
-			IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
-			color.SetRGB(1.0f, 0.0f, 0.0f);
-			aData.Color = color;
-			aData.Quads = quadsF;
-			annot.Data = aData;
-
-			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
-		}
-
-		[Description("7.11. Add Strikeout annotations")]
-		static public void AddStrikeoutAnnotation(Form1 Parent)
-		{
-			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
-
-			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
-			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
-			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			double nCX = (rcPage.right - rcPage.left) / 2.0;
-			double nCY = (rcPage.top - rcPage.bottom) / 2.0;
-
-			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", (uint)PXC_CreateFontFlags.CreateFont_Monospaced, 700);
-			CC.SetFontSize(30);
-			CC.SetFont(font);
-			CC.SetColorRGB(0x00000000);
-			CC.ShowTextLine(nCX - 190, nCY, "This is a story of long ago.", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
-			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-			IPXC_PageText Text = page.GetText(null, false);
-
-			PXC_Rect rcOut = new PXC_Rect();
-			rcOut.left = nCX - 150;
-			rcOut.bottom = nCY - 100;
-			rcOut.right = nCX + 150;
-			rcOut.top = nCY + 100;
-			//Getting Text annotation atom for the InsertNewAnnot method
-			uint nText = pxsInst.StrToAtom("StrikeOut");
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
-			IPXC_AnnotData_TextMarkup aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Strikeout annotation 1.";
-			IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
-			uint afafaf = quadsF.Count;
-			PXC_RectF rectF = new PXC_RectF();
-			Text.GetTextQuads3(0, 7, quadsF, out rectF);
-			aData.Quads = quadsF;
-			annot.Data = aData;
-
-			annot = page.InsertNewAnnot(nText, ref rcOut);
-			aData = annot.Data as IPXC_AnnotData_TextMarkup;
-			aData.Title = "Strikeout annotation 2.";
-			Text.GetTextQuads3(19, 9, quadsF, out rectF);
-			IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
-			color.SetRGB(1.0f, 0.0f, 0.0f);
-			aData.Color = color;
-			aData.Quads = quadsF;
-			annot.Data = aData;
-		}
-
-		[Description("7.12. Add Popup annotation")]
+		[Description("7.8. Add Popup annotation")]
 		static public int AddPopupAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -656,7 +571,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting Popup annotation atom for the InsertNewAnnot method
 			uint nSquare = pxsInst.StrToAtom("Square");
 
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
@@ -668,18 +583,17 @@ namespace CoreAPIDemo
 			rcOut.top = nCY + 300;
 			IPXC_Annotation sqAnnot = page.InsertNewAnnot(nSquare, ref rcOut);
 			IPXC_AnnotData_SquareCircle aSData = sqAnnot.Data as IPXC_AnnotData_SquareCircle;
+			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
+			color.SetRGB(0.0f, 0.8f, 0.8f);
+			aSData.Color = color;
 			aSData.Title = "Square annotation 1.";
+			aSData.Contents = "Popup Annotation 1.";
 			sqAnnot.Data = aSData;
-
 
 			//Getting Text annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("Popup");
 			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
 			IPXC_AnnotData_Popup aData = annot.Data as IPXC_AnnotData_Popup;
-			aData.Contents = "Popup Annotation 1.";
-			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
-			color.SetRGB(0.0f, 0.8f, 0.8f);
-			aData.Color = color;
 			aData.Opened = true;
 			annot.Data = aData;
 			sqAnnot.SetPopup(annot);
@@ -687,7 +601,7 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
-		[Description("7.13. Add File attachment annotations")]
+		[Description("7.9. Add File attachment annotations")]
 		static public int AddFile_AttachmentAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -698,7 +612,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			//Getting Text annotation atom for the InsertNewAnnot method
+			//Getting File attachment annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("FileAttachment");
 
 			double nCX = (rcPage.right - rcPage.left) / 2.0;
@@ -718,22 +632,67 @@ namespace CoreAPIDemo
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
-		[Description("7.14. Add Sound annotations")]
-		static public void AddSoundAnnotation(Form1 Parent)
+		[Description("7.10. Add Redact annotations")]
+		static public int AddRedactAnnotation(Form1 Parent)
 		{
-#warning Implement this
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+
+			IPXC_UndoRedoData urData = null;
+			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
+			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			double nCX = (rcPage.right - rcPage.left) / 2.0;
+			double nCY = (rcPage.top - rcPage.bottom) / 4.0 * 3.0;
+
+			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Arial", (uint)PXC_CreateFontFlags.CreateFont_Monospaced, 700);
+			CC.SetFontSize(30);
+			CC.SetFont(font);
+			CC.SetColorRGB(0x00000000);
+			for (int i = 0; i < 4; i++)
+			{
+				CC.ShowTextLine(nCX - 190, nCY - (40 * i), "This is a story of long ago.", -1, (uint)PXC_ShowTextLineFlags.STLF_Default | (uint)PXC_ShowTextLineFlags.STLF_AllowSubstitution);
+			}
+			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			IPXC_PageText Text = page.GetText(null, false);
+
+			PXC_Rect rcOut = new PXC_Rect();
+			rcOut.left = nCX - 150;
+			rcOut.bottom = nCY - 100;
+			rcOut.right = nCX + 150;
+			rcOut.top = nCY + 100;
+			//Getting Redact annotation atom for the InsertNewAnnot method
+			uint nText = pxsInst.StrToAtom("Redact");
+			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_AnnotData_Redaction aData = annot.Data as IPXC_AnnotData_Redaction;
+			aData.Title = "Redact annotation 1.";
+
+			IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
+			uint afafaf = quadsF.Count;
+			PXC_RectF rectF = new PXC_RectF();
+			Text.GetTextQuads3(8, 75, quadsF, out rectF);
+			aData.Quads = quadsF;
+			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
+			color.SetRGB(0.0f, 0.0f, 0.0f);
+			aData.FColor = color;
+			aData.SColor = color;
+			annot.Data = aData;
+
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
-		[Description("7.15. Add Redact annotations")]
-		static public void AddRedactAnnotation(Form1 Parent)
+		[Description("7.11. Remove all of the annotations from the current page")]
+		static public int RemoveAnnotations(Form1 Parent)
 		{
-#warning Implement this
-		}
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
 
-		[Description("7.16. Remove all of the annotations from the current page")]
-		static public void RemoveAnnotations(Form1 Parent)
-		{
-#warning Implement this
+			IPXC_Page page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			page.RemoveAnnots(0, page.GetAnnotsCount());
+
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 	}
 }
