@@ -79,7 +79,17 @@
 			this.addDest = new System.Windows.Forms.ToolStripButton();
 			this.removeDest = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.annotsTab = new System.Windows.Forms.TabPage();
+			this.annotsView = new System.Windows.Forms.ListView();
+			this.annotsType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.annotsPage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.annotProgress = new System.Windows.Forms.ProgressBar();
+			this.toolStrip6 = new System.Windows.Forms.ToolStrip();
+			this.addAnnot = new System.Windows.Forms.ToolStripButton();
+			this.removeAnnot = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitter3 = new System.Windows.Forms.Splitter();
+			this.addAnnotType = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
@@ -93,6 +103,8 @@
 			this.toolStrip4.SuspendLayout();
 			this.namedDests.SuspendLayout();
 			this.toolStrip5.SuspendLayout();
+			this.annotsTab.SuspendLayout();
+			this.toolStrip6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sampleTree
@@ -287,6 +299,7 @@
 			this.codeSource.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.codeSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.codeSource.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.codeSource.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.codeSource.IsReplaceMode = false;
 			this.codeSource.Language = FastColoredTextBoxNS.Language.CSharp;
 			this.codeSource.LeftBracket = '(';
@@ -396,6 +409,7 @@
 			// 
 			this.viewControl.Controls.Add(this.bookmarksTab);
 			this.viewControl.Controls.Add(this.namedDests);
+			this.viewControl.Controls.Add(this.annotsTab);
 			this.viewControl.Dock = System.Windows.Forms.DockStyle.Right;
 			this.viewControl.Location = new System.Drawing.Point(1598, 0);
 			this.viewControl.Name = "viewControl";
@@ -411,7 +425,7 @@
 			this.bookmarksTab.Location = new System.Drawing.Point(4, 29);
 			this.bookmarksTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.bookmarksTab.Name = "bookmarksTab";
-			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.bookmarksTab.Padding = new System.Windows.Forms.Padding(3);
 			this.bookmarksTab.Size = new System.Drawing.Size(358, 1033);
 			this.bookmarksTab.TabIndex = 0;
 			this.bookmarksTab.Text = "Bookmarks";
@@ -571,7 +585,7 @@
 			// destPage
 			// 
 			this.destPage.Text = "Page";
-			this.destPage.Width = 111;
+			this.destPage.Width = 114;
 			// 
 			// namedDestsProgress
 			// 
@@ -622,6 +636,92 @@
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 31);
 			// 
+			// annotsTab
+			// 
+			this.annotsTab.Controls.Add(this.annotsView);
+			this.annotsTab.Controls.Add(this.annotProgress);
+			this.annotsTab.Controls.Add(this.toolStrip6);
+			this.annotsTab.Location = new System.Drawing.Point(4, 29);
+			this.annotsTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.annotsTab.Name = "annotsTab";
+			this.annotsTab.Padding = new System.Windows.Forms.Padding(3);
+			this.annotsTab.Size = new System.Drawing.Size(358, 1033);
+			this.annotsTab.TabIndex = 2;
+			this.annotsTab.Text = "Annotations";
+			this.annotsTab.UseVisualStyleBackColor = true;
+			// 
+			// annotsView
+			// 
+			this.annotsView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.annotsType,
+            this.annotsPage});
+			this.annotsView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.annotsView.HideSelection = false;
+			this.annotsView.Location = new System.Drawing.Point(3, 51);
+			this.annotsView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.annotsView.Name = "annotsView";
+			this.annotsView.Size = new System.Drawing.Size(352, 979);
+			this.annotsView.TabIndex = 4;
+			this.annotsView.UseCompatibleStateImageBehavior = false;
+			this.annotsView.View = System.Windows.Forms.View.Details;
+			// 
+			// annotsType
+			// 
+			this.annotsType.Text = "Type";
+			this.annotsType.Width = 118;
+			// 
+			// annotsPage
+			// 
+			this.annotsPage.Text = "Page";
+			this.annotsPage.Width = 114;
+			// 
+			// annotProgress
+			// 
+			this.annotProgress.Dock = System.Windows.Forms.DockStyle.Top;
+			this.annotProgress.Location = new System.Drawing.Point(3, 36);
+			this.annotProgress.Name = "annotProgress";
+			this.annotProgress.Size = new System.Drawing.Size(352, 15);
+			this.annotProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.annotProgress.TabIndex = 3;
+			this.annotProgress.Visible = false;
+			// 
+			// toolStrip6
+			// 
+			this.toolStrip6.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.toolStrip6.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addAnnotType,
+            this.addAnnot,
+            this.removeAnnot,
+            this.toolStripSeparator7});
+			this.toolStrip6.Location = new System.Drawing.Point(3, 3);
+			this.toolStrip6.Name = "toolStrip6";
+			this.toolStrip6.Size = new System.Drawing.Size(352, 33);
+			this.toolStrip6.TabIndex = 5;
+			this.toolStrip6.Text = "toolStrip6";
+			// 
+			// addAnnot
+			// 
+			this.addAnnot.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.addAnnot.Image = ((System.Drawing.Image)(resources.GetObject("addAnnot.Image")));
+			this.addAnnot.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.addAnnot.Name = "addAnnot";
+			this.addAnnot.Size = new System.Drawing.Size(28, 30);
+			this.addAnnot.Text = "Add Annotation";
+			// 
+			// removeAnnot
+			// 
+			this.removeAnnot.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.removeAnnot.Image = ((System.Drawing.Image)(resources.GetObject("removeAnnot.Image")));
+			this.removeAnnot.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.removeAnnot.Name = "removeAnnot";
+			this.removeAnnot.Size = new System.Drawing.Size(28, 30);
+			this.removeAnnot.Text = "Remove Annotation";
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 33);
+			// 
 			// splitter3
 			// 
 			this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
@@ -630,6 +730,13 @@
 			this.splitter3.Size = new System.Drawing.Size(3, 1066);
 			this.splitter3.TabIndex = 0;
 			this.splitter3.TabStop = false;
+			// 
+			// addAnnotType
+			// 
+			this.addAnnotType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.addAnnotType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.addAnnotType.Name = "addAnnotType";
+			this.addAnnotType.Size = new System.Drawing.Size(121, 33);
 			// 
 			// Form1
 			// 
@@ -674,6 +781,10 @@
 			this.namedDests.PerformLayout();
 			this.toolStrip5.ResumeLayout(false);
 			this.toolStrip5.PerformLayout();
+			this.annotsTab.ResumeLayout(false);
+			this.annotsTab.PerformLayout();
+			this.toolStrip6.ResumeLayout(false);
+			this.toolStrip6.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -730,6 +841,16 @@
 		private System.Windows.Forms.ToolStripButton addDest;
 		private System.Windows.Forms.ToolStripButton removeDest;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.TabPage annotsTab;
+		private System.Windows.Forms.ListView annotsView;
+		private System.Windows.Forms.ColumnHeader annotsType;
+		private System.Windows.Forms.ColumnHeader annotsPage;
+		private System.Windows.Forms.ProgressBar annotProgress;
+		private System.Windows.Forms.ToolStrip toolStrip6;
+		private System.Windows.Forms.ToolStripButton addAnnot;
+		private System.Windows.Forms.ToolStripButton removeAnnot;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripComboBox addAnnotType;
 	}
 }
 
