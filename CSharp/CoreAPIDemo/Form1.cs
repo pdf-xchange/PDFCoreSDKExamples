@@ -17,10 +17,10 @@ namespace CoreAPIDemo
 
 	public partial class Form1 : Form
 	{
-		public IPXC_Inst		m_pxcInst = null;
-		public IPXC_Document	m_CurDoc = null;
+		public IPXC_Inst m_pxcInst = null;
+		public IPXC_Document m_CurDoc = null;
 #if DEBUG
-		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\CSharp\\CoreAPIDemo\\";
+		public static string m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + "\\CSharp\\CoreAPIDemo\\";
 #else
 		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).FullName + "\\CSharp\\CoreAPIDemo\\";
 #endif
@@ -52,11 +52,11 @@ namespace CoreAPIDemo
 
 		public enum eFormUpdateFlags
 		{
-			efuf_None				= 0,
-			efuf_Bookmarks			= 0x1,
-			efuf_NamedDests			= 0x2,
-			efuf_Annotations		= 0x4,
-			efuf_All				= 0xff,
+			efuf_None = 0,
+			efuf_Bookmarks = 0x1,
+			efuf_NamedDests = 0x2,
+			efuf_Annotations = 0x4,
+			efuf_All = 0xff,
 		}
 		public enum eFormNameDestinationFlags
 		{
@@ -116,8 +116,19 @@ namespace CoreAPIDemo
 				ilnd.Images.Add(img);
 				namedDestsList.SmallImageList = ilnd;
 
+
 				namedDestsList.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 				namedDestsList.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+
+				ImageList ila = new ImageList();
+				img = new Bitmap(1, 1);
+				ila.Images.Add(img);
+				img = new Bitmap(sImgFolder + "annot_24.png");
+				ila.Images.Add(img);
+
+				annotsView.SmallImageList = ila;
+				annotsView.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+				annotsView.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 			}
 			catch (Exception)
 			{
@@ -218,7 +229,7 @@ namespace CoreAPIDemo
 			{
 				m_Bookmark = null;
 			}
-		public IPXC_Bookmark m_Bookmark = null;
+			public IPXC_Bookmark m_Bookmark = null;
 		}
 
 		public class ListItemDestination : ListViewItem
@@ -515,8 +526,8 @@ namespace CoreAPIDemo
 						item.m_nPageNumber = Convert.ToInt32(destPage);
 					listItems[i] = item;
 					listItems[i].SubItems.Add(destPage);
-					
-						
+
+
 				}
 				namedDestsList.Invoke((MethodInvoker)delegate
 				{
@@ -527,6 +538,87 @@ namespace CoreAPIDemo
 				});
 			});
 			th.Start();
+		}
+
+		public int GetCountAnnots()
+		{
+			int retValue = 0;
+			int pageCount = 0;
+			Invoke((MethodInvoker)delegate {
+				pageCount = (int)m_CurDoc.Pages.Count;
+			});
+			for (int i = 0; i < pageCount; i++)
+			{
+				int pageAnnotCount = 0;
+				Invoke((MethodInvoker)delegate {
+					pageAnnotCount = (int)m_CurDoc.Pages[(uint)i].GetAnnotsCount();
+				});
+				retValue += pageAnnotCount;
+			}
+			return retValue;
+		}
+
+		public void FillAnnotationsList()
+		{
+			Thread thread = new Thread(delegate () {
+			int pageCount = 0;
+			IPXS_Inst pxsInst = null;
+			ListItemDestination[] listItems = null;
+			Invoke((MethodInvoker)delegate
+			{
+				pxsInst = m_pxcInst.GetExtension("PXS");
+				annotsView.BeginUpdate();
+				annotsView.Items.Clear();
+				annotProgress.Visible = true;
+				pageCount = (int)m_CurDoc.Pages.Count;
+				annotProgress.Maximum = pageCount;
+			});
+			listItems = new ListItemDestination[GetCountAnnots()];
+			int currentItem = 0;
+			for (int i = 0; i < pageCount; i++)
+			{
+				IPXC_Page currentPage = null;
+				int annotPage = i;
+				int annotCount = 0;
+				Invoke((MethodInvoker)delegate
+				{
+					currentPage = m_CurDoc.Pages[(uint)i];
+					annotCount = (int)currentPage.GetAnnotsCount();
+				});
+				if (annotCount > 0)
+					{
+						for (int j = 0; j < annotCount; j++)
+						{
+							string annotType = "";
+							uint atom = 0;
+							Invoke((MethodInvoker)delegate 
+							{
+								atom = currentPage.GetAnnot((uint)j).Type;
+								annotType = pxsInst.AtomToStr(atom);
+							});						
+							ListItemDestination item = new ListItemDestination();
+							item.Name = "annot_" + i + "." + j;
+							item.Text = annotType;
+							item.ImageIndex = 1;
+							item.SubItems.Add((annotPage + 1).ToString());
+							listItems[currentItem] = item;
+							currentItem++;
+						}
+					}
+					Invoke((MethodInvoker)delegate 
+					{
+						annotProgress.Value++;
+					});
+				}
+				Invoke((MethodInvoker)delegate
+				{
+					annotProgress.Visible = false;
+					annotProgress.Value = 0;
+					annotsView.EndUpdate();
+					annotsView.Items.AddRange(listItems);
+				});
+			});
+			thread.Start();
 		}
 
 		public void FillBookmarksTree()
@@ -605,7 +697,8 @@ namespace CoreAPIDemo
 				FillNamedDestinationsList();
 			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
 				FillBookmarksTree();
-
+			if ((flags & (int)eFormUpdateFlags.efuf_Annotations) > 0)
+				FillAnnotationsList();
 
 		}
 
@@ -673,8 +766,8 @@ namespace CoreAPIDemo
 
 		private void bookmarksTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			IPXS_Inst pxcInst = m_pxcInst.GetExtension("PXS");
-			uint typeGoTo = pxcInst.StrToAtom("GoTo");
+			IPXS_Inst pxsInst = m_pxcInst.GetExtension("PXS");
+			uint typeGoTo = pxsInst.StrToAtom("GoTo");
 
 			BookmarkNode curNode = e.Node as BookmarkNode;
 			if (curNode.m_Bookmark == null)
