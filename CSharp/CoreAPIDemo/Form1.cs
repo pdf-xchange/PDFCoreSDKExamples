@@ -52,18 +52,32 @@ namespace CoreAPIDemo
 
 		public enum eFormUpdateFlags
 		{
-			efuf_None = 0,
-			efuf_Bookmarks = 0x1,
-			efuf_NamedDests = 0x2,
-			efuf_Annotations = 0x4,
-			efuf_All = 0xff,
+			efuf_None					= 0,
+			efuf_Bookmarks				= 0x1,
+			efuf_NamedDests				= 0x2,
+			efuf_Annotations			= 0x4,
+			efuf_All					= 0xff,
 		}
 		public enum eFormNameDestinationFlags
 		{
-			efcsf_None = 0,
-			efcsf_Destination = 1,
-			efcsf_Ascending = 2,
-			efcsf_Descending = 3
+			efcsf_None					= 0,
+			efcsf_Destination			= 1,
+			efcsf_Ascending				= 2,
+			efcsf_Descending			= 3
+		}
+
+		public enum eFormAnnotationType
+		{
+			efat_Text					= 0,
+			efat_Link					= 1,
+			efat_FreeText				= 2,
+			efat_Line					= 3,
+			efat_SquareAndCircle		= 4,
+			efat_PolygoneAndPolyline	= 5,
+			efat_TextMarkup				= 6,
+			efat_Popup					= 7,
+			efat_FileAttachment			= 8,
+			efat_Redact					= 9
 		}
 
 		public Form1()
@@ -129,6 +143,8 @@ namespace CoreAPIDemo
 				annotsView.SmallImageList = ila;
 				annotsView.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
 				annotsView.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
+				
+				addAnnotType.SelectedIndex = (int)eFormAnnotationType.efat_SquareAndCircle;
 			}
 			catch (Exception)
 			{
@@ -235,6 +251,11 @@ namespace CoreAPIDemo
 		public class ListItemDestination : ListViewItem
 		{
 			public int m_nPageNumber = 0;
+		}
+
+		public class ListItemAnnotation : ListItemDestination
+		{
+			public int m_nIndexOnPage = 0;
 		}
 
 		public int CountAllBookmarks(IPXC_Bookmark root)
@@ -482,62 +503,59 @@ namespace CoreAPIDemo
 
 		public void FillNamedDestinationsList()
 		{
-			Thread th = new Thread(delegate () {
-				IPXC_NameTree nameTree = null;
-				ListItemDestination[] listItems = null;
-				int count = 0;
-				namedDestsList.Invoke((MethodInvoker)delegate
-					{
-						nameTree = m_CurDoc.GetNameTree("Dests");
-						namedDestsList.BeginUpdate();
-						namedDestsList.Items.Clear();
-						namedDestsProgress.Visible = true;
-						count = (int)nameTree.Count;
-						namedDestsProgress.Maximum = count;
-					});
-				listItems = new ListItemDestination[count];
-				for (int i = 0; i < count; i++)
+			IPXC_NameTree nameTree = null;
+			ListItemDestination[] listItems = null;
+			int count = 0;
+			namedDestsList.Invoke((MethodInvoker)delegate
 				{
-					string nameDest = "";
-					string destPage = "";
-					IPXS_PDFVariant pdfVariant = null;
-					PXC_Destination dest = new PXC_Destination();
-					Invoke((MethodInvoker)delegate
-					{
-						namedDestsProgress.Value = i;
-						try
-						{
-							nameTree.Item((uint)i, out nameDest, out pdfVariant);
-							dest = m_CurDoc.FillDestination(pdfVariant);
-							destPage = (dest.nPageNum + 1).ToString();
-						}
-						catch (Exception)
-						{
-						}
-					});
-
-					ListItemDestination item = new ListItemDestination();
-					item.Name = "item_" + i;
-					item.Text = nameDest;
-					item.ImageIndex = (int)eFormNameDestinationFlags.efcsf_Destination;
-					if (destPage == "")
-						item.m_nPageNumber = int.MaxValue;
-					else
-						item.m_nPageNumber = Convert.ToInt32(destPage);
-					listItems[i] = item;
-					listItems[i].SubItems.Add(destPage);
-
-
-				}
-				namedDestsList.Invoke((MethodInvoker)delegate
-				{
-					namedDestsProgress.Visible = false;
-					namedDestsProgress.Value = 0;
-					namedDestsList.Items.AddRange(listItems);
-					namedDestsList.EndUpdate();
+					nameTree = m_CurDoc.GetNameTree("Dests");
+					namedDestsList.BeginUpdate();
+					namedDestsList.Items.Clear();
+					namedDestsProgress.Visible = true;
+					count = (int)nameTree.Count;
+					namedDestsProgress.Maximum = count;
 				});
+			listItems = new ListItemDestination[count];
+			for (int i = 0; i < count; i++)
+			{
+				string nameDest = "";
+				string destPage = "";
+				IPXS_PDFVariant pdfVariant = null;
+				PXC_Destination dest = new PXC_Destination();
+				Invoke((MethodInvoker)delegate
+				{
+					namedDestsProgress.Value = i;
+					try
+					{
+						nameTree.Item((uint)i, out nameDest, out pdfVariant);
+						dest = m_CurDoc.FillDestination(pdfVariant);
+						destPage = (dest.nPageNum + 1).ToString();
+					}
+					catch (Exception)
+					{
+					}
+				});
+
+				ListItemDestination item = new ListItemDestination();
+				item.Name = "item_" + i;
+				item.Text = nameDest;
+				item.ImageIndex = (int)eFormNameDestinationFlags.efcsf_Destination;
+				if (destPage == "")
+					item.m_nPageNumber = int.MaxValue;
+				else
+					item.m_nPageNumber = Convert.ToInt32(destPage);
+				listItems[i] = item;
+				listItems[i].SubItems.Add(destPage);
+
+
+			}
+			namedDestsList.Invoke((MethodInvoker)delegate
+			{
+				namedDestsProgress.Visible = false;
+				namedDestsProgress.Value = 0;
+				namedDestsList.Items.AddRange(listItems);
+				namedDestsList.EndUpdate();
 			});
-			th.Start();
 		}
 
 		public int GetAnnotsCount()
@@ -553,64 +571,62 @@ namespace CoreAPIDemo
 
 		public void FillAnnotationsList()
 		{
-			Thread thread = new Thread(delegate () 
+			int pageCount = 0;
+			IPXS_Inst pxsInst = null;
+			ListItemAnnotation[] listItems = null;
+			Invoke((MethodInvoker)delegate
 			{
-				int pageCount = 0;
-				IPXS_Inst pxsInst = null;
-				ListItemDestination[] listItems = null;
+				pxsInst = m_pxcInst.GetExtension("PXS");
+				annotsView.BeginUpdate();
+				annotsView.Items.Clear();
+				annotProgress.Visible = true;
+				pageCount = (int)m_CurDoc.Pages.Count;
+				annotProgress.Maximum = pageCount;
+				listItems = new ListItemAnnotation[GetAnnotsCount()];
+			});
+			int currentItem = 0;
+			for (int i = 0; i < pageCount; i++)
+			{
+				IPXC_Page currentPage = null;
+				int annotPage = i;
+				int annotCount = 0;
 				Invoke((MethodInvoker)delegate
 				{
-					pxsInst = m_pxcInst.GetExtension("PXS");
-					annotsView.BeginUpdate();
-					annotsView.Items.Clear();
-					annotProgress.Visible = true;
-					pageCount = (int)m_CurDoc.Pages.Count;
-					annotProgress.Maximum = pageCount;
-					listItems = new ListItemDestination[GetAnnotsCount()];
+					currentPage = m_CurDoc.Pages[(uint)i];
+					annotCount = (int)currentPage.GetAnnotsCount();
 				});
-				int currentItem = 0;
-				for (int i = 0; i < pageCount; i++)
-				{
-					IPXC_Page currentPage = null;
-					int annotPage = i;
-					int annotCount = 0;
-					Invoke((MethodInvoker)delegate
-					{
-						currentPage = m_CurDoc.Pages[(uint)i];
-						annotCount = (int)currentPage.GetAnnotsCount();
-					});
 
-					for (int j = 0; j < annotCount; j++)
-					{
-						string annotType = "";
-						uint atom = 0;
-						Invoke((MethodInvoker)delegate
-						{
-							atom = currentPage.GetAnnot((uint)j).Type;
-							annotType = pxsInst.AtomToStr(atom);
-						});
-						ListItemDestination item = new ListItemDestination();
-						item.Name = "annot_" + i + "." + j;
-						item.Text = annotType;
-						item.ImageIndex = 1;
-						item.SubItems.Add((annotPage + 1).ToString());
-						listItems[currentItem] = item;
-						currentItem++;
-					}
+				for (int j = 0; j < annotCount; j++)
+				{
+					string annotType = "";
+					uint atom = 0;
 					Invoke((MethodInvoker)delegate
 					{
-						annotProgress.Value++;
+						atom = currentPage.GetAnnot((uint)j).Type;
+						annotType = pxsInst.AtomToStr(atom);
 					});
+					ListItemAnnotation item = new ListItemAnnotation();
+					item.Name = "annot_" + i + "." + j;
+					item.Text = annotType;
+					item.ImageIndex = 1;
+					item.m_nPageNumber = annotPage;
+					item.m_nIndexOnPage = j;
+					item.SubItems.Add((annotPage + 1).ToString());
+					listItems[currentItem] = item;
+					currentItem++;
 				}
 				Invoke((MethodInvoker)delegate
 				{
-					annotProgress.Visible = false;
-					annotProgress.Value = 0;
-					annotsView.EndUpdate();
-					annotsView.Items.AddRange(listItems);
+					annotProgress.Value++;
 				});
+			}
+			Invoke((MethodInvoker)delegate
+			{
+				annotProgress.Visible = false;
+				annotProgress.Value = 0;
+				annotsView.EndUpdate();
+				annotsView.Items.AddRange(listItems);
 			});
-			thread.Start();
 		}
 
 		public void FillBookmarksTree()
@@ -685,12 +701,17 @@ namespace CoreAPIDemo
 				nPage = (int)m_CurDoc.Pages.Count - 1;
 				currentPage.Text = (nPage + 1).ToString();
 			}
-			if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
-				FillNamedDestinationsList();
 			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
 				FillBookmarksTree();
-			if ((flags & (int)eFormUpdateFlags.efuf_Annotations) > 0)
-				FillAnnotationsList();
+			Thread thread = new Thread(delegate() 
+			{
+				if ((flags & (int)eFormUpdateFlags.efuf_Annotations) > 0)
+					FillAnnotationsList();
+				if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
+					FillNamedDestinationsList();
+			});
+			thread.Start();
+			
 
 		}
 
@@ -985,6 +1006,64 @@ namespace CoreAPIDemo
 		{
 			if (e.Item.SubItems[1].Text != "")
 				currentPage.Text = e.Item.SubItems[1].Text;
+		}
+
+		private void addAnnot_Click(object sender, EventArgs e)
+		{
+			switch (addAnnotType.SelectedIndex)
+			{
+				case (int)eFormAnnotationType.efat_Text:
+					UpdateControlsFromDocument(Annotations.AddTextAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_Link:
+					UpdateControlsFromDocument(Annotations.AddLinkAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_FreeText:
+					UpdateControlsFromDocument(Annotations.AddFreeTextAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_Line:
+					UpdateControlsFromDocument(Annotations.AddLineAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_SquareAndCircle:
+					UpdateControlsFromDocument(Annotations.AddSquareAndCircleAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_PolygoneAndPolyline:
+					UpdateControlsFromDocument(Annotations.AddPolygonAndPolylineAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_TextMarkup:
+					UpdateControlsFromDocument(Annotations.AddTextMarkupAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_Popup:
+					UpdateControlsFromDocument(Annotations.AddPopupAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_FileAttachment:
+					UpdateControlsFromDocument(Annotations.AddFile_AttachmentAnnotation(this));
+					break;
+				case (int)eFormAnnotationType.efat_Redact:
+					UpdateControlsFromDocument(Annotations.AddRedactAnnotation(this));
+					break;
+				default:
+					MessageBox.Show("Please, select annotation type.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+			}
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		private void removeAnnot_Click(object sender, EventArgs e)
+		{
+			if (m_CurDoc == null)
+				return;
+
+			if (annotsView.SelectedItems.Count == 0)
+			{
+				MessageBox.Show("Please, select annotation in list.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+
+			ListItemAnnotation currentAnnot = annotsView.SelectedItems[0] as ListItemAnnotation;
+			m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
+			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_Annotations);
+			UpdatePreviewFromCurrentDocument();
 		}
 	}
 }

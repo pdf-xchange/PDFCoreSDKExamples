@@ -305,7 +305,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("7.5. Add Square and Circle annotations")]
-		static public int AddSquareAnnotation(Form1 Parent)
+		static public int AddSquareAndCircleAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -381,7 +381,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("7.6. Add Polygon and Polyline annotations")]
-		static public int AddPolygonAnnotation(Form1 Parent)
+		static public int AddPolygonAndPolylineAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
@@ -500,7 +500,7 @@ namespace CoreAPIDemo
 		}
 
 		[Description("7.7. Add Highlight, Underline, Strikeout and Squiggly annotations")]
-		static public int AddHighlightAnnotation(Form1 Parent)
+		static public int AddTextMarkupAnnotation(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
