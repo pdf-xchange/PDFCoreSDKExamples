@@ -14,5 +14,40 @@ namespace CoreAPIDemo
 #warning Implement this
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
+
+		[Description("12.2. Add action Launch as bookmark")]
+		static public int AddActionLaunch(Form1 Parent)
+		{
+#warning Implement this
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+		}
+
+		[Description("12.3. Add action URI as bookmark")]
+		static public int AddActionURI(Form1 Parent)
+		{
+#warning Implement this
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+		}
+
+		[Description("12.4. Add action JavaScript as bookmark")]
+		static public int AddActionJS(Form1 Parent)
+		{
+#warning Implement this
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+		}
+
+		[Description("12.4. Add action Named as bookmark")]
+		static public int AddActionNamed(Form1 Parent)
+		{
+#warning Implement this
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+		}
+
+		[Description("12.4. Add action Hide as bookmark")]
+		static public int AddActionHide(Form1 Parent)
+		{
+#warning Implement this
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+		}
 	}
 }
