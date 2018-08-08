@@ -108,7 +108,6 @@ namespace CoreAPIDemo
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
-			//EmbeddedFiles
 
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
@@ -196,27 +195,5 @@ namespace CoreAPIDemo
 
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
-
-		[Description("12.8. Add Show/Hide action as a bookmark")]
-		static public int AddActionHide(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
-		[Description("12.9. Add SubmitForm action as a bookmark")]
-		static public int AddActionSubmitForm(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
-		[Description("12.10. Add ResetForm action as a bookmark")]
-		static public int AddActionResetForm(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
 	}
 }
