@@ -19,11 +19,11 @@ namespace CoreAPIDemo
 			else
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: GoTo";
+			bookmark.Title = "GoTo Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			PXC_Destination dest = new PXC_Destination();
 			dest.nPageNum = Parent.CurrentPage;
-			dest.nNullFlags = 12;
+			dest.nNullFlags = 4 | 8;
 			dest.nType = PXC_DestType.Dest_XYZ;
 			double[] point = { 20, 30, 0, 0 };
 			dest.dValues = point;
@@ -45,11 +45,11 @@ namespace CoreAPIDemo
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
 
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: GoToR";
+			bookmark.Title = "GoToR Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			PXC_Destination dest = new PXC_Destination();
 			dest.nPageNum = 2;
-			dest.nNullFlags = 12;
+			dest.nNullFlags = 4 | 8;
 			dest.nType = PXC_DestType.Dest_XYZ;
 			double[] point = { 20, 30, 0, 0 };
 			dest.dValues = point;
@@ -79,18 +79,14 @@ namespace CoreAPIDemo
 			}
 			catch(Exception)
 			{
-
-			}
-			
-			if (var == null)
-			{
 				string sFilePath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 				IPXC_FileSpec fileSpec = Parent.m_CurDoc.CreateEmbeddFile(sFilePath);
 				IPXC_EmbeddedFileStream EFS = fileSpec.EmbeddedFile;
 				EFS.UpdateFromFile2(sFilePath);
-				attachments.Add("FeatureChartEU.pdf", fileSpec.PDFObject);
+				var = fileSpec.PDFObject;
 			}
-				
+
+			attachments.Add("FeatureChartEU.pdf", var);
 
 			IPXC_Action_Goto actionGoToE = Parent.m_pxcInst.GetActionHandler(atomGoToE).CreateEmptyAction(atomGoToE, Parent.m_CurDoc) as IPXC_Action_Goto;
 			
@@ -104,11 +100,10 @@ namespace CoreAPIDemo
 			targetItem.PageNumber = 0;
 
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: GoToE";
+			bookmark.Title = "GoToE Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
-			//EmbeddedFiles
 
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
@@ -125,7 +120,7 @@ namespace CoreAPIDemo
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
 
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: Launch";
+			bookmark.Title = "Launch Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			string sFilePath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			aList.AddLaunch(sFilePath);
@@ -145,7 +140,7 @@ namespace CoreAPIDemo
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
 
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: URI";
+			bookmark.Title = "URI Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			string sFilePath = "https://www.tracker-software.com";
 			aList.AddURI(sFilePath);
@@ -165,7 +160,7 @@ namespace CoreAPIDemo
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
 
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: Java Script";
+			bookmark.Title = "Java Script Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			string sJS = "app.alert(\"Hello world!\", 3);";
 			aList.AddJavaScript(sJS);
@@ -189,34 +184,12 @@ namespace CoreAPIDemo
 			IPXC_Action_Named actionNamed = Parent.m_pxcInst.GetActionHandler(atomNamed).CreateEmptyAction(atomNamed, Parent.m_CurDoc) as IPXC_Action_Named;
 			actionNamed.CmdName = "NextPage";
 			IPXC_ActionsList aList = Parent.m_CurDoc.CreateActionsList();
-			bookmark.Title = (Parent.CurrentPage + 1) + " page: Execute Command";
+			bookmark.Title = "Execute Command Action";
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			aList.Insert(0, actionNamed);
 			bookmark.Actions = aList;
 
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
-
-		[Description("12.8. Add Show/Hide action as a bookmark")]
-		static public int AddActionHide(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
-		[Description("12.9. Add SubmitForm action as a bookmark")]
-		static public int AddActionSubmitForm(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
-		[Description("12.10. Add ResetForm action as a bookmark")]
-		static public int AddActionResetForm(Form1 Parent)
-		{
-#warning Implement this
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
-		}
-
 	}
 }
