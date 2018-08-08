@@ -102,6 +102,7 @@ namespace CoreAPIDemo
 			SetWindowTheme(sampleTree.Handle, "explorer", null);
 			SetWindowTheme(bookmarksTree.Handle, "explorer", null);
 			SetWindowTheme(namedDestsList.Handle, "explorer", null);
+			SetWindowTheme(annotsView.Handle, "explorer", null);
 			ImageList il = new ImageList();
 			try
 			{
@@ -114,6 +115,7 @@ namespace CoreAPIDemo
 				il.Images.Add(img);
 				sampleTree.ImageList = il;
 				sampleTree.TreeViewNodeSorter = new NodeSorter();
+
 				ImageList ilfb = new ImageList();
 				img = new Bitmap(sImgFolder + "bookmark_24.png");
 				ilfb.Images.Add(img);
