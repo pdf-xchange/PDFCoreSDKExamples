@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="Actions.cs" />
     <Compile Include="Annotations.cs" />
+    <Compile Include="Attachments.cs" />
     <Compile Include="Bookmarks.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Converters.cs" />

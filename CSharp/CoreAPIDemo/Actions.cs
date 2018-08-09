@@ -106,7 +106,7 @@ namespace CoreAPIDemo
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
 
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}
 
 		[Description("12.4. Add Launch action as a bookmark")]
