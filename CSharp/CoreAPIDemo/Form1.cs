@@ -1181,11 +1181,11 @@ namespace CoreAPIDemo
 		{
 			UseAttachment();
 		}
-		public void UseAttachment()
+		public void OpenAttachment()
 		{
 			if (m_CurDoc == null)
 				return;
-			if (attachmentView.SelectedItems[0] == null)
+			if (attachmentView.SelectedItems.Count == 0)
 				return;
 			IAFS_Inst afsInst = m_pxcInst.GetExtension("AFS");
 
@@ -1193,10 +1193,12 @@ namespace CoreAPIDemo
 			fileName = fileName.Replace(".tmp", ".pdf");
 
 			IAFS_Name name = afsInst.DefaultFileSys.StringToName(fileName);
-			IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)PXC_DocumentOpenFlags.DocOpenFlag_StrictHeaders);
-			(attachmentView.SelectedItems[0] as ListItemAttachment).m_pxcEmbeddedFileStream.SaveToFile(file);
-
-			m_CurDoc = m_pxcInst.OpenDocumentFromFile(afsInst.DefaultFileSys.NameToString(file.Name), null);
+			IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)AFS_OpenFileFlags.AFS_OpenFile_Write | (int)AFS_OpenFileFlags.AFS_OpenFile_Read
+				| (int)AFS_OpenFileFlags.AFS_OpenFile_CreateNew | (int)AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
+			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
+			item.m_pxcEmbeddedFileStream.SaveToFile(file);
+			//Process.Start(fileName);
+			m_CurDoc = m_pxcInst.OpenDocumentFromFile(fileName, null);
 			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
 			UpdatePreviewFromCurrentDocument();
 		}
@@ -1224,7 +1226,7 @@ namespace CoreAPIDemo
 			if (m_CurDoc == null)
 				return;
 
-			if (attachmentView.SelectedItems[0] == null)
+			if (attachmentView.SelectedItems.Count == 0)
 			{
 				MessageBox.Show("Please, select attachment in list.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
@@ -1235,8 +1237,9 @@ namespace CoreAPIDemo
 			{
 				IPXC_NameTree attachments = m_CurDoc.GetNameTree("EmbeddedFiles");
 				attachments.Remove(currentAnnot.SubItems[0].Text);
-				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_Attachments);
+				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_Annotations | (int)eFormUpdateFlags.efuf_Attachments);
 				UpdatePreviewFromCurrentDocument();
+				return;
 			}
 
 			m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
