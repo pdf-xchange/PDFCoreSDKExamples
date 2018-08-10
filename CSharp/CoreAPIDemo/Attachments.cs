@@ -101,6 +101,22 @@ namespace CoreAPIDemo
 				return 0;
 			}
 
+			Form1.ListItemAttachment currentAnnot = Parent.AttachmentView.SelectedItems[0] as Form1.ListItemAttachment;
+			if (currentAnnot.SubItems[currentAnnot.SubItems.Count - 1].Text == "Embedded File Item")
+			{
+				IPXC_NameTree attachments = Parent.m_CurDoc.GetNameTree("EmbeddedFiles");
+				IPXS_PDFVariant pdfVariant = attachments.Lookup(currentAnnot.SubItems[0].Text);
+				IPXC_FileSpec fileSpec = Parent.m_CurDoc.GetFileSpecFromVariant(pdfVariant);
+				fileSpec.Description = "Description";
+
+				return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
+			}
+
+			IPXC_Annotation annotFileAttach = Parent.m_CurDoc.Pages[(uint)currentAnnot.m_nPageNumber].GetAnnot((uint)currentAnnot.m_nIndexOnPage);
+			IPXC_AnnotData_FileAttachment fileAttachment = annotFileAttach.Data as IPXC_AnnotData_FileAttachment;
+			IPXC_FileSpec annotAttachFileSpec = fileAttachment.FileAttachment;
+			annotAttachFileSpec.Description = "Description";
+
 			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 	}
