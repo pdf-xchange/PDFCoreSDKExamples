@@ -130,10 +130,10 @@ namespace CoreAPIDemo
 		}
 
 		[Description("9.2. Convert from image to PDF")]
-		static public int ConvertToPDF(Form1 Parent)
+		static public int ConvertToPDF(Form1 Parent, string path = "")
 		{
 			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
+				Document.CreateNewDoc(Parent, 1);
 
 			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
@@ -142,7 +142,7 @@ namespace CoreAPIDemo
 			double nWidth = 0.0;
 			Page.GetDimension(out nWidth, out nHeight);
 			IIXC_Image img = ixcInst.CreateEmptyImage();
-			img.Load(System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png");
+			img.Load(path == "" ? System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png" : path);
 			IIXC_Page ixcPage = img.GetPage(0);
 			IPXC_Image pxcImg = Parent.m_CurDoc.AddImageFromIXCPage(ixcPage);
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
@@ -235,10 +235,10 @@ namespace CoreAPIDemo
 		}
 
 		[Description("9.4. Convert from txt to PDF")]
-		static public int ConvertFromTXT(Form1 Parent)
+		static public int ConvertFromTXT(Form1 Parent, string sPath = "")
 		{
 			if (Parent.m_CurDoc == null)
-				Document.CreateNewDoc(Parent);
+				Document.CreateNewDoc(Parent, 1);
 
 			PXC_Rect rc = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
 			IPXC_UndoRedoData urData;
@@ -246,7 +246,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
 			DrawTextCallbacks drawTextCallbacks = new DrawTextCallbacks();
 			drawTextCallbacks.m_currPage = page;
-			drawTextCallbacks.m_Text = File.ReadAllText(Environment.CurrentDirectory + "\\Documents\\Hobbit.txt");
+			drawTextCallbacks.m_Text = File.ReadAllText(sPath == "" ? Environment.CurrentDirectory + "\\Documents\\Hobbit.txt" : sPath);
 
 			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 400);
 			CC.SetColorRGB(0x00000000);

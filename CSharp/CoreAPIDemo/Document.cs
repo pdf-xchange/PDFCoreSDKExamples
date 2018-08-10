@@ -9,7 +9,7 @@ namespace CoreAPIDemo
 	public class Document
 	{
 		[Description("2.1. Create new document")]
-		static public int CreateNewDoc(Form1 Parent)
+		static public int CreateNewDoc(Form1 Parent, int nPages = 4)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
 			PXC_Rect rc;
@@ -18,7 +18,7 @@ namespace CoreAPIDemo
 			rc.top = 800;
 			rc.bottom = 0;
 			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
+			coreDoc.Pages.AddEmptyPages(0, (uint)nPages, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
 
@@ -104,6 +104,16 @@ namespace CoreAPIDemo
 				Parent.m_CurDoc.WriteToFile(sfd.FileName);
 				System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + sfd.FileName + "\"");
 			}
+		}
+
+		[Description("2.7. Protect document")]
+		static public void ProtectDoc(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				return;
+			Parent.m_CurDoc.SetStdEncryption(PXC_StdEncryptionMehtod.SEM_AV10, false, (uint)PXC_SecurityPermissions.Permit_Printing 
+				| (uint)PXC_SecurityPermissions.Permit_Copying_And_TextGraphicsExtractions 
+				| (uint) PXC_SecurityPermissions.Permit_Modification, "1243", "9524");
 		}
 	}
 }

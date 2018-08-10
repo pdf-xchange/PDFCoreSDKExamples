@@ -1206,8 +1206,9 @@ namespace CoreAPIDemo
 			IAFS_Inst afsInst = m_pxcInst.GetExtension("AFS");
 			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
 
+			string sType = item.SubItems[0].Text.Split('.')[1];
 			String fileName = Path.GetTempFileName();
-			fileName = fileName.Replace(".tmp", "." + item.m_pxcEmbeddedFileStream.FileType);
+			fileName = fileName.Replace(".tmp", "." + sType);
 
 			try
 			{
@@ -1219,13 +1220,28 @@ namespace CoreAPIDemo
 				file.Close();
 
 				m_CurDoc = m_pxcInst.OpenDocumentFromFile(fileName, null);
-				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
-				UpdatePreviewFromCurrentDocument();
 			}
 			catch(Exception)
 			{
-				Process.Start(fileName);
+				CloseDocument();
+				switch (sType)
+				{
+					case "gif":
+						Converters.ConvertToPDF(this, fileName);
+						break;
+					case "png":
+						Converters.ConvertToPDF(this, fileName);
+						break;
+					case "jpg":
+						Converters.ConvertToPDF(this, fileName);
+						break;
+					case "txt":
+						Converters.ConvertFromTXT(this, fileName);
+						break;
+				}
 			}
+			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
+			UpdatePreviewFromCurrentDocument();
 		}
 
 		private void addAttach_Click(object sender, EventArgs e)
