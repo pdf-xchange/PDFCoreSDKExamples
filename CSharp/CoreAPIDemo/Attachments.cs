@@ -56,7 +56,7 @@ namespace CoreAPIDemo
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
 
-			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Bookmarks | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
 		[Description("13.2. Add attachment as annotation")]
@@ -105,19 +105,12 @@ namespace CoreAPIDemo
 			IPXS_PDFVariant var = null;
 			string path = Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
 			IPXC_FileSpec fileSpec = Parent.m_CurDoc.CreateEmbeddFile(path);
-			IAFS_Name name = afsInst.DefaultFileSys.StringToName(path);
-			FileInfo fileInfo = new FileInfo(path);
-
-			IPXC_EmbeddedFileStream embeddedFileStream = fileSpec.EmbeddedFile;
-			embeddedFileStream.CreationDate = fileInfo.CreationTime;
-			embeddedFileStream.FileType = "pdf";
-			embeddedFileStream.ModificationDate = fileInfo.LastWriteTime;
-			//embeddedFileStream.co = fileInfo.Length;
+			IPXC_EmbeddedFileStream embeddedFileStream = fileSpec.EmbeddedFile;;
 			embeddedFileStream.UpdateFromFile2(path);
-			var = embeddedFileStream.PDFObject;
+			var = fileSpec.PDFObject;
 			attachments.Add("FeatureChartEU.pdf", var);
 
-			return (int)Form1.eFormUpdateFlags.efuf_Attachments;
+			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
 		[Description("13.4. Remove attachment")]
@@ -137,12 +130,12 @@ namespace CoreAPIDemo
 			{
 				IPXC_NameTree attachments = Parent.m_CurDoc.GetNameTree("EmbeddedFiles");
 				attachments.Remove(currentAnnot.SubItems[0].Text);
-				return (int)Form1.eFormUpdateFlags.efuf_Attachments;
+				return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 			}
 
 			Parent.m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
 
-			return (int)Form1.eFormUpdateFlags.efuf_Attachments;
+			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 	}
 }

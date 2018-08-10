@@ -625,7 +625,6 @@ namespace CoreAPIDemo
 				annotsView.BeginUpdate();
 				attachmentView.BeginUpdate();
 				annotsView.Items.Clear();
-				attachmentView.Items.Clear();
 				annotProgress.Visible = true;
 				pageCount = (int)m_CurDoc.Pages.Count;
 				annotProgress.Maximum = pageCount;
@@ -716,6 +715,7 @@ namespace CoreAPIDemo
 			{
 				attachmentNameTree = m_CurDoc.GetNameTree("EmbeddedFiles");
 				attachmentView.BeginUpdate();
+				attachmentView.Items.Clear();
 				count = (int)attachmentNameTree.Count;
 			});
 			listItems = new ListItemAttachment[count];
@@ -825,12 +825,12 @@ namespace CoreAPIDemo
 				FillBookmarksTree();
 			Thread thread = new Thread(delegate() 
 			{
+				if ((flags & (int)eFormUpdateFlags.efuf_Attachments) > 0)
+					FillAttachmentsList();
 				if ((flags & (int)eFormUpdateFlags.efuf_Annotations) > 0)
 					FillAnnotationsList();
 				if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
 					FillNamedDestinationsList();
-				if ((flags & (int)eFormUpdateFlags.efuf_Attachments) > 0)
-					FillAttachmentsList();
 			});
 			thread.Start();
 			
@@ -1207,7 +1207,7 @@ namespace CoreAPIDemo
 			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
 
 			String fileName = Path.GetTempFileName();
-			fileName = fileName.Replace(".tmp", item.Text);
+			fileName = fileName.Replace(".tmp", "." + item.m_pxcEmbeddedFileStream.FileType);
 
 			try
 			{
