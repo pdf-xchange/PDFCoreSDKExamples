@@ -24,6 +24,7 @@ namespace CoreAPIDemo
 #else
 		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).FullName + "\\CSharp\\CoreAPIDemo\\";
 #endif
+		public string					m_sFilePath = "";
 		public uint CurrentPage
 		{
 			get { return uint.Parse(currentPage.Text) - 1; }
@@ -1207,19 +1208,19 @@ namespace CoreAPIDemo
 			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
 
 			string sType = item.SubItems[0].Text.Split('.')[1];
-			String fileName = Path.GetTempFileName();
-			fileName = fileName.Replace(".tmp", "." + sType);
+			m_sFilePath = Path.GetTempFileName();
+			m_sFilePath = m_sFilePath.Replace(".tmp", "." + sType);
 
 			try
 			{
-				IAFS_Name name = afsInst.DefaultFileSys.StringToName(fileName);
+				IAFS_Name name = afsInst.DefaultFileSys.StringToName(m_sFilePath);
 				IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)AFS_OpenFileFlags.AFS_OpenFile_Write | (int)AFS_OpenFileFlags.AFS_OpenFile_Read
 					| (int)AFS_OpenFileFlags.AFS_OpenFile_CreateNew | (int)AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
 
 				item.m_pxcEmbeddedFileStream.SaveToFile(file);
 				file.Close();
 
-				m_CurDoc = m_pxcInst.OpenDocumentFromFile(fileName, null);
+				m_CurDoc = m_pxcInst.OpenDocumentFromFile(m_sFilePath, null);
 			}
 			catch(Exception)
 			{
@@ -1227,21 +1228,22 @@ namespace CoreAPIDemo
 				switch (sType)
 				{
 					case "gif":
-						Converters.ConvertToPDF(this, fileName);
+						Converters.ConvertToPDF(this);
 						break;
 					case "png":
-						Converters.ConvertToPDF(this, fileName);
+						Converters.ConvertToPDF(this);
 						break;
 					case "jpg":
-						Converters.ConvertToPDF(this, fileName);
+						Converters.ConvertToPDF(this);
 						break;
 					case "txt":
-						Converters.ConvertFromTXT(this, fileName);
+						Converters.ConvertFromTXT(this);
 						break;
 				}
 			}
 			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
 			UpdatePreviewFromCurrentDocument();
+			m_sFilePath = "";
 		}
 
 		private void addAttach_Click(object sender, EventArgs e)

@@ -9,7 +9,7 @@ namespace CoreAPIDemo
 	public class Document
 	{
 		[Description("2.1. Create new document")]
-		static public int CreateNewDoc(Form1 Parent, int nPages = 4)
+		static public int CreateNewDoc(Form1 Parent)
 		{
 			IPXC_Document coreDoc = Parent.m_pxcInst.NewDocument();
 			PXC_Rect rc;
@@ -18,7 +18,7 @@ namespace CoreAPIDemo
 			rc.top = 800;
 			rc.bottom = 0;
 			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, (uint)nPages, ref rc, null, out urd);
+			coreDoc.Pages.AddEmptyPages(0, 1, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
 
