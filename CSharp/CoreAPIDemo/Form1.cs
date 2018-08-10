@@ -1222,7 +1222,7 @@ namespace CoreAPIDemo
 				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
 				UpdatePreviewFromCurrentDocument();
 			}
-			catch(Exception e)
+			catch(Exception)
 			{
 				Process.Start(fileName);
 			}
