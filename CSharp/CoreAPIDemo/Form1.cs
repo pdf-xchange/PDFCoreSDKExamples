@@ -50,12 +50,18 @@ namespace CoreAPIDemo
 			set { bookmarksTree.SelectedNode = value; }
 		}
 
+		public ListView AttachmentView
+		{
+			get { return attachmentView; }
+		}
+
 		public enum eFormUpdateFlags
 		{
 			efuf_None					= 0,
 			efuf_Bookmarks				= 0x1,
 			efuf_NamedDests				= 0x2,
 			efuf_Annotations			= 0x4,
+			efuf_Attachments			= 0x8,
 			efuf_All					= 0xff,
 		}
 		public enum eFormNameDestinationFlags
@@ -103,6 +109,7 @@ namespace CoreAPIDemo
 			SetWindowTheme(bookmarksTree.Handle, "explorer", null);
 			SetWindowTheme(namedDestsList.Handle, "explorer", null);
 			SetWindowTheme(annotsView.Handle, "explorer", null);
+			SetWindowTheme(attachmentView.Handle, "explorer", null);
 			ImageList il = new ImageList();
 			try
 			{
@@ -143,9 +150,15 @@ namespace CoreAPIDemo
 				ila.Images.Add(img);
 
 				annotsView.SmallImageList = ila;
-				annotsView.Columns[0].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
-				annotsView.Columns[1].ImageIndex = (int)eFormNameDestinationFlags.efcsf_None;
-				
+				annotsView.Columns[0].ImageIndex = 0;
+				annotsView.Columns[1].ImageIndex = 0;
+
+				ImageList ilattch = new ImageList();
+				img = new Bitmap(sImgFolder + "attachment_24.png");
+				ilattch.Images.Add(img);
+
+				attachmentView.SmallImageList = ilattch;
+
 				addAnnotType.SelectedIndex = (int)eFormAnnotationType.efat_SquareAndCircle;
 			}
 			catch (Exception)
@@ -258,6 +271,11 @@ namespace CoreAPIDemo
 		public class ListItemAnnotation : ListItemDestination
 		{
 			public int m_nIndexOnPage = 0;
+		}
+
+		public class ListItemAttachment : ListItemAnnotation
+		{
+			public IPXC_EmbeddedFileStream m_pxcEmbeddedFileStream = null;
 		}
 
 		public int CountAllBookmarks(IPXC_Bookmark root)
@@ -537,7 +555,6 @@ namespace CoreAPIDemo
 					{
 					}
 				});
-
 				ListItemDestination item = new ListItemDestination();
 				item.Name = "item_" + i;
 				item.Text = nameDest;
@@ -548,8 +565,6 @@ namespace CoreAPIDemo
 					item.m_nPageNumber = Convert.ToInt32(destPage);
 				listItems[i] = item;
 				listItems[i].SubItems.Add(destPage);
-
-
 			}
 			namedDestsList.Invoke((MethodInvoker)delegate
 			{
@@ -571,15 +586,44 @@ namespace CoreAPIDemo
 			return retValue;
 		}
 
+		public void FillAttachmentItems(IPXC_Annotation annot, IPXC_NameTree nameTree, ref string[] attachmentsItems, int annotPageOrIdAttach, ref ListItemAttachment attachment)
+		{
+			IPXC_FileSpec fileSpec = null;
+			IPXC_EmbeddedFileStream embeddedFileStream = null;
+			if (annot != null)
+			{
+				IPXC_AnnotData_FileAttachment fileAttachment = annot.Data as IPXC_AnnotData_FileAttachment;
+				fileSpec = fileAttachment.FileAttachment;
+				embeddedFileStream = fileSpec.EmbeddedFile;
+				string[] array = fileSpec.FileName.Split('/');
+				attachmentsItems[0] = array[array.Length - 1];
+			}
+			else
+			{
+				IPXS_PDFVariant pdfVariant = null;
+				nameTree.Item((uint)annotPageOrIdAttach, out attachmentsItems[0], out pdfVariant);
+				fileSpec = m_CurDoc.GetFileSpecFromVariant(pdfVariant);
+				embeddedFileStream = fileSpec.EmbeddedFile;
+			}
+			
+			attachmentsItems[1] = fileSpec.Description;
+			attachmentsItems[2] = embeddedFileStream.ModificationDate.ToString();
+			attachmentsItems[3] = Math.Round(embeddedFileStream.UnCompressedSize / 1024.0, 2) + " KB (" + embeddedFileStream.UnCompressedSize + ") bytes.";
+			attachmentsItems[4] = annot == null ? "Embedded File Item" : "Page " + (annotPageOrIdAttach + 1);
+			attachment.m_pxcEmbeddedFileStream = embeddedFileStream;
+		}
+
 		public void FillAnnotationsList()
 		{
 			int pageCount = 0;
 			IPXS_Inst pxsInst = null;
 			ListItemAnnotation[] listItems = null;
+			ListItemAttachment[] attachments = new ListItemAttachment[0];
 			Invoke((MethodInvoker)delegate
 			{
 				pxsInst = m_pxcInst.GetExtension("PXS");
 				annotsView.BeginUpdate();
+				attachmentView.BeginUpdate();
 				annotsView.Items.Clear();
 				annotProgress.Visible = true;
 				pageCount = (int)m_CurDoc.Pages.Count;
@@ -616,6 +660,35 @@ namespace CoreAPIDemo
 					item.SubItems.Add((annotPage + 1).ToString());
 					listItems[currentItem] = item;
 					currentItem++;
+
+					if (annotType == "FileAttachment")
+					{
+						string[] attachmentsItems = new string[5];  // Name, Description, Modified, Size, Location in Document
+						ListItemAttachment attachment = new ListItemAttachment();
+						Invoke((MethodInvoker)delegate
+						{
+							try
+							{
+								IPXC_Annotation annotFileAttach = currentPage.GetAnnot((uint)j);
+								FillAttachmentItems(annotFileAttach, null, ref attachmentsItems, annotPage, ref attachment);
+							}
+							catch (Exception)
+							{
+							}
+						});
+						attachment.Name = "item_" + attachmentView.Items.Count;
+						attachment.Text = attachmentsItems[0];
+						attachment.m_nIndexOnPage = j;
+						attachment.m_nPageNumber = annotPage;
+						attachment.ImageIndex = 0;
+						for (int k = 1; k < 5; k++)
+						{
+							attachment.SubItems.Add(attachmentsItems[k]);
+						}
+						Array.Resize(ref attachments, attachments.Length + 1);
+
+						attachments[attachments.Length -1] = attachment;
+					}
 				}
 				Invoke((MethodInvoker)delegate
 				{
@@ -626,8 +699,53 @@ namespace CoreAPIDemo
 			{
 				annotProgress.Visible = false;
 				annotProgress.Value = 0;
-				annotsView.EndUpdate();
 				annotsView.Items.AddRange(listItems);
+				attachmentView.Items.AddRange(attachments);
+				annotsView.EndUpdate();
+				attachmentView.EndUpdate();
+			});
+		}
+
+		public void FillAttachmentsList()
+		{
+			IPXC_NameTree attachmentNameTree = null;
+			ListItemAttachment[] listItems = null;
+			int count = 0;
+			Invoke((MethodInvoker)delegate
+			{
+				attachmentNameTree = m_CurDoc.GetNameTree("EmbeddedFiles");
+				attachmentView.BeginUpdate();
+				attachmentView.Items.Clear();
+				count = (int)attachmentNameTree.Count;
+			});
+			listItems = new ListItemAttachment[count];
+			for (int i = 0; i < count; i++)
+			{
+				string[] attachmentsItems = new string[5];	// Name, Description, Modified, Size, Location in Document
+				ListItemAttachment item = new ListItemAttachment();
+				Invoke((MethodInvoker)delegate
+				{
+					try
+					{
+						FillAttachmentItems(null, attachmentNameTree, ref attachmentsItems, i, ref item);
+					}
+					catch (Exception)
+					{
+					}
+				});
+				item.Name = "item_" + i;
+				item.Text = attachmentsItems[0];
+				item.ImageIndex = 0;
+				listItems[i] = item;
+				for (int j = 1; j < 5; j++)
+				{
+					listItems[i].SubItems.Add(attachmentsItems[j]);
+				}
+			}
+			Invoke((MethodInvoker)delegate
+			{
+				attachmentView.Items.AddRange(listItems);
+				attachmentView.EndUpdate();
 			});
 		}
 
@@ -707,6 +825,8 @@ namespace CoreAPIDemo
 				FillBookmarksTree();
 			Thread thread = new Thread(delegate() 
 			{
+				if ((flags & (int)eFormUpdateFlags.efuf_Attachments) > 0)
+					FillAttachmentsList();
 				if ((flags & (int)eFormUpdateFlags.efuf_Annotations) > 0)
 					FillAnnotationsList();
 				if ((flags & (int)eFormUpdateFlags.efuf_NamedDests) > 0)
@@ -1065,6 +1185,57 @@ namespace CoreAPIDemo
 			ListItemAnnotation currentAnnot = annotsView.SelectedItems[0] as ListItemAnnotation;
 			m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
 			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_Annotations);
+			UpdatePreviewFromCurrentDocument();
+		}
+
+		private void openAttach_Click(object sender, EventArgs e)
+		{
+			OpenAttachment();
+		}
+		private void attachmentView_DoubleClick(object sender, EventArgs e)
+		{
+			OpenAttachment();
+		}
+		public void OpenAttachment()
+		{
+			if (m_CurDoc == null)
+				return;
+			if (attachmentView.SelectedItems.Count == 0)
+				return;
+
+			IAFS_Inst afsInst = m_pxcInst.GetExtension("AFS");
+			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
+
+			String fileName = Path.GetTempFileName();
+			fileName = fileName.Replace(".tmp", "." + item.m_pxcEmbeddedFileStream.FileType);
+
+			try
+			{
+				IAFS_Name name = afsInst.DefaultFileSys.StringToName(fileName);
+				IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)AFS_OpenFileFlags.AFS_OpenFile_Write | (int)AFS_OpenFileFlags.AFS_OpenFile_Read
+					| (int)AFS_OpenFileFlags.AFS_OpenFile_CreateNew | (int)AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
+
+				item.m_pxcEmbeddedFileStream.SaveToFile(file);
+				file.Close();
+
+				m_CurDoc = m_pxcInst.OpenDocumentFromFile(fileName, null);
+				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
+				UpdatePreviewFromCurrentDocument();
+			}
+			catch(Exception e)
+			{
+				Process.Start(fileName);
+			}
+		}
+
+		private void addAttach_Click(object sender, EventArgs e)
+		{
+			UpdateControlsFromDocument(Attachments.AddAttachment(this));
+		}
+
+		private void removeAttach_Click(object sender, EventArgs e)
+		{
+			UpdateControlsFromDocument(Attachments.RemoveAttachment(this));
 			UpdatePreviewFromCurrentDocument();
 		}
 	}

@@ -632,7 +632,7 @@ namespace CoreAPIDemo
 			aData.FileAttachment = fileSpec;
 			annot.Data = aData;
 
-			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}
 
 		[Description("7.10. Add Redact annotations")]

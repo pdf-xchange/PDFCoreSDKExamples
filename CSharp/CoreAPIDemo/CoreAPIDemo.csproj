@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="Actions.cs" />
     <Compile Include="Annotations.cs" />
+    <Compile Include="Attachments.cs" />
     <Compile Include="Bookmarks.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Converters.cs" />
@@ -141,10 +142,18 @@
     <Content Include="Images\annot_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\attachment.add_24.png" />
-    <Content Include="Images\attachment.remove_24.png" />
-    <Content Include="Images\attachments.open_24.png" />
-    <Content Include="Images\attachment_24.png" />
+    <Content Include="Images\attachment.add_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\attachment.remove_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\attachments.open_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\attachment_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\removeAnnot_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -69,6 +69,7 @@ namespace CoreAPIDemo
 				bookmark = Parent.m_CurDoc.BookmarkRoot.AddNewChild(true);
 			else
 				bookmark = Parent.SelectedBookmarkNode.m_Bookmark.AddNewSibling(false);
+
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			uint atomGoToE = pxsInst.StrToAtom("GoToE");
 			IPXC_NameTree attachments = Parent.m_CurDoc.GetNameTree("EmbeddedFiles");
@@ -105,7 +106,7 @@ namespace CoreAPIDemo
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
 
-			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
+			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}
 
 		[Description("12.4. Add Launch action as a bookmark")]
