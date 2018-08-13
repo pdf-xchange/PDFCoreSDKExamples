@@ -12,7 +12,7 @@ namespace CoreAPIDemo
 	[Description("9. Converters")]
 	class Converters
 	{
-		private class DrawTextCallbacks : IPXC_DrawTextCallbacks
+		public class DrawTextCallbacks : IPXC_DrawTextCallbacks
 		{
 			public IPXC_Page m_currPage = null;
 			public string m_Text = "";
@@ -246,6 +246,7 @@ namespace CoreAPIDemo
 			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
 			DrawTextCallbacks drawTextCallbacks = new DrawTextCallbacks();
 			drawTextCallbacks.m_currPage = page;
+
 			drawTextCallbacks.m_Text = File.ReadAllText(Environment.CurrentDirectory + "\\Documents\\Hobbit.txt");
 
 			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 400);

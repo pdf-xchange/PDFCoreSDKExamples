@@ -24,6 +24,7 @@ namespace CoreAPIDemo
 #else
 		public static string		m_sDirPath = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).FullName + "\\CSharp\\CoreAPIDemo\\";
 #endif
+		public string					m_sFilePath = "";
 		public uint CurrentPage
 		{
 			get { return uint.Parse(currentPage.Text) - 1; }
@@ -1033,7 +1034,7 @@ namespace CoreAPIDemo
 			String FileName = Path.GetTempFileName();
 			FileName = FileName.Replace(".tmp", ".pdf");
 			m_CurDoc.WriteToFile(FileName);
-			Process pr = Process.Start(FileName);
+			Process.Start(FileName);
 		}
 
 		private void addBookmark_Click(object sender, EventArgs e)
@@ -1206,26 +1207,129 @@ namespace CoreAPIDemo
 			IAFS_Inst afsInst = m_pxcInst.GetExtension("AFS");
 			ListItemAttachment item = attachmentView.SelectedItems[0] as ListItemAttachment;
 
-			String fileName = Path.GetTempFileName();
-			fileName = fileName.Replace(".tmp", "." + item.m_pxcEmbeddedFileStream.FileType);
-
-			try
+			string sType = item.SubItems[0].Text.Split('.')[1];
+			m_sFilePath = Path.GetTempFileName();
+			m_sFilePath = m_sFilePath.Replace(".tmp", "." + sType);
+			bool bIsSuccessful = false;
+			IPXC_Document coreDoc = null;
+			do
 			{
-				IAFS_Name name = afsInst.DefaultFileSys.StringToName(fileName);
-				IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)AFS_OpenFileFlags.AFS_OpenFile_Write | (int)AFS_OpenFileFlags.AFS_OpenFile_Read
-					| (int)AFS_OpenFileFlags.AFS_OpenFile_CreateNew | (int)AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
+				//Check whether it's a PDF file
+				try
+				{
+					IAFS_Name name = afsInst.DefaultFileSys.StringToName(m_sFilePath);
+					IAFS_File file = afsInst.DefaultFileSys.OpenFile(name, (int)AFS_OpenFileFlags.AFS_OpenFile_Write | (int)AFS_OpenFileFlags.AFS_OpenFile_Read
+						| (int)AFS_OpenFileFlags.AFS_OpenFile_CreateNew | (int)AFS_OpenFileFlags.AFS_OpenFile_ShareRead);
 
-				item.m_pxcEmbeddedFileStream.SaveToFile(file);
-				file.Close();
+					item.m_pxcEmbeddedFileStream.SaveToFile(file);
+					file.Close();
 
-				m_CurDoc = m_pxcInst.OpenDocumentFromFile(fileName, null);
+					coreDoc = m_pxcInst.OpenDocumentFromFile(m_sFilePath, null);
+					bIsSuccessful = true;
+					break;
+				}
+				catch (Exception)
+				{
+					
+				}
+				//Else we try image file
+				try
+				{
+					IIXC_Inst ixcInst = m_pxcInst.GetExtension("IXC");
+					IAUX_Inst auxInst = m_pxcInst.GetExtension("AUX");
+
+					coreDoc = m_pxcInst.NewDocument();
+
+					IIXC_Image img = ixcInst.CreateEmptyImage();
+					img.Load(m_sFilePath);
+					for (uint i = 0; i < img.PagesCount; i++)
+					{
+						IIXC_Page ixcPage = img.GetPage(i);
+						PXC_Rect rc;
+						rc.left = 0;
+						rc.right = ixcPage.Width;
+						rc.top = ixcPage.Height;
+						rc.bottom = 0;
+						IPXC_UndoRedoData urd;
+						IPXC_Page docPage = coreDoc.Pages.InsertPage(i, ref rc, out urd);
+						IPXC_Image pxcImg = coreDoc.AddImageFromIXCPage(ixcPage);
+						IPXC_ContentCreator CC = coreDoc.CreateContentCreator();
+						CC.SaveState();
+						{
+							PXC_Rect rcImage = new PXC_Rect();
+							rcImage.right = 1;
+							rcImage.top = 1;
+							PXC_Matrix matrix = docPage.GetMatrix(PXC_BoxType.PBox_PageBox);
+							matrix = auxInst.MathHelper.Matrix_RectToRect(ref rcImage, ref rc);
+							CC.ConcatCS(ref matrix);
+							CC.PlaceImage(pxcImg);
+						}
+						CC.RestoreState();
+						docPage.PlaceContent(CC.Detach());
+					}
+					bIsSuccessful = true;
+					break;
+				}
+				catch (Exception)
+				{
+
+				}
+				//Next we try text files
+				try
+				{
+					do
+					{
+						if (sType != "txt")
+							break;
+						coreDoc = m_pxcInst.NewDocument();
+
+						PXC_Rect rc;
+						rc.left = 0;
+						rc.right = 600;
+						rc.top = 800;
+						rc.bottom = 0;
+						IPXC_UndoRedoData urData;
+						IPXC_Page page = coreDoc.Pages.InsertPage(0, ref rc, out urData);
+						IPXC_ContentCreator CC = coreDoc.CreateContentCreator();
+
+						Converters.DrawTextCallbacks drawTextCallbacks = new Converters.DrawTextCallbacks();
+						drawTextCallbacks.m_currPage = page;
+						drawTextCallbacks.m_Text = File.ReadAllText(m_sFilePath);
+
+						IPXC_Font font = coreDoc.CreateNewFont("Times New Roman", 0, 400);
+						CC.SetColorRGB(0x00000000);
+						CC.SetFont(font);
+						CC.SetFontSize(15);
+
+						PXC_Rect rect = new PXC_Rect();
+						rect.top = rc.top - 40;
+						rect.right = rc.right - 40;
+						rect.bottom = rc.bottom + 40;
+						rect.left = rc.left + 40;
+
+						CC.ShowTextBlock(drawTextCallbacks.m_Text, rect, rect, (uint)PXC_DrawTextFlags.DTF_Center, -1, null, null, drawTextCallbacks, out rect);
+						bIsSuccessful = true;
+					} while (false);
+				}
+				catch (Exception)
+				{
+
+				}
+				if (bIsSuccessful)
+					break;
+				//If it's not a supported file type, we open with standard system viewer
+				Process.Start(m_sFilePath);
+
+			} while (false);
+			if (bIsSuccessful)
+			{
+				CloseDocument();
+				m_CurDoc = coreDoc;
 				UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_All);
 				UpdatePreviewFromCurrentDocument();
 			}
-			catch(Exception)
-			{
-				Process.Start(fileName);
-			}
+			
+			m_sFilePath = "";
 		}
 
 		private void addAttach_Click(object sender, EventArgs e)
