@@ -6,7 +6,7 @@ namespace CoreAPIDemo
 	[Description("6. Stamps")]
 	class Stamps
 	{
-		[Description("6.1. Add Draft stamp from a standard collection by Stamp ID")]
+		[Description("6.1. Add rotated Draft stamp from a standard collection by Stamp ID")]
 		static public void AddStandardStampByID(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
@@ -22,12 +22,13 @@ namespace CoreAPIDemo
 			double nWidth = 0;
 			si.GetSize(out nWidth, out nHeight);
 			PXC_Rect rc;
-			rc.left = 0;
-			rc.right = nWidth;
+			rc.left = rcPB.left - nWidth / 2.0 + nHeight / 2.0;
+			rc.right = rcPB.left + nWidth / 2.0 + nHeight / 2.0;
 			rc.top = rcPB.top;
-			rc.bottom = rc.top - nHeight;
+			rc.bottom = rc.top - nWidth;
 			IPXC_Annotation annot = firstPage.InsertNewAnnot(nStamp, ref rc, 0);
 			IPXC_AnnotData_Stamp stampData = (IPXC_AnnotData_Stamp)annot.Data;
+			stampData.Rotation = 90;
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
 		}
