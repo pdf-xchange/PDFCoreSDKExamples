@@ -15,6 +15,7 @@ namespace CoreAPIDemo
 		delegate void DrawN(IPXC_ContentCreator CC, PXC_Point point, IPXC_Font font);
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
+		delegate void ChageImages(object contentObj);
 
 		[Description("4.3. Text Rendering Mode")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
@@ -421,7 +422,7 @@ namespace CoreAPIDemo
 		{
 			const uint argbBlack = 0x00000000;
 			//delegate void DrawTitle(IPXC_Document Doc, IPXC_ContentCreator ContCrt, double cx, double baseLineY, string sText, double fontSize, double fontWidth = 400.0, uint argbFillColor = 0x00000000);
-			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) => 
+			DrawTitle drawTitle = (Doc, ContCrt, cx, baseLineY, sText, fontSize, fontWidth, color) =>
 			{
 				IPXC_Font defFont = Doc.CreateNewFont("Arial", 0, 400);
 				ContCrt.SaveState();
@@ -1124,7 +1125,7 @@ namespace CoreAPIDemo
 				ContCret.SaveState();
 				ContCret.SetLineWidth(1.0);
 				ContCret.SetStrokeColorRGB(color);
-				
+
 				ContCret.NoDash();
 				if (bDashes)
 				{
@@ -1160,7 +1161,7 @@ namespace CoreAPIDemo
 					ContCret.PolygonSA(xy, true);
 					ContCret.StrokePath(true);
 				}
-				
+
 			};
 			//delegate void DrawCS(IPXC_ContentCreator CC, double x0, double y0, double w, double h);
 			DrawCS drawCS = (ContCret, point, bCircle, nWidth, bArr, color) =>
@@ -1723,7 +1724,7 @@ namespace CoreAPIDemo
 			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png");
 			PXC_Matrix contentMatrix = new PXC_Matrix();
 			PXC_Matrix globalMatrix = new PXC_Matrix();
-			
+
 			//Placing image by it's original size / 5.0
 			mathHelper.Matrix_Reset(ref contentMatrix);
 			mathHelper.Matrix_Reset(ref globalMatrix);
@@ -1787,11 +1788,11 @@ namespace CoreAPIDemo
 			//Proportionally placing image inside the given rectangle
 			mathHelper.Matrix_Reset(ref contentMatrix);
 			mathHelper.Matrix_Reset(ref globalMatrix);
-			PXC_Rect rcImg = new PXC_Rect(); 
+			PXC_Rect rcImg = new PXC_Rect();
 			rect = new PXC_Rect();
 			rect.right = 3 * 72.0;
 			rect.top = 2 * 72.0;
-			
+
 			CC.SaveState();
 			{
 				globalMatrix = mathHelper.Matrix_Translate(ref globalMatrix, 4.3 * 72.0, rc.top - 9.0 * 72.0);
@@ -1818,7 +1819,7 @@ namespace CoreAPIDemo
 						}
 					}
 					//Moving the image rectangle to the center
-					
+
 
 					CC.SetLineWidth(4.0);
 					CC.Rect(rect.left, rect.bottom, rect.right, rect.top);
@@ -1836,6 +1837,54 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+		}
+
+		[Description("4.11. Change all of the Images to grayscale")]
+		static public void ChangeAllOfTheImagesToGrayscale(Form1 Parent)
+		{
+			//delegate void ChageImageItemsToGrayscale(object contentObj)
+			ChageImages changeImages = null;
+			changeImages = delegate(object contentObj)
+			{
+				IPXC_Content content = contentObj as IPXC_Content;
+				if (content == null)
+					return;
+				for (uint i = 0; i < content.Items.Count; i++)
+				{
+					IPXC_ContentItem item = content.Items[i];
+					if (item == null)
+						continue;
+					if (item.Type == PXC_CIType.CIT_XForm)
+					{
+						IPXC_XForm xf = content.Document.GetXFormByHandle(item.XForm_Handle);
+						if (xf == null)
+							continue;
+						IPXC_Content cont = xf.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+						changeImages(cont);
+						xf.SetContent(cont, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+						continue;
+					}
+					if ((item.Type != PXC_CIType.CIT_Image) && (item.Type != PXC_CIType.CIT_InlineImage))
+						continue;
+					IIXC_Page ixcPage = item.Image_CreateIXCPage(false, PXC_RenderingIntent.RI_RelativeColorimetric);
+					IPXC_Image newImage = content.Document.AddImageFromIXCPage(ixcPage, 0);
+					item.Image_Handle = newImage.Handle;
+				}
+			};
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocFromStringPath(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			for (uint i = 0; i < pages.Count; i++)
+			{
+				IPXC_Page page = pages[i];
+				if (page == null)
+					continue;
+				IPXC_Content content = page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+				if (content == null)
+					continue;
+				changeImages(content);
+				page.PlaceContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			}
 		}
 	}
 }
