@@ -55,7 +55,7 @@ namespace CoreAPIDemo
 		[Description("2.4. Open document from IStream")]
 		static public int OpenDocumentFromStream(Form1 Parent)
 		{
-			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FeatureChartEU.pdf";
+			string sPath = System.Environment.CurrentDirectory + "\\Documents\\FormTypes.pdf";
 			Parent.CloseDocument();
 			FileStream srcStream = new FileStream(sPath, FileMode.Open);
 			if (srcStream != null)

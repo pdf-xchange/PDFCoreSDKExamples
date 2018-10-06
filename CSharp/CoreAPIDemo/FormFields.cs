@@ -661,18 +661,34 @@ namespace CoreAPIDemo
 			Page.RemoveAnnots(0, Page.GetAnnotsCount());
 		}
 
-		//[Description("5.12. Flatten Fields on page")]
-		//static public void FlattenFieldsOnPage(Form1 Parent)
-		//{
-		//	if (Parent.m_CurDoc == null)
-		//		return;
+		[Description("5.12. Flatten fields by name on page")]
+		static public void FlattenFieldsByName(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocumentFromStream(Parent);
+			//Getting current page
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			//Get AcroForm from Document
+			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+			for (int i = (int)acroForm.FieldsCount - 1; i >= 0; i--)
+			{
+				IPXC_FormField field = acroForm.Field[(uint)i];
+				if (field == null)
+					continue;
+				acroForm.FlattenField(field.FullName);
+			}
+		}
 
-		//	//Get current page
-		//	IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
-		//	//Get AcroForm from Document
-		//	IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
-		//	//Flatten all fields
-		//	//acroForm.FlattenField("Text1");
-		//}
+		[Description("5.13. Flatten all fields on page")]
+		static public void FlattenAllFieldsOnPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocumentFromStream(Parent);
+			//Getting current page
+			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			//Get AcroForm from Document
+			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+			acroForm.FlattenAllFields();
+		}
 	}
 }
