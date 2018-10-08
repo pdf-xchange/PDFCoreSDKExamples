@@ -1,6 +1,9 @@
 ﻿using PDFXCoreAPI;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace CoreAPIDemo
 {
@@ -41,7 +44,8 @@ namespace CoreAPIDemo
 			rc.right = 600;
 
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages.InsertPage(0, rc, out urD);
 			PXC_Rect textRC = new PXC_Rect();
 			textRC.top = rc.top - 1.0 * 72.0;
 			textRC.left = 1.0 * 72.0;
@@ -103,6 +107,8 @@ namespace CoreAPIDemo
 						"this.getField(\"Text4\").value = now.getHours() + \":\" + now.getMinutes() ");
 			fourthTextBOX.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
 			Marshal.ReleaseComObject(fourthTextBOX);
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.2. Add Button form fields")]
@@ -139,7 +145,8 @@ namespace CoreAPIDemo
 
 			//Adding button with icon with the URI action
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
@@ -237,6 +244,8 @@ namespace CoreAPIDemo
 			AL.AddLaunch(sPath);
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 			Marshal.ReleaseComObject(openButton);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.3. Add Check Box form fields")]
@@ -273,7 +282,8 @@ namespace CoreAPIDemo
 
 			//Adding uncheked checkbox
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 3.2 * 72.0;
 			rcPB.right = rcPB.left + 0.5 * 72.0;
@@ -290,6 +300,8 @@ namespace CoreAPIDemo
 			IPXC_AnnotData_Widget widget = (IPXC_AnnotData_Widget)annot.Data;
 			checkBoxCh.CheckWidget((uint)checkBoxCh.GetWidgetIndex(annot), true);
 			Marshal.ReleaseComObject(checkBoxCh);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.4. Add Radio Buttons form fields")]
@@ -305,7 +317,8 @@ namespace CoreAPIDemo
 			//Adding group with RadioButtons
 			IPXS_Inst pxsInst = (IPXS_Inst)Parent.m_pxcInst.GetExtension("PXS");
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.top = rc.top - 0.35 * 72.0;
 			rcPB.bottom = rcPB.top - 0.5 * 72.0; //top is greater then bottom (PDF Coordinate System)
@@ -328,11 +341,10 @@ namespace CoreAPIDemo
 			firstGroup.CheckWidget(1, true);
 			secondGroup.CheckWidget(1, true);
 
-			Marshal.ReleaseComObject(firstGroup.Widget[1]);
-			Marshal.ReleaseComObject(firstGroup.Widget[2]);
 			Marshal.ReleaseComObject(firstGroup);
-			Marshal.ReleaseComObject(secondGroup.Widget[1]);
 			Marshal.ReleaseComObject(secondGroup);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.5. Add ListBox form fields")]
@@ -369,7 +381,8 @@ namespace CoreAPIDemo
 
 			//Adding ListBox with items
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
 			rcPB.right = rc.right - 1.5 * 72.0;
@@ -383,6 +396,8 @@ namespace CoreAPIDemo
 			listBox.InsertOptRecord("label4", "Forth Item");
 			listBox.SelectItem(1, true);
 			Marshal.ReleaseComObject(listBox);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.6. Add Combo Box form fields")]
@@ -419,7 +434,8 @@ namespace CoreAPIDemo
 
 			//Adding ComboBox with items
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
 			rcPB.right = rc.right - 1.5 * 72.0;
@@ -433,6 +449,8 @@ namespace CoreAPIDemo
 			comboBox.InsertOptRecord("lable4", "Forth Item");
 			comboBox.SelectItem(1, true);
 			Marshal.ReleaseComObject(comboBox);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.7. Add Signature form fields")]
@@ -469,7 +487,8 @@ namespace CoreAPIDemo
 
 			//Adding Signature
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
 			rcPB.right = rc.right - 1.5 * 72.0;
@@ -478,6 +497,8 @@ namespace CoreAPIDemo
 
 			IPXC_FormField signature = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Signature", ref index), PXC_FormFieldType.FFT_Signature, 0, ref rcPB);
 			Marshal.ReleaseComObject(signature);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.8. Add Barcode form fields")]
@@ -514,7 +535,8 @@ namespace CoreAPIDemo
 
 			//Adding Barcode
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 2.5 * 72.0;
 			rcPB.right = rc.right - 2.5 * 72.0;
@@ -523,6 +545,8 @@ namespace CoreAPIDemo
 
 			IPXC_FormField Barcode = Parent.m_CurDoc.AcroForm.CreateField(checkNamesFields(Parent.m_CurDoc, "Barcode", ref index), PXC_FormFieldType.FFT_Barcode, 0, ref rcPB);
 			Marshal.ReleaseComObject(Barcode);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.9. Add Date form fields")]
@@ -559,7 +583,8 @@ namespace CoreAPIDemo
 
 			//Adding Date 
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 2.5 * 72.0;
 			rcPB.right = rc.right - 2.5 * 72.0;
@@ -575,6 +600,8 @@ namespace CoreAPIDemo
 						"this.getField(\"Date1\").value = (now.getMonth() + 1) + \"/\" + now.getDate() + \"/\" + now.getFullYear(); ");
 			Date.Actions[PXC_TriggerType.Trigger_Format] = actionsList;
 			Marshal.ReleaseComObject(Date);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 
 		}
 
@@ -612,7 +639,8 @@ namespace CoreAPIDemo
 
 			//Adding button with icon as Image
 			IPXC_UndoRedoData urD = null;
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, rc, out urD);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, rc, out urD);
 			PXC_Rect rcPB = new PXC_Rect();
 			rcPB.left = 1.5 * 72.0;
 			rcPB.right = rcPB.left + 1.0 * 72.0;
@@ -644,6 +672,8 @@ namespace CoreAPIDemo
 			WData.SetIcon(PXC_AnnotAppType.AAT_Normal, xForm, true);
 			annot.Data = WData;
 			Marshal.ReleaseComObject(Image);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("5.11. Remove fields from page")]
@@ -653,21 +683,25 @@ namespace CoreAPIDemo
 				return;
 
 			//Get current page
-			if (Parent.CurrentPage >= Parent.m_CurDoc.Pages.Count)
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			if (Parent.CurrentPage >= pages.Count)
 				return;
 
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Page Page = pages[Parent.CurrentPage];
 			//Remove all fields from page
 			Page.RemoveAnnots(0, Page.GetAnnotsCount());
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
-		[Description("5.12. Flatten fields by name on page")]
+		[Description("5.12. Flatten fields by name")]
 		static public void FlattenFieldsByName(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocumentFromStream(Parent);
 			//Getting current page
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[Parent.CurrentPage];
 			//Get AcroForm from Document
 			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
 			for (int i = (int)acroForm.FieldsCount - 1; i >= 0; i--)
@@ -676,6 +710,7 @@ namespace CoreAPIDemo
 				if (field == null)
 					continue;
 				acroForm.FlattenField(field.FullName);
+				Marshal.ReleaseComObject(field);
 			}
 		}
 
@@ -685,10 +720,58 @@ namespace CoreAPIDemo
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocumentFromStream(Parent);
 			//Getting current page
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[Parent.CurrentPage];
 			//Get AcroForm from Document
 			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
 			acroForm.FlattenAllFields();
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
+		}
+
+		[Description("5.14. Export all fields from the current page")]
+		static public void ExportAllFieldsOnPage(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocumentFromStream(Parent);
+			//Getting current page
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[Parent.CurrentPage];
+			//Locking CosDocument for reading
+			Parent.m_CurDoc.CosDocument.LockDocument();
+			//Creating new array that will store the variants of the needed form fields
+			IPXS_Inst pxsInst = (IPXS_Inst)Parent.m_pxcInst.GetExtension("PXS");
+			IPXS_PDFVariant arrVar = pxsInst.NewVar_Array(0, Parent.m_CurDoc.CosDocument);
+			//Get AcroForm from Document
+			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+			for (uint i = 0; i < acroForm.FieldsCount; i++)
+			{
+				IPXC_FormField field = acroForm.Field[i];
+				if (field == null)
+					continue;
+				arrVar.Arr_Insert(field.PDFObject);
+				Marshal.ReleaseComObject(field);
+			}
+			Parent.m_CurDoc.CosDocument.UnlockDocument();
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
+			if (arrVar.Count == 0)
+				return;
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "FDF Documents (*.fdf)|*.fdf|XFDF Documents (*.xfdf)|*.xfdf|HTML Documents (*.html)|*.hrml|XML Documents (*.xml)|*.xml";
+			sfd.FilterIndex = 4;
+			sfd.CheckPathExists = true;
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				IAFS_Inst afsInst = (IAFS_Inst)Parent.m_pxcInst.GetExtension("AFS");
+				IAFS_Name name = afsInst.DefaultFileSys.StringToName(sfd.FileName);
+				string sExt = Path.GetExtension(sfd.FileName).ToLower();
+				sExt = sExt.TrimStart('.');
+				acroForm.Export(name, sExt, arrVar, true, (uint)PXC_ExportFormFlags.FormExport_Default);
+				Process.Start("explorer.exe", "/select, \"" + sfd.FileName + "\"");
+			}
 		}
 	}
 }

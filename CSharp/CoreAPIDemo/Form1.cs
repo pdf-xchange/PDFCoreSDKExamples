@@ -441,85 +441,96 @@ namespace CoreAPIDemo
 				previewImage.Image = null;
 				return;
 			}
-			int nPage = int.Parse(currentPage.Text) - 1;
-			if (nPage >= m_CurDoc.Pages.Count)
+			IPXC_Pages pages = null;
+			IPXC_Page srcPage = null;
+			try
 			{
-				nPage = (int)m_CurDoc.Pages.Count - 1;
-				currentPage.Text = (nPage + 1).ToString();
-			}
-
-			IPXC_Page srcPage = m_CurDoc.Pages[(uint)nPage];
-			IAUX_Inst auxInst = (IAUX_Inst)m_pxcInst.GetExtension("AUX");
-			IIXC_Inst ixcInst = (IIXC_Inst)m_pxcInst.GetExtension("IXC");
-			//Getting source page matrix
-			PXC_Matrix srcPageMatrix = srcPage.GetMatrix(PXC_BoxType.PBox_PageBox);
-			//Getting source page Page Box without rotation
-			PXC_Rect srcRect = srcPage.get_Box(PXC_BoxType.PBox_PageBox);
-			//Getting visual source Page Box by transforming it through matrix
-			auxInst.MathHelper.Rect_Transform(srcPageMatrix, ref srcRect);
-			//We'll insert the visual src page into visual dest page indented rectangle including page rotations and clipping
-
-			PXC_Rect destRect;
-			destRect.left = 0;
-			destRect.right = previewImage.Width;
-			destRect.top = 0;
-			destRect.bottom = previewImage.Height;
-
-			//Fit rect to rect
-			{
-				PXC_Rect rcRes, rcR, rcS;
-				rcS = destRect;
-				rcS.top = rcS.bottom;
-				rcS.bottom = 0;
-				rcR = srcRect;
+				int nPage = int.Parse(currentPage.Text) - 1;
+				pages = m_CurDoc.Pages;
+				if (nPage >= pages.Count)
 				{
-					var k1 = (rcR.right - rcR.left) / Math.Abs(rcR.top - rcR.bottom);
-					var k2 = (rcS.right - rcS.left) / Math.Abs(rcS.top - rcS.bottom);
-
-					if (k1 >= k2)
-					{
-						var h = (rcS.right - rcS.left) / k1;
-						rcRes = rcS;
-						rcRes.bottom += (Math.Abs(rcRes.top - rcRes.bottom) - h) / 2;
-						rcRes.top = rcRes.bottom + h;
-					}
-					else
-					{
-						var w = Math.Abs(rcS.top - rcS.bottom) * k1;
-						rcRes = rcS;
-						rcRes.left += ((rcRes.right - rcRes.left) - w) / 2;
-						rcRes.right = rcRes.left + w;
-					}
+					nPage = (int)pages.Count - 1;
+					currentPage.Text = (nPage + 1).ToString();
 				}
 
+				srcPage = pages[(uint)nPage];
+				IAUX_Inst auxInst = (IAUX_Inst)m_pxcInst.GetExtension("AUX");
+				IIXC_Inst ixcInst = (IIXC_Inst)m_pxcInst.GetExtension("IXC");
+				//Getting source page matrix
+				PXC_Matrix srcPageMatrix = srcPage.GetMatrix(PXC_BoxType.PBox_PageBox);
+				//Getting source page Page Box without rotation
+				PXC_Rect srcRect = srcPage.get_Box(PXC_BoxType.PBox_PageBox);
+				//Getting visual source Page Box by transforming it through matrix
+				auxInst.MathHelper.Rect_Transform(srcPageMatrix, ref srcRect);
+				//We'll insert the visual src page into visual dest page indented rectangle including page rotations and clipping
+
+				PXC_Rect destRect;
 				destRect.left = 0;
-				destRect.right = rcRes.right - rcRes.left;
+				destRect.right = previewImage.Width;
 				destRect.top = 0;
-				destRect.bottom = rcRes.top - rcRes.bottom;
+				destRect.bottom = previewImage.Height;
+
+				//Fit rect to rect
+				{
+					PXC_Rect rcRes, rcR, rcS;
+					rcS = destRect;
+					rcS.top = rcS.bottom;
+					rcS.bottom = 0;
+					rcR = srcRect;
+					{
+						var k1 = (rcR.right - rcR.left) / Math.Abs(rcR.top - rcR.bottom);
+						var k2 = (rcS.right - rcS.left) / Math.Abs(rcS.top - rcS.bottom);
+
+						if (k1 >= k2)
+						{
+							var h = (rcS.right - rcS.left) / k1;
+							rcRes = rcS;
+							rcRes.bottom += (Math.Abs(rcRes.top - rcRes.bottom) - h) / 2;
+							rcRes.top = rcRes.bottom + h;
+						}
+						else
+						{
+							var w = Math.Abs(rcS.top - rcS.bottom) * k1;
+							rcRes = rcS;
+							rcRes.left += ((rcRes.right - rcRes.left) - w) / 2;
+							rcRes.right = rcRes.left + w;
+						}
+					}
+
+					destRect.left = 0;
+					destRect.right = rcRes.right - rcRes.left;
+					destRect.top = 0;
+					destRect.bottom = rcRes.top - rcRes.bottom;
+				}
+
+				if (((int)(destRect.right - destRect.left) < 1) || ((int)(destRect.bottom - destRect.top) < 1))
+					return;
+				Bitmap image = new Bitmap((int)(destRect.right - destRect.left), (int)(destRect.bottom - destRect.top));
+
+
+				PXC_Matrix pageToRectMatrix = auxInst.MathHelper.Matrix_RectToRect(srcRect, destRect);
+				tagRECT rcTmp;
+				rcTmp.left = (int)destRect.left;
+				rcTmp.right = (int)destRect.right;
+				rcTmp.top = (int)destRect.top;
+				rcTmp.bottom = (int)destRect.bottom;
+				pageToRectMatrix = auxInst.MathHelper.Matrix_Multiply(srcPageMatrix, pageToRectMatrix);
+
+				Graphics g = Graphics.FromImage(image);
+				g.Clear(Color.White);
+				IntPtr hdc = g.GetHdc();
+				srcPage.DrawToDevice((uint)hdc, ref rcTmp, ref pageToRectMatrix, 0/*(uint)PDFXEdit.PXC_DrawToDeviceFlags.DDF_AsVector*/);
+				g.ReleaseHdc(hdc);
+				previewImage.Image = image;
+				g.Dispose();
+				g = null;
 			}
-
-			if (((int)(destRect.right - destRect.left) < 1) || ((int)(destRect.bottom - destRect.top) < 1))
-				return;
-			Bitmap image = new Bitmap((int)(destRect.right - destRect.left), (int)(destRect.bottom - destRect.top));
-
-
-			PXC_Matrix pageToRectMatrix = auxInst.MathHelper.Matrix_RectToRect(srcRect, destRect);
-			tagRECT rcTmp;
-			rcTmp.left = (int)destRect.left;
-			rcTmp.right = (int)destRect.right;
-			rcTmp.top = (int)destRect.top;
-			rcTmp.bottom = (int)destRect.bottom;
-			pageToRectMatrix = auxInst.MathHelper.Matrix_Multiply(srcPageMatrix, pageToRectMatrix);
-
-			Graphics g = Graphics.FromImage(image);
-			g.Clear(Color.White);
-			IntPtr hdc = g.GetHdc();
-			srcPage.DrawToDevice((uint)hdc, ref rcTmp, ref pageToRectMatrix, 0/*(uint)PDFXEdit.PXC_DrawToDeviceFlags.DDF_AsVector*/);
-			g.ReleaseHdc(hdc);
-			previewImage.Image = image;
-			g.Dispose();
-			g = null;
-			srcPage = null;
+			finally
+			{
+				Marshal.ReleaseComObject(srcPage);
+				Marshal.ReleaseComObject(pages);
+			}
+			
 		}
 
 		public void FillNamedDestinationsList()
@@ -574,16 +585,21 @@ namespace CoreAPIDemo
 				namedDestsList.Items.AddRange(listItems);
 				namedDestsList.EndUpdate();
 			});
+			Marshal.ReleaseComObject(nameTree);
 		}
 
-		public int GetAnnotsCount()
+		public uint GetAnnotsCount()
 		{
-			int retValue = 0;
-			int pageCount = (int)m_CurDoc.Pages.Count;
+			IPXC_Pages pages = m_CurDoc.Pages;
+			uint retValue = 0;
+			int pageCount = (int)pages.Count;
 			for (int i = 0; i < pageCount; i++)
 			{
-				retValue += (int)m_CurDoc.Pages[(uint)i].GetAnnotsCount();
+				IPXC_Page page = pages[(uint)i];
+				retValue += page.GetAnnotsCount();
+				Marshal.ReleaseComObject(page);
 			}
+			Marshal.ReleaseComObject(pages);
 			return retValue;
 		}
 
@@ -616,18 +632,21 @@ namespace CoreAPIDemo
 
 		public void FillAnnotationsList()
 		{
+			IPXC_Pages pages = null;
 			int pageCount = 0;
 			IPXS_Inst pxsInst = null;
 			ListItemAnnotation[] listItems = null;
 			ListItemAttachment[] attachments = new ListItemAttachment[0];
 			Invoke((MethodInvoker)delegate
 			{
+				pages = m_CurDoc.Pages;
 				pxsInst = m_pxcInst.GetExtension("PXS");
 				annotsView.BeginUpdate();
 				attachmentView.BeginUpdate();
 				annotsView.Items.Clear();
 				annotProgress.Visible = true;
-				pageCount = (int)m_CurDoc.Pages.Count;
+
+				pageCount = (int)pages.Count;
 				annotProgress.Maximum = pageCount;
 				listItems = new ListItemAnnotation[GetAnnotsCount()];
 			});
@@ -639,7 +658,7 @@ namespace CoreAPIDemo
 				int annotCount = 0;
 				Invoke((MethodInvoker)delegate
 				{
-					currentPage = m_CurDoc.Pages[(uint)i];
+					currentPage = pages[(uint)i];
 					annotCount = (int)currentPage.GetAnnotsCount();
 				});
 
@@ -695,6 +714,7 @@ namespace CoreAPIDemo
 				{
 					annotProgress.Value++;
 				});
+				Marshal.ReleaseComObject(currentPage);
 			}
 			Invoke((MethodInvoker)delegate
 			{
@@ -705,6 +725,7 @@ namespace CoreAPIDemo
 				annotsView.EndUpdate();
 				attachmentView.EndUpdate();
 			});
+			Marshal.ReleaseComObject(pages);
 		}
 
 		public void FillAttachmentsList()
@@ -748,6 +769,7 @@ namespace CoreAPIDemo
 				attachmentView.Items.AddRange(listItems);
 				attachmentView.EndUpdate();
 			});
+			Marshal.ReleaseComObject(attachmentNameTree);
 		}
 
 		public void FillBookmarksTree()
@@ -814,14 +836,16 @@ namespace CoreAPIDemo
 				GC.WaitForPendingFinalizers();
 				return;
 			}
-				
-			pagesCount.Text = "/" + m_CurDoc.Pages.Count.ToString();
+			IPXC_Pages pages = m_CurDoc.Pages;
+			pagesCount.Text = "/" + pages.Count.ToString();
 			int nPage = int.Parse(currentPage.Text) - 1;
-			if (nPage >= m_CurDoc.Pages.Count)
+			if (nPage >= pages.Count)
 			{
-				nPage = (int)m_CurDoc.Pages.Count - 1;
+				nPage = (int)pages.Count - 1;
 				currentPage.Text = (nPage + 1).ToString();
 			}
+			Marshal.ReleaseComObject(pages);
+
 			if ((flags & (int)eFormUpdateFlags.efuf_Bookmarks) > 0)
 				FillBookmarksTree();
 			Thread thread = new Thread(delegate() 
@@ -834,8 +858,6 @@ namespace CoreAPIDemo
 					FillNamedDestinationsList();
 			});
 			thread.Start();
-			
-
 		}
 
 		public void CloseDocument()
@@ -890,10 +912,12 @@ namespace CoreAPIDemo
 			if (m_CurDoc == null)
 				return;
 			int nPage = int.Parse(currentPage.Text) - 1;
-			if (nPage < (m_CurDoc.Pages.Count - 1))
+			IPXC_Pages pages = m_CurDoc.Pages;
+			if (nPage < (pages.Count - 1))
 			{
 				currentPage.Text = (nPage + 2).ToString();
 			}
+			Marshal.ReleaseComObject(pages);
 		}
 		private void sampleTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
@@ -911,7 +935,7 @@ namespace CoreAPIDemo
 
 			if (curNode.m_Bookmark.Actions == null)
 				return;
-
+			IPXC_Pages pages = m_CurDoc.Pages;
 			IPXC_ActionsList aList = curNode.m_Bookmark.Actions;
 			for (int i = (int)aList.Count - 1; i >= 0; i--)
 			{
@@ -923,7 +947,7 @@ namespace CoreAPIDemo
 						try
 						{
 							uint nPageNum = m_CurDoc.GetNamedDestination(actGoTo.DestName).nPageNum;
-							if (nPageNum > m_CurDoc.Pages.Count - 1)
+							if (nPageNum > pages.Count - 1)
 								continue;
 							currentPage.Text = (nPageNum + 1).ToString();
 							break;
@@ -938,7 +962,7 @@ namespace CoreAPIDemo
 					break;
 				}
 			}
-			
+			Marshal.ReleaseComObject(pages);
 		}
 
 		private void sampleTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -1184,9 +1208,13 @@ namespace CoreAPIDemo
 			}
 
 			ListItemAnnotation currentAnnot = annotsView.SelectedItems[0] as ListItemAnnotation;
-			m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
+			IPXC_Pages pages = m_CurDoc.Pages;
+			IPXC_Page page = pages[(uint)(currentAnnot.m_nPageNumber)];
+			page.RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
 			UpdateControlsFromDocument((int)eFormUpdateFlags.efuf_Annotations);
 			UpdatePreviewFromCurrentDocument();
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		private void openAttach_Click(object sender, EventArgs e)
@@ -1242,6 +1270,7 @@ namespace CoreAPIDemo
 
 					IIXC_Image img = ixcInst.CreateEmptyImage();
 					img.Load(m_sFilePath);
+					IPXC_Pages pages = coreDoc.Pages;
 					for (uint i = 0; i < img.PagesCount; i++)
 					{
 						IIXC_Page ixcPage = img.GetPage(i);
@@ -1251,7 +1280,7 @@ namespace CoreAPIDemo
 						rc.top = ixcPage.Height;
 						rc.bottom = 0;
 						IPXC_UndoRedoData urd;
-						IPXC_Page docPage = coreDoc.Pages.InsertPage(i, ref rc, out urd);
+						IPXC_Page docPage = pages.InsertPage(i, ref rc, out urd);
 						IPXC_Image pxcImg = coreDoc.AddImageFromIXCPage(ixcPage);
 						IPXC_ContentCreator CC = coreDoc.CreateContentCreator();
 						CC.SaveState();
@@ -1266,8 +1295,10 @@ namespace CoreAPIDemo
 						}
 						CC.RestoreState();
 						docPage.PlaceContent(CC.Detach());
+						Marshal.ReleaseComObject(docPage);
 					}
 					bIsSuccessful = true;
+					Marshal.ReleaseComObject(pages);
 					break;
 				}
 				catch (Exception)
@@ -1289,7 +1320,8 @@ namespace CoreAPIDemo
 						rc.top = 800;
 						rc.bottom = 0;
 						IPXC_UndoRedoData urData;
-						IPXC_Page page = coreDoc.Pages.InsertPage(0, ref rc, out urData);
+						IPXC_Pages pages = coreDoc.Pages;
+						IPXC_Page page = pages.InsertPage(0, ref rc, out urData);
 						IPXC_ContentCreator CC = coreDoc.CreateContentCreator();
 
 						Converters.DrawTextCallbacks drawTextCallbacks = new Converters.DrawTextCallbacks();
@@ -1309,6 +1341,8 @@ namespace CoreAPIDemo
 
 						CC.ShowTextBlock(drawTextCallbacks.m_Text, rect, rect, (uint)PXC_DrawTextFlags.DTF_Center, -1, null, null, drawTextCallbacks, out rect);
 						bIsSuccessful = true;
+						Marshal.ReleaseComObject(page);
+						Marshal.ReleaseComObject(pages);
 					} while (false);
 				}
 				catch (Exception)

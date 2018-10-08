@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -105,6 +106,8 @@ namespace CoreAPIDemo
 			bookmark.Style = PXC_BookmarkStyle.BookmarkFont_Normal;
 			aList.Insert(0, actionGoToE);
 			bookmark.Actions = aList;
+
+			Marshal.ReleaseComObject(attachments);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}

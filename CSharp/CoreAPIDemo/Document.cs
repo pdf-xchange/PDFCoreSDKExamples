@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -18,10 +19,11 @@ namespace CoreAPIDemo
 			rc.top = 800;
 			rc.bottom = 0;
 			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, 1, ref rc, null, out urd);
+			IPXC_Pages pages = coreDoc.Pages;
+			pages.AddEmptyPages(0, 1, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
-
+			Marshal.ReleaseComObject(pages);
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 

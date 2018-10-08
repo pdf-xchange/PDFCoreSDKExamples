@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System;
 using PDFXCoreAPI;
+using System.Runtime.InteropServices;
 
 namespace CoreAPIDemo
 {
@@ -27,8 +28,9 @@ namespace CoreAPIDemo
 			firstHeaderFooter.RightMargin = 36.0f;
 			firstHeaderFooter.LeftMargin = 36.0f;
 			firstHeaderFooter.FontSize = 30.0f;
-			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
-			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IBitSet bitSet = auxInst.CreateBitSet(pages.Count);
+			bitSet.Set(0, pages.Count, true);
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, firstHeaderFooter);
 
 			IPXC_HeaderAndFooterParams secondHeaderFooter = Parent.m_pxcInst.CreateHeaderAndFooterParams();
@@ -58,6 +60,7 @@ namespace CoreAPIDemo
 			thirdHeaderFooter.LeftMargin = 20.0f;
 			thirdHeaderFooter.FontSize = 20.0f;
 			Parent.m_CurDoc.PlaceHeadersAndFooters(bitSet, thirdHeaderFooter);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("8.2. Add Watermarks on page")]
@@ -77,8 +80,9 @@ namespace CoreAPIDemo
 			watermark.Rotation = -30;
 			watermark.FontSize = 200;
 			watermark.StrokeWidth = 5.0f;
-			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
-			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IBitSet bitSet = auxInst.CreateBitSet(pages.Count);
+			bitSet.Set(0, pages.Count, true);
 			Parent.m_CurDoc.PlaceWatermark(bitSet, watermark);
 			watermark.Text = "";
 			watermark.ImageFile = System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png";
@@ -92,6 +96,7 @@ namespace CoreAPIDemo
 			watermark.WatermarkType = PXC_WatermarkType.Watermark_Image;
 			watermark.Opacity = 50;
 			Parent.m_CurDoc.PlaceWatermark(bitSet, watermark);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("8.3. Add Background on page")]
@@ -104,8 +109,9 @@ namespace CoreAPIDemo
 			IPXC_BackgroundParams backgroundParams = Parent.m_pxcInst.CreateBackgroundParams();
 			IColor fillColor = auxInst.CreateColor(ColorType.ColorType_RGB);
 			fillColor.SetRGB(0.5f, 1.0f, 0.5f);
-			IBitSet bitSet = auxInst.CreateBitSet(Parent.m_CurDoc.Pages.Count);
-			bitSet.Set(0, Parent.m_CurDoc.Pages.Count, true);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IBitSet bitSet = auxInst.CreateBitSet(pages.Count);
+			bitSet.Set(0, pages.Count, true);
 			backgroundParams.FillColor = fillColor;
 			backgroundParams.VAlign = 0;
 			backgroundParams.HAlign = 2;
@@ -123,7 +129,7 @@ namespace CoreAPIDemo
 			backgroundParams.BackgroundType = PXC_BackgroundType.Background_Image;
 			backgroundParams.Flags |= (uint)PXC_BackgroundFlags.BackgroundFlag_ScaleToPage;
 			Parent.m_CurDoc.PlaceBackgrounds(bitSet, backgroundParams);
-
+			Marshal.ReleaseComObject(pages);
 		}
 	}
 }

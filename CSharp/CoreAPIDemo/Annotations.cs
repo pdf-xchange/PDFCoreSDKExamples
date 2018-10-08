@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -16,8 +17,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Text annotation atom for the InsertNewAnnot method
@@ -50,6 +54,8 @@ namespace CoreAPIDemo
 			color.SetRGB(0.5f, 0.4f, 0.48f);
 			aData.Color = color;
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -61,8 +67,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Link annotation atom for the InsertNewAnnot method
@@ -113,6 +122,8 @@ namespace CoreAPIDemo
 			AL.AddGoto(dest);
 			annot.set_Actions(PXC_TriggerType.Trigger_Up, AL);
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -124,8 +135,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Free text annotation atom for the InsertNewAnnot method
@@ -193,6 +207,8 @@ namespace CoreAPIDemo
 			color.SetRGB(0.0f, 0.0f, 0.0f);
 			aData.DefaultTextColor = color;
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -204,8 +220,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Line annotation atom for the InsertNewAnnot method
@@ -300,6 +319,8 @@ namespace CoreAPIDemo
 			aData.LeaderLineExtension = 15.0;
 			aData.set_Border(border);
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -311,8 +332,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Square and Circle annotations atom for the InsertNewAnnot method
@@ -376,6 +400,8 @@ namespace CoreAPIDemo
 			border.nWidth = 5.0f;
 			aData.set_Border(border);
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -387,8 +413,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Polygon and Polyline annotations atom for the InsertNewAnnot method
@@ -495,6 +524,8 @@ namespace CoreAPIDemo
 				aData.BlendMode = PXC_BlendMode.BlendMode_Multiply;
 				annot.Data = aData;
 			}
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -506,8 +537,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
@@ -555,8 +589,9 @@ namespace CoreAPIDemo
 				aData.Quads = quadsF;
 				annot.Data = aData;
 			}
-			
 
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
@@ -567,8 +602,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting Popup annotation atom for the InsertNewAnnot method
@@ -598,6 +636,9 @@ namespace CoreAPIDemo
 			annot.Data = aData;
 			sqAnnot.SetPopup(annot);
 
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
@@ -608,8 +649,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting File attachment annotation atom for the InsertNewAnnot method
@@ -632,6 +676,9 @@ namespace CoreAPIDemo
 			aData.FileAttachment = fileSpec;
 			annot.Data = aData;
 
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}
 
@@ -642,8 +689,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
@@ -683,6 +733,9 @@ namespace CoreAPIDemo
 			aData.SColor = color;
 			annot.Data = aData;
 
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
@@ -691,9 +744,11 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-
-			IPXC_Page page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[Parent.CurrentPage];
 			page.RemoveAnnots(0, page.GetAnnotsCount());
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}

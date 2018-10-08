@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -17,9 +18,11 @@ namespace CoreAPIDemo
 			rc.top = 800;
 			rc.bottom = 0;
 			IPXC_UndoRedoData urd;
-			coreDoc.Pages.AddEmptyPages(0, 4, ref rc, null, out urd);
+			IPXC_Pages pages = coreDoc.Pages;
+			pages.AddEmptyPages(0, 4, ref rc, null, out urd);
 			Parent.CloseDocument();
 			Parent.m_CurDoc = coreDoc;
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
@@ -39,12 +42,14 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.OpenDocFromStringPath(Parent);
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
 			PXC_Rect rcMedia = firstPage.get_Box(PXC_BoxType.PBox_MediaBox);
 			IPXC_UndoRedoData urd = null;
 			//Adding page with the size of the first page of the current document
-			Parent.m_CurDoc.Pages.AddEmptyPages(0, 1, ref rcMedia, null, out urd);
-
+			pages.AddEmptyPages(0, 1, ref rcMedia, null, out urd);
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
@@ -53,7 +58,8 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-			IPXC_Page page = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[0];
 			PXC_Rect rcPage = page.get_Box(PXC_BoxType.PBox_PageBox);
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
 			IPXC_Font font = Parent.m_CurDoc.CreateNewFont("Tahoma", 0, 400);
@@ -79,6 +85,8 @@ namespace CoreAPIDemo
 			CC.ShowTextBlock(str, ref rcOut, ref rcOut, 0, -1, null, null, null, out rc);
 			CC.RestoreState();
 			page.PlaceContent(CC.Detach());
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("1.5. Draw Square annotation in the center of the first page")]
@@ -86,7 +94,8 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-			IPXC_Page page = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[0];
 			PXC_Rect rcPage = page.get_Box(PXC_BoxType.PBox_PageBox);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
@@ -115,6 +124,8 @@ namespace CoreAPIDemo
 			border.nDashCount = 2; //Number of dashes
 			aData.set_Border(border);
 			annot.Data = aData;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -35,6 +36,7 @@ namespace CoreAPIDemo
 
 			IPXC_NameTree nameTree = Parent.m_CurDoc.GetNameTree("Dests");
 			nameTree.Remove(Parent.SelectedNameDest_Item.Text);
+			Marshal.ReleaseComObject(nameTree);
 			return (int)Form1.eFormUpdateFlags.efuf_NamedDests;
 		}
 	}

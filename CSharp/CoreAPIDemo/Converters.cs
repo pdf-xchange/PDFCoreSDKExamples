@@ -22,7 +22,9 @@ namespace CoreAPIDemo
 				PXC_Rect rc = m_currPage.get_Box(PXC_BoxType.PBox_PageBox);
 				IPXC_UndoRedoData urData;
 				m_currPage.Document.CreateContentCreator();
-				IPXC_Page page = m_currPage.Document.Pages.InsertPage(m_currPage.Number + 1, ref rc, out urData);
+				IPXC_Pages pages = m_currPage.Document.Pages;
+				IPXC_Page page = pages.InsertPage(m_currPage.Number + 1, ref rc, out urData);
+				Marshal.ReleaseComObject(m_currPage);
 				m_currPage = page;
 
 				PXC_Rect rect = new PXC_Rect();
@@ -33,6 +35,7 @@ namespace CoreAPIDemo
 
 				pRect = rect;
 				pClip = rect;
+				Marshal.ReleaseComObject(pages);
 			}
 
 			
@@ -51,6 +54,7 @@ namespace CoreAPIDemo
 			public void OnFinal(IPXC_ContentCreator CC)
 			{
 				m_currPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				Marshal.ReleaseComObject(m_currPage);
 			}
 		}
 
@@ -62,7 +66,8 @@ namespace CoreAPIDemo
 
 			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[Parent.CurrentPage];
 			double nHeight = 0.0;
 			double nWidth = 0.0;
 			Page.GetDimension(out nWidth, out nHeight);
@@ -110,12 +115,13 @@ namespace CoreAPIDemo
 			sPath = sPath.Replace(".png", ".jpg");
 			ixcImg.Save(sPath, IXC_CreationDisposition.CreationDisposition_Overwrite);
 			Process.Start(sPath);
+			Marshal.ReleaseComObject(Page);
 
 			ixcImg.RemovePageByIndex(0);
 			ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8RGB, 0);
-			for (int i = 0; i < Parent.m_CurDoc.Pages.Count; i++)
+			for (int i = 0; i < pages.Count; i++)
 			{
-				Page = Parent.m_CurDoc.Pages[(uint)i];
+				Page = pages[(uint)i];
 				Page.DrawToIXCPage(ixcPage, ref rc, ref matrix, param);
 				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_XDPI] = 150;
 				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_YDPI] = 150;
@@ -123,10 +129,14 @@ namespace CoreAPIDemo
 				ixcPage.FmtInt[(uint)IXC_FormatParametersIDS.FP_ID_FORMAT] = (uint)IXC_ImageFileFormatIDs.FMT_TIFF_ID;
 				ixcImg.InsertPage(ixcPage);
 				ixcPage = ixcInst.Page_CreateEmpty(cx, cy, IXC_PageFormat.PageFormat_8Gray, 0);
+				Marshal.ReleaseComObject(Page);
 			}
 			sPath = sPath.Replace(".jpg", ".tiff");
 			ixcImg.Save(sPath, IXC_CreationDisposition.CreationDisposition_Overwrite);
 			Process.Start(sPath);
+
+			
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("9.2. Convert from image to PDF")]
@@ -137,7 +147,8 @@ namespace CoreAPIDemo
 
 			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_Page Page = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[0];
 			double nHeight = 0.0;
 			double nWidth = 0.0;
 			Page.GetDimension(out nWidth, out nHeight);
@@ -180,6 +191,9 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 			Page.PlaceContent(CC.Detach());
 
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 
@@ -190,7 +204,8 @@ namespace CoreAPIDemo
 				Document.OpenDocFromStringPath(Parent);
 
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_Page Page = Parent.m_CurDoc.Pages[Parent.CurrentPage];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages[Parent.CurrentPage];
 			IPXC_PageText Text = Page.GetText(null, false);
 
 			string writePath = Path.GetTempFileName();
@@ -232,6 +247,9 @@ namespace CoreAPIDemo
 			}
 			stream.Close();
 			Process.Start(writePath);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("9.4. Convert from txt to PDF")]
@@ -239,11 +257,13 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-
-			PXC_Rect rc = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rc = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Page page = pages.InsertPage(0, ref rc, out urData);
 			DrawTextCallbacks drawTextCallbacks = new DrawTextCallbacks();
 			drawTextCallbacks.m_currPage = page;
 
@@ -261,7 +281,9 @@ namespace CoreAPIDemo
 			rect.left = rc.left + 40;
 
 			CC.ShowTextBlock(drawTextCallbacks.m_Text, rect, rect, (uint)PXC_DrawTextFlags.DTF_Center, -1, null, null, drawTextCallbacks, out rect);
-			
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
 	}

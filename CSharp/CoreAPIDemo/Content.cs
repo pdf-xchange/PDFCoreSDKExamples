@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
@@ -95,7 +96,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 
 			double x = 1 * 72.0;
 			double y = rc.top - 1 * 72.0;
@@ -234,6 +236,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, rc.right / 2 + 15, y - 1.8 * 72.0, "IMAGE PATTERN FOR STROKE", 15);
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.4. Text Character and Word Spacing")]
@@ -265,7 +270,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 
 			double x = 1.8 * 72.0;
 			double y = rc.top - 0.5 * 72.0;
@@ -320,6 +326,9 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.5. Text Scaling, Subscript and Superscript")]
@@ -351,7 +360,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 
 			double x = 1.8 * 72.0;
 			double y = rc.top - 0.5 * 72.0;
@@ -415,6 +425,9 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.9. Draw Arcs")]
@@ -447,7 +460,8 @@ namespace CoreAPIDemo
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
 			IAUX_Inst auxInst = (IAUX_Inst)Parent.m_pxcInst.GetExtension("AUX");
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages.InsertPage(0, ref rc, out urData);
 			double rx = 1 * 72.0;
 			double ry = 1 * 72.0;
 			double X = 2.3 * 72.0;
@@ -519,9 +533,9 @@ namespace CoreAPIDemo
 			CC.FillPath(false, true, PXC_FillRule.FillRule_Winding);
 
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			Marshal.ReleaseComObject(firstPage);
 
-
-			IPXC_Page secondPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Page secondPage = pages.InsertPage(0, ref rc, out urData);
 			PXC_Point center;
 			double r0 = 1.5 * 72.0;
 			double r = r0;
@@ -587,6 +601,9 @@ namespace CoreAPIDemo
 			}
 
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(secondPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.10. Draw Polygons and Curves")]
@@ -621,7 +638,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 
 			double x = 2.2 * 72.0;
 			double y = rc.top - 2.5 * 72.0;
@@ -751,6 +769,8 @@ namespace CoreAPIDemo
 			CC.StrokePath(false);
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.6. Fills and Gradients")]
@@ -783,7 +803,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages.InsertPage(0, ref rc, out urData);
 
 			double x = 2.0 * 72.0;
 			double y = rc.top - 2.0 * 72.0;
@@ -857,7 +878,9 @@ namespace CoreAPIDemo
 				y -= 3.0 * 72.0;
 			}
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
-			IPXC_Page secondPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			Marshal.ReleaseComObject(firstPage);
+
+			IPXC_Page secondPage = pages.InsertPage(0, ref rc, out urData);
 
 			double w = (rc.right - rc.left - 3 * 72.0) / 2.0;
 			double h = 1 * 72.0;
@@ -902,7 +925,9 @@ namespace CoreAPIDemo
 
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
-			IPXC_Page thirdPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			Marshal.ReleaseComObject(secondPage);
+
+			IPXC_Page thirdPage = pages.InsertPage(0, ref rc, out urData);
 			rc.left = 72.0;
 			rc.top = 800 - 72.0;
 			rc.right = 600 - 72.0;
@@ -982,6 +1007,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, 600 / 2, y - 3.8 * 72.0, "GRADIENT FILL (GRADIENT_FILL_RECT_V)", 15);
 
 			thirdPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(thirdPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.7. Patterns")]
@@ -1041,7 +1069,8 @@ namespace CoreAPIDemo
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
 			IIXC_Inst Ixc_Inst = (IIXC_Inst)Parent.m_pxcInst.GetExtension("IXC");
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 
 			double w = (rc.right - rc.left - 3 * 72.0) / 2.0;
 			double h = 1 * 72.0;
@@ -1099,6 +1128,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, X[1] + w / 2, Y - 0.1 * 72.0, "PATTERN FILL: Image", 15);
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.1. Coordinate System Transformations (matrix usages)")]
@@ -1196,7 +1228,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages.InsertPage(0, ref rc, out urData);
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper math = Aux_Inst.MathHelper;
 			IPXC_Font Font = Parent.m_CurDoc.CreateNewFont("Times New Roman", 0, 1000);
@@ -1314,7 +1347,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, 5.7 * 72.0, rc.top - 8.5 * 72.0, "SKEWING", 15);
 			firstPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
 
-			IPXC_Page secondPage = Parent.m_CurDoc.Pages.InsertPage(1, ref rc, out urData);
+			Marshal.ReleaseComObject(firstPage);
+
+			IPXC_Page secondPage = pages.InsertPage(1, ref rc, out urData);
 
 			CC.SaveState();
 			{
@@ -1488,6 +1523,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, 6 * 72.0, rc.top - 10.6 * 72.0, "STEP 3: TRANSLATION", 15);
 
 			secondPage.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(secondPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.8. Stroke Types")]
@@ -1545,7 +1583,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			IIXC_Inst ixcInst = Parent.m_pxcInst.GetExtension("IXC");
 
@@ -1688,6 +1727,9 @@ namespace CoreAPIDemo
 			drawTitle(Parent.m_CurDoc, CC, x, y - 65, "Stroke With Image Pattern", 15);
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.2. Place image with different transformations")]
@@ -1718,7 +1760,8 @@ namespace CoreAPIDemo
 
 			IPXC_UndoRedoData urData;
 			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
-			IPXC_Page Page = Parent.m_CurDoc.Pages.InsertPage(0, ref rc, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page Page = pages.InsertPage(0, ref rc, out urData);
 			IAUX_Inst Aux_Inst = Parent.m_pxcInst.GetExtension("AUX");
 			IMathHelper mathHelper = Aux_Inst.MathHelper;
 			IPXC_Image Img = Parent.m_CurDoc.AddImageFromFile(System.Environment.CurrentDirectory + "\\Images\\Editor_welcome.png");
@@ -1837,6 +1880,8 @@ namespace CoreAPIDemo
 			CC.RestoreState();
 
 			Page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			Marshal.ReleaseComObject(Page);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("4.11. Change all of the Images to grayscale")]
@@ -1881,10 +1926,15 @@ namespace CoreAPIDemo
 					continue;
 				IPXC_Content content = page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
 				if (content == null)
+				{
+					Marshal.ReleaseComObject(page);
 					continue;
+				}
 				changeImages(content);
 				page.PlaceContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				Marshal.ReleaseComObject(page);
 			}
+			Marshal.ReleaseComObject(pages);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using PDFXCoreAPI;
 
 namespace CoreAPIDemo
@@ -11,7 +12,8 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
 			PXC_Rect rcPB = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
 			IPXC_StampsManager stampManager = Parent.m_pxcInst.StampsManager;
 			IPXC_StampInfo si = stampManager.FindStamp("Draft");
@@ -31,6 +33,8 @@ namespace CoreAPIDemo
 			stampData.Rotation = 90;
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("6.2. Add Expired stamp from a standard collection by index in collection")]
@@ -38,7 +42,8 @@ namespace CoreAPIDemo
 		{
 			if (Parent.m_CurDoc == null)
 				Document.CreateNewDoc(Parent);
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
 			PXC_Rect rcPB = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
 			IPXC_StampsManager stampManager = Parent.m_pxcInst.StampsManager;
 			uint nColIndex = (uint)stampManager.FindCollection("Standard");
@@ -67,6 +72,8 @@ namespace CoreAPIDemo
 			IPXC_AnnotData_Stamp stampData = (IPXC_AnnotData_Stamp)annot.Data;
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 		}
 
 		[Description("6.3. Load stamps collection from stamp file and place stamp from it")]
@@ -84,7 +91,8 @@ namespace CoreAPIDemo
 			IPXC_StampsCollection sc = Parent.m_pxcInst.StampsManager.LoadCollection(destFile);
 
 			//Placing stamp from the loaded collection
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
 			PXC_Rect rcPB = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
 			IPXC_StampInfo si = sc[0]; //getting stamp by index - they are sorted by name
 			//Creating stamp annotation
@@ -103,6 +111,8 @@ namespace CoreAPIDemo
 			stampData.set_BBox(rc); //Stamp rectangle boundaries
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 		}
 		[Description("6.4. Load stamp from image file")]
 		static public void LoadStampFromTheImageFile(Form1 Parent)
@@ -120,7 +130,8 @@ namespace CoreAPIDemo
 			IPXC_StampsCollection sc = Parent.m_pxcInst.StampsManager.CreateEmptyCollection("My Stamps");
 
 			IPXC_StampInfo si = sc.AddStamp(destFile, "My Stamp");
-			IPXC_Page firstPage = Parent.m_CurDoc.Pages[0];
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
 			PXC_Rect rcPB = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
 			//Creating stamp annotation
 			IPXS_Inst pSInt = (IPXS_Inst)Parent.m_pxcInst.GetExtension("PXS");
@@ -139,6 +150,8 @@ namespace CoreAPIDemo
 			stampData.set_BBox(rc); //Stamp rectangle boundaries
 			stampData.SetStampName(si.ID);
 			annot.Data = stampData;
+			Marshal.ReleaseComObject(firstPage);
+			Marshal.ReleaseComObject(pages);
 		}
 	}
 }

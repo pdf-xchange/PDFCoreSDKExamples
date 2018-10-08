@@ -56,11 +56,16 @@ namespace CoreAPIDemo
 			dest.nPageNum = Parent.CurrentPage;
 			dest.nNullFlags = 0;
 			dest.nType = PXC_DestType.Dest_FitR;
-			PXC_Rect rc = Parent.m_CurDoc.Pages[Parent.CurrentPage].get_Box(PXC_BoxType.PBox_BBox);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[Parent.CurrentPage];
+			PXC_Rect rc = page.get_Box(PXC_BoxType.PBox_BBox);
 			double[] rect = { rc.left, rc.bottom, rc.right, rc.top };
 			dest.dValues = rect;
 			aList.AddGoto(dest);
 			bookmark.Actions = aList;
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_Bookmarks;
 		}
 
@@ -201,8 +206,10 @@ namespace CoreAPIDemo
 			GetXYFromDestination getXYFromDestination = (IPXC_Document doc, PXC_Destination destination) => {
 				PXC_DestType Type = destination.nType;
 				PXC_Point retValue = new PXC_Point();
-				PXC_Rect contentBBox = doc.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_BBox);
-				PXC_Rect pageBBox = doc.Pages[destination.nPageNum].get_Box(PXC_BoxType.PBox_PageBox);
+				IPXC_Pages pages = doc.Pages;
+				IPXC_Page page = pages[destination.nPageNum];
+				PXC_Rect contentBBox = page.get_Box(PXC_BoxType.PBox_BBox);
+				PXC_Rect pageBBox = page.get_Box(PXC_BoxType.PBox_PageBox);
 				bool IsContentType = (Type == PXC_DestType.Dest_FitB) || (Type == PXC_DestType.Dest_FitBH) || (Type == PXC_DestType.Dest_FitBV);
 				retValue.x = IsContentType ? contentBBox.left : pageBBox.left;
 				retValue.y = IsContentType ? contentBBox.top : pageBBox.top;
@@ -251,7 +258,9 @@ namespace CoreAPIDemo
 				default:
 					break;
 				}
-			return retValue;
+				Marshal.ReleaseComObject(page);
+				Marshal.ReleaseComObject(pages);
+				return retValue;
 			};
 			//delegate void SortByAnything(SortByAnything sort, IPXC_Bookmark root);
 			SortByAnything sortByAnything = (sort, root, actionType) => {

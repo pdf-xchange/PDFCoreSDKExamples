@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PDFXCoreAPI;
 
@@ -17,8 +18,11 @@ namespace CoreAPIDemo
 				Document.CreateNewDoc(Parent);
 
 			IPXC_UndoRedoData urData = null;
-			PXC_Rect rcPage = Parent.m_CurDoc.Pages[0].get_Box(PXC_BoxType.PBox_PageBox);
-			IPXC_Page page = Parent.m_CurDoc.Pages.InsertPage(0, ref rcPage, out urData);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page firstPage = pages[0];
+			PXC_Rect rcPage = firstPage.get_Box(PXC_BoxType.PBox_PageBox);
+			Marshal.ReleaseComObject(firstPage);
+			IPXC_Page page = pages.InsertPage(0, ref rcPage, out urData);
 			IPXS_Inst pxsInst = Parent.m_pxcInst.GetExtension("PXS");
 			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
 			//Getting File attachment annotation atom for the InsertNewAnnot method
@@ -41,6 +45,9 @@ namespace CoreAPIDemo
 			aData.FileAttachment = fileSpec;
 			annot.Data = aData;
 
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations | (int)Form1.eFormUpdateFlags.efuf_Attachments;
 		}
 
@@ -60,7 +67,7 @@ namespace CoreAPIDemo
 			embeddedFileStream.UpdateFromFile2(path);
 			var = fileSpec.PDFObject;
 			attachments.Add("FeatureChartEU.pdf", var);
-
+			Marshal.ReleaseComObject(attachments);
 			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
 
@@ -83,8 +90,13 @@ namespace CoreAPIDemo
 				attachments.Remove(currentAnnot.SubItems[0].Text);
 				return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 			}
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[(uint)(currentAnnot.m_nPageNumber)];
+			page.RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
 
-			Parent.m_CurDoc.Pages[(uint)(currentAnnot.m_nPageNumber)].RemoveAnnots((uint)currentAnnot.m_nIndexOnPage, 1);
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
 
 			return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
@@ -108,11 +120,12 @@ namespace CoreAPIDemo
 				IPXS_PDFVariant pdfVariant = attachments.Lookup(currentAnnot.SubItems[0].Text);
 				IPXC_FileSpec fileSpec = Parent.m_CurDoc.GetFileSpecFromVariant(pdfVariant);
 				fileSpec.Description = "Description";
+				Marshal.ReleaseComObject(attachments);
 
 				return (int)Form1.eFormUpdateFlags.efuf_Attachments | (int)Form1.eFormUpdateFlags.efuf_Annotations;
 			}
-
-			IPXC_Annotation annotFileAttach = Parent.m_CurDoc.Pages[(uint)currentAnnot.m_nPageNumber].GetAnnot((uint)currentAnnot.m_nIndexOnPage);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Annotation annotFileAttach = pages[(uint)currentAnnot.m_nPageNumber].GetAnnot((uint)currentAnnot.m_nIndexOnPage);
 			IPXC_AnnotData_FileAttachment fileAttachment = annotFileAttach.Data as IPXC_AnnotData_FileAttachment;
 			IPXC_FileSpec annotAttachFileSpec = fileAttachment.FileAttachment;
 			annotAttachFileSpec.Description = "Description";
