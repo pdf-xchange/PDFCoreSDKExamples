@@ -680,28 +680,34 @@ namespace CoreAPIDemo
 		static public void RemoveFieldsFromPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
-				return;
+			{
+				Document.OpenDocumentFromStream(Parent);
+				Parent.UpdateControlsFromDocument(0);
+				Parent.UpdatePreviewFromCurrentDocument();
+			}
+				
 
-			//Get current page
-			IPXC_Pages pages = Parent.m_CurDoc.Pages;
-			if (Parent.CurrentPage >= pages.Count)
-				return;
-
-			IPXC_Page Page = pages[Parent.CurrentPage];
-			//Remove all fields from page
-			Page.RemoveAnnots(0, Page.GetAnnotsCount());
-			Marshal.ReleaseComObject(Page);
-			Marshal.ReleaseComObject(pages);
+			//Get AcroForm from Document
+			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
+			for (int i = (int)acroForm.FieldsCount - 1; i >= 0; i--)
+			{
+				IPXC_FormField field = acroForm.Field[(uint)i];
+				if (field == null)
+					continue;
+				acroForm.DeleteField(field.FullName);
+				Marshal.ReleaseComObject(field);
+			}
 		}
 
 		[Description("5.12. Flatten fields by name")]
 		static public void FlattenFieldsByName(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
+			{
 				Document.OpenDocumentFromStream(Parent);
-			//Getting current page
-			IPXC_Pages pages = Parent.m_CurDoc.Pages;
-			IPXC_Page Page = pages[Parent.CurrentPage];
+				Parent.UpdateControlsFromDocument(0);
+				Parent.UpdatePreviewFromCurrentDocument();
+			}
 			//Get AcroForm from Document
 			IPXC_AcroForm acroForm = Parent.m_CurDoc.AcroForm;
 			for (int i = (int)acroForm.FieldsCount - 1; i >= 0; i--)
@@ -718,7 +724,11 @@ namespace CoreAPIDemo
 		static public void FlattenAllFieldsOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
+			{
 				Document.OpenDocumentFromStream(Parent);
+				Parent.UpdateControlsFromDocument(0);
+				Parent.UpdatePreviewFromCurrentDocument();
+			}
 			//Getting current page
 			IPXC_Pages pages = Parent.m_CurDoc.Pages;
 			IPXC_Page Page = pages[Parent.CurrentPage];
@@ -734,7 +744,11 @@ namespace CoreAPIDemo
 		static public void ExportAllFieldsOnPage(Form1 Parent)
 		{
 			if (Parent.m_CurDoc == null)
+			{
 				Document.OpenDocumentFromStream(Parent);
+				Parent.UpdateControlsFromDocument(0);
+				Parent.UpdatePreviewFromCurrentDocument();
+			}
 			//Getting current page
 			IPXC_Pages pages = Parent.m_CurDoc.Pages;
 			IPXC_Page Page = pages[Parent.CurrentPage];
