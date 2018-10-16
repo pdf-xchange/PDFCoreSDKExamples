@@ -62,6 +62,7 @@ namespace CoreAPIDemo
 				pages.DeletePages(bs, null, out urd);
 			else
 				MessageBox.Show("The last page can't be removed from the document!");
+			Marshal.ReleaseComObject(urd);
 			Marshal.ReleaseComObject(pages);
 			return (int)Form1.eFormUpdateFlags.efuf_All;
 		}
