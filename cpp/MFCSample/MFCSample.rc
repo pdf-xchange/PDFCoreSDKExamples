@@ -212,8 +212,8 @@ CAPTION "About MFCSample"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "MFCSample, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2016",IDC_STATIC,42,26,114,8
+    LTEXT           "MFCSample, Version 1.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2018",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,122,54,50,14,WS_GROUP
     CONTROL         "<a href=""http://www.tracker-software.com/product/pdf-xchange-core-api-sdk"">PDF-XChange Core API SDK</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,40,38,97,10
@@ -241,8 +241,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,2,0,1
+ PRODUCTVERSION 1,2,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -255,16 +255,16 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904B0"
+        BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "CompanyName", "Dreamsoft"
             VALUE "FileDescription", "MFCSample"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.2.0.1"
             VALUE "InternalName", "MFCSample.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "LegalCopyright", "Copyright © Dreamsoft 2016"
             VALUE "OriginalFilename", "MFCSample.exe"
-            VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductName", "PDFCoreSDKExamplesCpp"
+            VALUE "ProductVersion", "1.2.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -588,6 +588,45 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DLG_EXPORT2IMAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -638,45 +677,6 @@ END
 IDC_CURSOR_HAND_DOWN    CURSOR                  "res\\hand_down.cur"
 
 IDC_CURSOR_HAND_UP      CURSOR                  "res\\hand_up.cur"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_DLG_EXPORT2IMAGE AFX_DIALOG_LAYOUT
-BEGIN
-    0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0
-END
 
 
 /////////////////////////////////////////////////////////////////////////////
