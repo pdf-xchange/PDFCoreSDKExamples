@@ -752,5 +752,28 @@ namespace CoreAPIDemo
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
+
+		[Description("7.12. Rotate annotations on the current page")]
+		static public int RotateAnnotations(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[Parent.CurrentPage];
+			for (uint i = 0; i < page.GetAnnotsCount(); i++)
+			{
+				IPXC_Annotation annot = page.GetAnnot(i);
+				PXC_Point rcRotPnt;
+				//We are taking the center point of the annotation as the rotation point
+				rcRotPnt.x = annot.get_Rect().left + (annot.get_Rect().right - annot.get_Rect().left) / 2.0f;
+				rcRotPnt.y = annot.get_Rect().top - (annot.get_Rect().top - annot.get_Rect().bottom) / 2.0f;
+				//We will be adding 45 degrees to the annotation rotation each time
+				annot.Handler.RotateAnnot(annot, 45.0f, false, rcRotPnt);
+			}
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
+		}
 	}
 }
