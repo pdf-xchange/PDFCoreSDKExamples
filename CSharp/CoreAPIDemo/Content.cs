@@ -1911,7 +1911,62 @@ namespace CoreAPIDemo
 					}
 					if ((item.Type != PXC_CIType.CIT_Image) && (item.Type != PXC_CIType.CIT_InlineImage))
 						continue;
+					IIXC_Page ixcPage = item.Image_CreateIXCPage(true, PXC_RenderingIntent.RI_RelativeColorimetric);
+					IPXC_Image newImage = content.Document.AddImageFromIXCPage(ixcPage, 0);
+					item.Image_Handle = newImage.Handle;
+				}
+			};
+			if (Parent.m_CurDoc == null)
+				Document.OpenDocFromStringPath(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			for (uint i = 0; i < pages.Count; i++)
+			{
+				IPXC_Page page = pages[i];
+				if (page == null)
+					continue;
+				IPXC_Content content = page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+				if (content == null)
+				{
+					Marshal.ReleaseComObject(page);
+					continue;
+				}
+				changeImages(content);
+				page.PlaceContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				Marshal.ReleaseComObject(page);
+			}
+			Marshal.ReleaseComObject(pages);
+		}
+
+		[Description("4.12. Change all of the Images to black and white")]
+		static public void ChangeAllOfTheImagesToBlackAndWhite(Form1 Parent)
+		{
+			//delegate void ChageImageItemsToGrayscale(object contentObj)
+			ChageImages changeImages = null;
+			changeImages = delegate (object contentObj)
+			{
+				IPXC_Content content = contentObj as IPXC_Content;
+				if (content == null)
+					return;
+				for (uint i = 0; i < content.Items.Count; i++)
+				{
+					IPXC_ContentItem item = content.Items[i];
+					if (item == null)
+						continue;
+					if (item.Type == PXC_CIType.CIT_XForm)
+					{
+						IPXC_XForm xf = content.Document.GetXFormByHandle(item.XForm_Handle);
+						if (xf == null)
+							continue;
+						IPXC_Content cont = xf.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+						changeImages(cont);
+						xf.SetContent(cont, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+						continue;
+					}
+					if ((item.Type != PXC_CIType.CIT_Image) && (item.Type != PXC_CIType.CIT_InlineImage))
+						continue;
 					IIXC_Page ixcPage = item.Image_CreateIXCPage(false, PXC_RenderingIntent.RI_RelativeColorimetric);
+					uint[] colors = { 0, 0x00FFFFFF };
+					ixcPage.ReduceColorsFixedPalette(colors, IXC_DitherMethod.Dither_None);
 					IPXC_Image newImage = content.Document.AddImageFromIXCPage(ixcPage, 0);
 					item.Image_Handle = newImage.Handle;
 				}
