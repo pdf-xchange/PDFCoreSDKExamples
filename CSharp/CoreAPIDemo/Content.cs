@@ -1991,5 +1991,25 @@ namespace CoreAPIDemo
 			}
 			Marshal.ReleaseComObject(pages);
 		}
+
+		[Description("4.13. Add XFA formatted text block")]
+		static public void AddXFAFormattedTextBlock(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[0];
+			IPXC_ContentCreator CC = Parent.m_CurDoc.CreateContentCreator();
+			PXC_Rect rcText;
+			rcText.left = 0;
+			rcText.bottom = 0;
+			rcText.top = 700;
+			rcText.right = 500;
+			PXC_Rect rcBlock;
+			CC.ShowTextBlock("<body><p><span style=\"xfa-spacerun:yes\">Hello     goodbye</span></p></body>", rcText, rcText, (uint)PXC_DrawTextFlags.DTF_RichText, -1, null, null, null, out rcBlock);  //draw text block
+			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+		}
 	}
 }
