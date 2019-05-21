@@ -1376,5 +1376,11 @@ namespace CoreAPIDemo
 			UpdateControlsFromDocument(Attachments.RemoveAttachment(this));
 			UpdatePreviewFromCurrentDocument();
 		}
+
+		private void openDocument_Click(object sender, EventArgs e)
+		{
+			UpdateControlsFromDocument(Document.OpenDocWithOpenDialog(this));
+			UpdatePreviewFromCurrentDocument();
+		}
 	}
 }
