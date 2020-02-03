@@ -775,5 +775,27 @@ namespace CoreAPIDemo
 
 			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
 		}
+
+		[Description("7.13. Flatten annotations on the current page")]
+		static public int FlattenAnnotations(Form1 Parent)
+		{
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[Parent.CurrentPage];
+			//Filling the list of the annotations that need to be flattened
+			IPXC_AnnotsList al = Parent.m_pxcInst.CreateAnnotsList();
+			for (uint i = 0; i < page.GetAnnotsCount(); i++)
+			{
+				IPXC_Annotation annot = page.GetAnnot(i);
+				al.Insert(annot);
+			}
+			Parent.m_CurDoc.FlattenAnnotations(Parent.CurrentPage, al);
+			Marshal.ReleaseComObject(al);
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+
+			return (int)Form1.eFormUpdateFlags.efuf_Annotations;
+		}
 	}
 }

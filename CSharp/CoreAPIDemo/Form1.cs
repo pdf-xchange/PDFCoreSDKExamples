@@ -17,6 +17,8 @@ namespace CoreAPIDemo
 
 	public partial class Form1 : Form
 	{
+		public string					m_sLicenseKey = ""; //Put your license key here
+
 		public IPXC_Inst				m_pxcInst = null;
 		public IPXC_Document			m_CurDoc = null;
 #if DEBUG
@@ -90,7 +92,7 @@ namespace CoreAPIDemo
 		public Form1()
 		{
 			m_pxcInst = new PXC_Inst();
-			m_pxcInst.Init("");
+			m_pxcInst.Init(m_sLicenseKey);
 			InitializeComponent();
 		}
 
