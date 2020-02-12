@@ -17,6 +17,7 @@ namespace CoreAPIDemo
 		delegate void FillByGradient(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Rect rect);
 		delegate void CrossArrLine(IPXC_Document Doc, IPXC_ContentCreator CC, PXC_Point p);
 		delegate void ChageImages(object contentObj);
+		delegate void ChageTextContentItems(object contentObj, IColor color);
 
 		[Description("4.3. Text Rendering Mode")]
 		static public void DrawTextRenderingModesOnPage(Form1 Parent)
@@ -2008,6 +2009,69 @@ namespace CoreAPIDemo
 			PXC_Rect rcBlock;
 			CC.ShowTextBlock("<body><p><span style=\"xfa-spacerun:yes\">Hello     goodbye</span></p></body>", rcText, rcText, (uint)PXC_DrawTextFlags.DTF_RichText, -1, null, null, null, out rcBlock);  //draw text block
 			page.PlaceContent(CC.Detach(), (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+			Marshal.ReleaseComObject(page);
+			Marshal.ReleaseComObject(pages);
+		}
+
+		[Description("4.14. Change color of the paired text content item")]
+		static public void ChangeColorOfThePairedTextContentItem(Form1 Parent)
+		{
+			//delegate void ChageTextContentItems(object contentObj)
+			ChageTextContentItems changeText = null;
+			changeText = delegate (object contentObj, IColor color)
+			{
+				uint nCountChangedItems = 0;
+				IPXC_Content content = contentObj as IPXC_Content;
+				if (content == null)
+					return;
+				for (uint i = 0; i < content.Items.Count; i++)
+				{
+					IPXC_ContentItem item = content.Items[i];
+					if (item == null)
+						continue;
+					if (item.Type == PXC_CIType.CIT_XForm)
+					{
+						IPXC_XForm xf = content.Document.GetXFormByHandle(item.XForm_Handle);
+						if (xf == null)
+							continue;
+						IPXC_Content cont = xf.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+						changeText(cont, color);
+						xf.SetContent(cont, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+						continue;
+					}
+					if (item.Type != PXC_CIType.CIT_Text)
+						continue;
+
+					//only paired items will be modified
+					nCountChangedItems++;
+					if (nCountChangedItems % 2 != 0)
+						continue;
+					IPXC_CState CS = item.GetCState();
+
+					IPXC_Color c = CS.FillColor;
+					c.SetIColor(color);
+					CS.FillColor = c;
+
+					item.SetCState(CS);
+				}
+			};
+			if (Parent.m_CurDoc == null)
+				Document.CreateNewDoc(Parent);
+			IPXC_Pages pages = Parent.m_CurDoc.Pages;
+			IPXC_Page page = pages[Parent.CurrentPage];
+
+			IAUX_Inst auxInst = Parent.m_pxcInst.GetExtension("AUX");
+			IColor Color = auxInst.CreateColor(ColorType.ColorType_RGB);
+			Color.SetRGB(1, 0, 0);//replace to red
+			if (page != null)
+			{
+				IPXC_Content content = page.GetContent(PXC_ContentAccessMode.CAccessMode_FullClone);
+				if (content != null)
+				{
+					changeText(content, Color);
+					page.PlaceContent(content, (uint)PXC_PlaceContentFlags.PlaceContent_Replace);
+				}
+			}
 			Marshal.ReleaseComObject(page);
 			Marshal.ReleaseComObject(pages);
 		}
