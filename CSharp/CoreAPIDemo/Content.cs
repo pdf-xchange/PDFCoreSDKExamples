@@ -2042,7 +2042,7 @@ namespace CoreAPIDemo
 					if (item.Type != PXC_CIType.CIT_Text)
 						continue;
 
-					//only paired items will be modified
+					//only even content items will be modified
 					nCountChangedItems++;
 					if (nCountChangedItems % 2 != 0)
 						continue;
