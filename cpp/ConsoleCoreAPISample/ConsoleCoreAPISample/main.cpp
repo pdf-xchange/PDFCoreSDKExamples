@@ -16,7 +16,7 @@ int main()
 		BreakOnFailure(hr);
 		cout << "Core API initialized successfully!" << endl;
 
-		//Do your stuff
+		//Creating new document and inserting pages
 		CComPtr<IPXC_Document> pDoc;
 		hr = g_Inst->NewDocument(&pDoc);
 		BreakOnFailure(hr);
@@ -31,7 +31,7 @@ int main()
 		ULONG_T nCnt = 0;
 		pPages->get_Count(&nCnt);
 		cout << "Newly created document contains " << nCnt << " pages." << endl;
-		cin >> nCnt;
+		
 	} while (false);
 	FinalizeSDK();
 	cout << "Finalized SDK" << endl;
