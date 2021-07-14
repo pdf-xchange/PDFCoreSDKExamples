@@ -181,20 +181,23 @@ void CSDKSample_PrintDoc::PrintDoc(PXC::IPXC_Document* pDoc, HWND hWnd)
 			if (FAILED(hr))
 				return;
 
-			double doc_page_w, doc_page_h;
-			hr = pPage->GetDimension(&doc_page_w, &doc_page_h);
-			if (FAILED(hr))
-				return;
-
-			PXC::PXC_Matrix dm = {0};
-			pPage->GetMatrix(PXC::PBox_MediaBox, &dm);
-			dm.e -= or_prect.left;
-			dm.f -= or_prect.top;
+			//double doc_page_w, doc_page_h;
+			//hr = pPage->GetDimension(&doc_page_w, &doc_page_h);
+			//if (FAILED(hr))
+			//	return;
+			//PXC::PXC_Matrix dm = {0};
+			//pPage->GetMatrix(PXC::PBox_MediaBox, &dm);
+			//dm.e -= or_prect.left;
+			//dm.f -= or_prect.top;
 			CRect DrawRect(0, 0, or_prect.Width(), or_prect.Height());
 			CComPtr<PXC::IPXC_OCContext> pROpt;
 			g_Inst->CreateStdOCCtx(&pROpt);
 			pROpt->put_PrintContentFlags(PXC::RenderType_ModePrint);
-			pPage->DrawToDevice((PXC::HANDLE_T)pdlg.hDC, DrawRect, &dm, PXC::DDF_AsVector, nullptr, pROpt, nullptr);
+			// when matrix is not provided, entire page will be rendred to fit DrawRect
+			// matrix is required only if we need to render portion of the page.
+			// In this case Cropbox rect of the page is transformed by the matrix,
+			// and only portion of the page that after transofmation is in DrawRect will be printed
+			pPage->DrawToDevice((PXC::HANDLE_T)pdlg.hDC, DrawRect, /*&dm*/nullptr, PXC::DDF_AsVector, nullptr, pROpt, nullptr);
 			::EndPage(pdlg.hDC);
 		}
 		::EndDoc(pdlg.hDC);
