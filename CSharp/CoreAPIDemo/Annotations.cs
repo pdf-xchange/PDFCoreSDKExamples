@@ -34,7 +34,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 250;
 			rcOut.right = nCX - 150;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_Text aData = annot.Data as IPXC_AnnotData_Text;
 			aData.Contents = "Text Annotation 1.";
 			aData.Title = "Text Annotation 1";
@@ -46,7 +46,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 100;
 			rcOut.top -= 100;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Text;
 			aData.Contents = "Text Annotation 2.";
 			aData.Title = "Text Annotation 2";
@@ -84,7 +84,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 250;
 			rcOut.right = nCX + 150;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_Link aData = annot.Data as IPXC_AnnotData_Link;
 			aData.Contents = "Link Annotation 1.";
 			aData.HighlighMode = PXC_AnnotHighlightMode.AHM_Outline;
@@ -107,7 +107,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 200;
 			rcOut.top -= 200;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Link;
 			aData.Contents = "Link Annotation 2.";
 			color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -152,7 +152,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 200;
 			rcOut.right = nCX + 200;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_FreeText aData = annot.Data as IPXC_AnnotData_FreeText;
 			aData.Contents = "Free Text Annotation 1.";
 			aData.Title = "Free Text Annotation 1.";
@@ -177,7 +177,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 200;
 			rcOut.top -= 200;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_FreeText;
 			aData.Contents = "Free Text Annotation 2.";
 			aData.DefaultFontSize = 15.0;
@@ -197,7 +197,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 200;
 			rcOut.top -= 200;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_FreeText;
 			aData.Contents = "Free Text Annotation 3.";
 			color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -243,7 +243,7 @@ namespace CoreAPIDemo
 			PXC_Point endPiont = new PXC_Point();
 			endPiont.x = rcPage.right - 50;
 			endPiont.y = startPoint.y;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_Line aData = annot.Data as IPXC_AnnotData_Line;
 			aData.Title = "Line annotation 1.";
 			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -258,7 +258,7 @@ namespace CoreAPIDemo
 
 			startPoint.y = startPoint.y - 50;
 			endPiont.y = startPoint.y;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Line;
 			aData.SetLinePoints(ref startPoint, ref endPiont);
 			aData.Title = "Line annotation 2.";
@@ -269,7 +269,7 @@ namespace CoreAPIDemo
 
 			startPoint.y = startPoint.y - 50;
 			endPiont.y = startPoint.y;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Line;
 			aData.SetLinePoints(ref startPoint, ref endPiont);
 			aData.Title = "Line annotation 3.";
@@ -281,7 +281,7 @@ namespace CoreAPIDemo
 
 			startPoint.y = startPoint.y - 50;
 			endPiont.y = startPoint.y;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Line;
 			aData.SetLinePoints(ref startPoint, ref endPiont);
 			aData.Title = "Line annotation 4.";
@@ -293,7 +293,7 @@ namespace CoreAPIDemo
 
 			startPoint.y = startPoint.y - 50;
 			endPiont.y = startPoint.y;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Line;
 			aData.SetLinePoints(ref startPoint, ref endPiont);
 			aData.Title = "Line annotation 5.";
@@ -309,7 +309,7 @@ namespace CoreAPIDemo
 
 			startPoint.y = startPoint.y - 50;
 			endPiont.y = startPoint.y;
-			annot = page.InsertNewAnnot(nText, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_Line;
 			aData.SetLinePoints(ref startPoint, ref endPiont);
 			aData.Title = "Line annotation 6.";
@@ -350,14 +350,14 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 200;
 			rcOut.right = nCX + 200;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nSquare, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nSquare, ref rcOut));
 			IPXC_AnnotData_SquareCircle aData = annot.Data as IPXC_AnnotData_SquareCircle;
 			aData.Title = "Square annotation 1.";
 			annot.Data = aData;
 
 			rcOut.bottom -= 150;
 			rcOut.top -= 150;
-			annot = page.InsertNewAnnot(nSquare, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nSquare, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_SquareCircle;
 			aData.Title = "Square annotation 2.";
 			IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -369,7 +369,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 150;
 			rcOut.top -= 150;
-			annot = page.InsertNewAnnot(nCircle, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nCircle, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_SquareCircle;
 			aData.Title = "Circle annotation 3.";
 			color.SetRGB(0.0f, 0.0f, 0.0f);
@@ -387,7 +387,7 @@ namespace CoreAPIDemo
 
 			rcOut.bottom -= 150;
 			rcOut.top -= 150;
-			annot = page.InsertNewAnnot(nCircle, ref rcOut);
+			annot = unchecked(page.InsertNewAnnot(nCircle, ref rcOut));
 			aData = annot.Data as IPXC_AnnotData_SquareCircle;
 			aData.Title = "Circle annotation 4.";
 			color.SetRGB(0.0f, 0.0f, 0.0f);
@@ -442,7 +442,7 @@ namespace CoreAPIDemo
 				}
 					
 				
-				IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+				IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 				IPXC_AnnotData_Poly aData = annot.Data as IPXC_AnnotData_Poly;
 				aData.Title = (p == 0) ? sPolygon : sPolyline;
 				aData.Title += " annotation 1.";
@@ -456,7 +456,7 @@ namespace CoreAPIDemo
 					pointF.x = (float)(rcOut.left + r * Math.Cos(a * Math.PI / 180.0));
 					pointF.y = (float)(rcOut.bottom - r * Math.Sin(a * Math.PI / 180.0));
 					a += 360.0 / 4;
-					poly.Insert(ref pointF);
+					poly.Insert(ref pointF, 1, uint.MaxValue);
 				}
 				aData.Vertices = poly;
 				IColor color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -467,7 +467,7 @@ namespace CoreAPIDemo
 
 				annot.Data = aData;
 
-				annot = page.InsertNewAnnot(nText, ref rcOut);
+				annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 				aData = annot.Data as IPXC_AnnotData_Poly;
 				aData.Title = (p == 0) ? sPolygon : sPolyline;
 				aData.Title += " annotation 2.";
@@ -479,7 +479,7 @@ namespace CoreAPIDemo
 					pointF.x = (float)(nCX + r * Math.Cos(a * Math.PI / 180.0));
 					pointF.y = (float)(rcOut.bottom - r * Math.Sin(a * Math.PI / 180.0));
 					a += 360.0 / 6;
-					poly.Insert(ref pointF);
+					poly.Insert(ref pointF, 1, uint.MaxValue);
 				}
 				aData.Vertices = poly;
 				color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -495,7 +495,7 @@ namespace CoreAPIDemo
 				annot.Data = aData;
 
 
-				annot = page.InsertNewAnnot(nText, ref rcOut);
+				annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 				aData = annot.Data as IPXC_AnnotData_Poly;
 				aData.Title = (p == 0) ? sPolygon : sPolyline;
 				aData.Title += " annotation 3.";
@@ -507,7 +507,7 @@ namespace CoreAPIDemo
 					pointF.x = (float)(rcOut.right + r * Math.Cos(a * Math.PI / 180.0));
 					pointF.y = (float)(rcOut.bottom - r * Math.Sin(a * Math.PI / 180.0));
 					a += 360.0 / 8;
-					poly.Insert(ref pointF);
+					poly.Insert(ref pointF, 1, uint.MaxValue);
 				}
 				aData.Vertices = poly;
 				color = auxInst.CreateColor(ColorType.ColorType_RGB);
@@ -569,7 +569,7 @@ namespace CoreAPIDemo
 			for (int i = 0; i < 4; i++)
 			{
 				uint nText = pxsInst.StrToAtom(textMarkups[i]);
-				IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+				IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 				IPXC_AnnotData_TextMarkup aData = annot.Data as IPXC_AnnotData_TextMarkup;
 				aData.Title = textMarkups[i] + " annotation 1.";
 				IPXC_QuadsF quadsF = Parent.m_pxcInst.CreateQuads();
@@ -579,7 +579,7 @@ namespace CoreAPIDemo
 				aData.Quads = quadsF;
 				annot.Data = aData;
 
-				annot = page.InsertNewAnnot(nText, ref rcOut);
+				annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 				aData = annot.Data as IPXC_AnnotData_TextMarkup;
 				aData.Title = textMarkups[i] + " annotation 2.";
 				Text.GetTextQuads3(19 + (uint)(i * 28), 9, quadsF, out rectF);
@@ -619,7 +619,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 200;
 			rcOut.right = nCX + 200;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation sqAnnot = page.InsertNewAnnot(nSquare, ref rcOut);
+			IPXC_Annotation sqAnnot = unchecked(page.InsertNewAnnot(nSquare, ref rcOut));
 			IPXC_AnnotData_SquareCircle aSData = sqAnnot.Data as IPXC_AnnotData_SquareCircle;
 			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
 			color.SetRGB(0.0f, 0.8f, 0.8f);
@@ -630,7 +630,7 @@ namespace CoreAPIDemo
 
 			//Getting Text annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("Popup");
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_Popup aData = annot.Data as IPXC_AnnotData_Popup;
 			aData.Opened = true;
 			annot.Data = aData;
@@ -666,7 +666,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 250;
 			rcOut.right = nCX - 150;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_FileAttachment aData = annot.Data as IPXC_AnnotData_FileAttachment;
 			aData.Contents = "FileAttachment Annotation 1.";
 			string sFilePath = System.Environment.CurrentDirectory + "\\Documents\\Hobbit.txt";
@@ -718,7 +718,7 @@ namespace CoreAPIDemo
 			rcOut.top = nCY + 100;
 			//Getting Redact annotation atom for the InsertNewAnnot method
 			uint nText = pxsInst.StrToAtom("Redact");
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_Redaction aData = annot.Data as IPXC_AnnotData_Redaction;
 			aData.Title = "Redact annotation 1.";
 
@@ -788,7 +788,7 @@ namespace CoreAPIDemo
 			for (uint i = 0; i < page.GetAnnotsCount(); i++)
 			{
 				IPXC_Annotation annot = page.GetAnnot(i);
-				al.Insert(annot);
+				al.Insert(annot, uint.MaxValue);
 			}
 			Parent.m_CurDoc.FlattenAnnotations(Parent.CurrentPage, al);
 			Marshal.ReleaseComObject(al);

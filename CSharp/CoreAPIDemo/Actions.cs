@@ -93,11 +93,11 @@ namespace CoreAPIDemo
 			IPXC_Action_Goto actionGoToE = Parent.m_pxcInst.GetActionHandler(atomGoToE).CreateEmptyAction(atomGoToE, Parent.m_CurDoc) as IPXC_Action_Goto;
 			
 			IPXC_GoToETargetPath targetPath = actionGoToE.TargetPath;
-			IPXC_GoToETargetItem targetItem = targetPath.InsertNew();
+			IPXC_GoToETargetItem targetItem = unchecked(targetPath.InsertNew());
 			targetItem.FileName = "FeatureChartEU.pdf";
-			targetItem = targetPath.InsertNew();
+			targetItem = unchecked(targetPath.InsertNew());
 			targetItem.FileName = "MyStamps.pdf";
-			targetItem = targetPath.InsertNew();
+			targetItem = unchecked(targetPath.InsertNew());
 			targetItem.AnnotIndex = 0;
 			targetItem.PageNumber = 0;
 

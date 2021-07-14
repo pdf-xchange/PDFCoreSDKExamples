@@ -109,7 +109,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY - 100;
 			rcOut.right = nCX + 200;
 			rcOut.top = nCY + 100;
-			IPXC_Annotation annot = page.InsertNewAnnot(nSquare, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nSquare, ref rcOut));
 			IPXC_AnnotData_SquareCircle aData = annot.Data as IPXC_AnnotData_SquareCircle;
 			aData.Opacity = 0.7;
 			var color = auxInst.CreateColor(ColorType.ColorType_RGB);
