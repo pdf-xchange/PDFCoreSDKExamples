@@ -58,6 +58,7 @@ HRESULT InitializeSDK()
 	do
 	{
 #if defined (REGISTERED_COM_SDK)
+		CoInitialize(nullptr);
 		hr = CoCreateInstance(__uuidof(PXC::PXC_Inst), nullptr, CLSCTX_INPROC_SERVER, __uuidof(PXC::IPXC_Inst), (void**)&g_Inst);
 #elif defined (DYNAMIC_LOAD_SDK_DLL)
 		if (g_Inst != nullptr)
