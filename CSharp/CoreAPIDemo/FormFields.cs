@@ -764,7 +764,7 @@ namespace CoreAPIDemo
 				IPXC_FormField field = acroForm.Field[i];
 				if (field == null)
 					continue;
-				arrVar.Arr_Insert(field.PDFObject);
+				arrVar.Arr_Insert(field.PDFObject, uint.MaxValue);
 				Marshal.ReleaseComObject(field);
 			}
 			Parent.m_CurDoc.CosDocument.UnlockDocument();

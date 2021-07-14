@@ -35,7 +35,7 @@ namespace CoreAPIDemo
 			rcOut.bottom = nCY + 250;
 			rcOut.right = nCX - 150;
 			rcOut.top = nCY + 300;
-			IPXC_Annotation annot = page.InsertNewAnnot(nText, ref rcOut);
+			IPXC_Annotation annot = unchecked(page.InsertNewAnnot(nText, ref rcOut));
 			IPXC_AnnotData_FileAttachment aData = annot.Data as IPXC_AnnotData_FileAttachment;
 			aData.Contents = "FileAttachment Annotation 1.";
 			string sFilePath = System.Environment.CurrentDirectory + "\\Documents\\Hobbit.txt";
