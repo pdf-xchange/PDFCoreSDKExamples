@@ -41,7 +41,7 @@ int main()
 		_wgetcwd(buff, FILENAME_MAX);
 		wstring sPath = buff;
 		wstring sImagePath = sPath;
-		sImagePath.append(L"\\Figuress.png");
+		sImagePath.append(L"\\Figures.png");
 		wcout << L"Opening image from path: " << sImagePath.c_str() << endl;
 
 		CComPtr<IPXC_Image> pImage;
