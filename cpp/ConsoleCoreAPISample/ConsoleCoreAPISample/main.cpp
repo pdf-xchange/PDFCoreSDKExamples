@@ -110,8 +110,6 @@ int main()
 
 	FinalizeSDK();
 	cout << "Finalized SDK" << endl;
-	cout << "Press any key to close..." << endl;
-	int a = 0;
-	cin >> a;
+	system("PAUSE");
 	return hr;
 }
